@@ -7,6 +7,11 @@ package com.fphoenixcorneae.happyjoke.const
 object Constant {
     const val PROJECT_TOKEN = "E4185C527B23474E85C2478E181D7EFE"
 
+    object NavRoute {
+        const val Splash = "Splash"
+        const val Homepage = "Homepage"
+    }
+
     /**
      * @desc：偏好
      * @date：2023/03/10 14:03

@@ -1,8 +1,11 @@
+@file:OptIn(ExperimentalAnimationApi::class)
+
 package com.fphoenixcorneae.happyjoke.ui.page.splash
 
 import android.Manifest
 import android.annotation.SuppressLint
 import android.view.Window
+import androidx.compose.animation.ExperimentalAnimationApi
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.isSystemInDarkTheme
 import androidx.compose.foundation.layout.Box
@@ -18,11 +21,12 @@ import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.core.view.WindowCompat
+import androidx.navigation.NavHostController
 import com.fphoenixcorneae.happyjoke.R
 import com.fphoenixcorneae.happyjoke.const.Constant
 import com.fphoenixcorneae.happyjoke.ext.getDSFlow
 import com.fphoenixcorneae.happyjoke.ui.page.dialog.PrivacyPolicyDialog
-import com.fphoenixcorneae.happyjoke.ui.page.home.HomepageScreen
+import com.google.accompanist.navigation.animation.rememberAnimatedNavController
 import com.google.accompanist.permissions.ExperimentalPermissionsApi
 import com.google.accompanist.permissions.rememberMultiplePermissionsState
 import com.google.accompanist.systemuicontroller.rememberSystemUiController
@@ -34,7 +38,10 @@ import com.google.accompanist.systemuicontroller.rememberSystemUiController
 @SuppressLint("FlowOperatorInvokedInComposition")
 @Preview
 @Composable
-fun SplashScreen(window: Window? = null) {
+fun SplashScreen(
+    window: Window? = null,
+    navController: NavHostController = rememberAnimatedNavController(),
+) {
     // 设置状态栏透明色
     val systemUiController = rememberSystemUiController()
     val useDarkIcons = !isSystemInDarkTheme()
@@ -65,7 +72,9 @@ fun SplashScreen(window: Window? = null) {
         }
         agreePrivacyPolicy?.let {
             if (it) {
-                RequestPermissionsUsingAccompanist()
+                RequestPermissionsUsingAccompanist {
+                    navController.navigate(Constant.NavRoute.Homepage)
+                }
             } else {
                 PrivacyPolicyDialog()
             }
@@ -75,7 +84,9 @@ fun SplashScreen(window: Window? = null) {
 
 @OptIn(ExperimentalPermissionsApi::class)
 @Composable
-private fun RequestPermissionsUsingAccompanist() {
+private fun RequestPermissionsUsingAccompanist(
+    onAllPermissionsGranted: () -> Unit = {},
+) {
     val permissionsState = rememberMultiplePermissionsState(
         permissions = listOf(
             Manifest.permission.WRITE_EXTERNAL_STORAGE,
@@ -83,7 +94,7 @@ private fun RequestPermissionsUsingAccompanist() {
         )
     )
     if (permissionsState.allPermissionsGranted) {
-        HomepageScreen()
+        onAllPermissionsGranted()
     }
     SideEffect {
         permissionsState.launchMultiplePermissionRequest()
