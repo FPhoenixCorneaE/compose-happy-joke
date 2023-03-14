@@ -1,8 +1,7 @@
-package com.fphoenixcorneae.happyjoke.ui.page
+package com.fphoenixcorneae.happyjoke.ui.page.splash
 
 import android.Manifest
 import android.annotation.SuppressLint
-import android.util.Log
 import android.view.Window
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.isSystemInDarkTheme
@@ -23,6 +22,7 @@ import com.fphoenixcorneae.happyjoke.R
 import com.fphoenixcorneae.happyjoke.const.Constant
 import com.fphoenixcorneae.happyjoke.ext.getDSFlow
 import com.fphoenixcorneae.happyjoke.ui.page.dialog.PrivacyPolicyDialog
+import com.fphoenixcorneae.happyjoke.ui.page.home.HomepageScreen
 import com.google.accompanist.permissions.ExperimentalPermissionsApi
 import com.google.accompanist.permissions.rememberMultiplePermissionsState
 import com.google.accompanist.systemuicontroller.rememberSystemUiController
@@ -53,20 +53,22 @@ fun SplashScreen(window: Window? = null) {
             contentDescription = null,
             modifier = Modifier
                 .align(alignment = Alignment.BottomCenter)
-                .padding(bottom = 48.dp)
-                .size(200.dp),
+                .padding(bottom = 36.dp)
+                .size(160.dp),
         )
         // 是否同意隐私政策
-        val agreePrivacyPolicy by produceState(initialValue = false) {
-            context.getDSFlow(Constant.Preferences.AGREE_PRIVACY_POLICY, false)
+        val agreePrivacyPolicy by produceState<Boolean?>(initialValue = null) {
+            context.getDSFlow<Boolean?>(Constant.Preferences.AGREE_PRIVACY_POLICY, false)
                 .collect {
                     value = it
                 }
         }
-        if (agreePrivacyPolicy) {
-            RequestPermissionsUsingAccompanist()
-        } else {
-            PrivacyPolicyDialog()
+        agreePrivacyPolicy?.let {
+            if (it) {
+                RequestPermissionsUsingAccompanist()
+            } else {
+                PrivacyPolicyDialog()
+            }
         }
     }
 }
@@ -81,7 +83,7 @@ private fun RequestPermissionsUsingAccompanist() {
         )
     )
     if (permissionsState.allPermissionsGranted) {
-        Log.d("RequestPermissionsUsingAccompanist", "所有权限已授权")
+        HomepageScreen()
     }
     SideEffect {
         permissionsState.launchMultiplePermissionRequest()

@@ -55,11 +55,18 @@ dependencies {
     implementation 'androidx.compose.material3:material3:1.0.0-alpha11'
     // datastore
     implementation "androidx.datastore:datastore-preferences:1.0.0"
-    // accompanist
-    implementation "com.google.accompanist:accompanist-insets:0.25.1"
-    implementation "com.google.accompanist:accompanist-insets-ui:0.25.1"
-    implementation "com.google.accompanist:accompanist-systemuicontroller:0.25.1"
-    implementation "com.google.accompanist:accompanist-permissions:0.25.1"
+    // accompanist: https://google.github.io/accompanist/
+    def accompanist = "0.25.1"
+    implementation "com.google.accompanist:accompanist-insets:$accompanist"
+    implementation "com.google.accompanist:accompanist-insets-ui:$accompanist"
+    implementation "com.google.accompanist:accompanist-systemuicontroller:$accompanist"
+    implementation "com.google.accompanist:accompanist-permissions:$accompanist"
+    implementation "com.google.accompanist:accompanist-placeholder-material:$accompanist"
+    implementation "com.google.accompanist:accompanist-navigation-animation:$accompanist"
+    implementation "com.google.accompanist:accompanist-navigation-material:$accompanist"
+
+    // coil: https://coil-kt.github.io/coil/compose/
+    implementation("io.coil-kt:coil-compose:2.2.2")
 
     testImplementation 'junit:junit:4.13.2'
     androidTestImplementation 'androidx.test.ext:junit:1.1.5'
