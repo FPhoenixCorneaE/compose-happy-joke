@@ -1,15 +1,24 @@
 package com.fphoenixcorneae.happyjoke.mvi.ui.page.home
 
 import androidx.annotation.Keep
+import androidx.compose.animation.Animatable
+import androidx.compose.animation.core.animateFloat
+import androidx.compose.animation.core.tween
+import androidx.compose.animation.core.updateTransition
+import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.*
+import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
-import androidx.compose.runtime.Composable
+import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.drawWithContent
+import androidx.compose.ui.draw.rotate
+import androidx.compose.ui.draw.scale
 import androidx.compose.ui.geometry.Offset
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.graphics.ColorFilter
 import androidx.compose.ui.graphics.Paint
 import androidx.compose.ui.graphics.PaintingStyle
 import androidx.compose.ui.graphics.drawscope.drawIntoCanvas
@@ -21,6 +30,9 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import coil.compose.AsyncImage
 import com.fphoenixcorneae.happyjoke.R
+import com.fphoenixcorneae.happyjoke.ext.noRippleClickable
+import kotlinx.coroutines.delay
+import kotlinx.coroutines.launch
 import kotlin.math.acos
 import kotlin.math.sin
 
@@ -37,6 +49,7 @@ fun BottomNavigationBar(
     centerIconSize: Dp = 44.dp,
     lineMarginTop: Dp = 10.dp,
     centerArcRadius: Dp = 30.dp,
+    darkMode: Boolean = false,
 ) {
     val naviItems = listOf(
         NaviItem(
@@ -65,6 +78,7 @@ fun BottomNavigationBar(
             selectedColor = MaterialTheme.colorScheme.onSecondary,
         ),
     )
+    var isDarkMode by remember { mutableStateOf(darkMode) }
     Box(
         modifier = Modifier
             .then(modifier)
@@ -72,6 +86,9 @@ fun BottomNavigationBar(
             .height(naviBarHeight)
             .drawWithContent {
                 drawContent()
+                if (isDarkMode) {
+                    return@drawWithContent
+                }
                 val paint = Paint().apply {
                     color = Color.Gray
                     strokeWidth = 0.5f
@@ -110,31 +127,71 @@ fun BottomNavigationBar(
                 }
             }
     ) {
-        // 发布帖子
-        AsyncImage(
-            model = R.mipmap.ic_homepage_post_yellow,
-            contentDescription = null,
-            modifier = Modifier
-                .size(centerIconSize)
-                .align(alignment = Alignment.Center)
-        )
+        val backgroundColor = remember { Animatable(Color.White) }
+        LaunchedEffect(key1 = isDarkMode) {
+            backgroundColor.animateTo(
+                targetValue = if (isDarkMode) Color.Black else Color.White,
+                animationSpec = tween(200),
+            )
+        }
         Row(
             modifier = Modifier
                 .fillMaxWidth()
                 .height(naviItemHeight)
-                .align(alignment = Alignment.BottomCenter),
+                .align(alignment = Alignment.BottomCenter)
+                .background(color = backgroundColor.value, shape = RoundedCornerShape(2.dp)),
             verticalAlignment = Alignment.CenterVertically
         ) {
+            val coroutineScope = rememberCoroutineScope()
+            var selectedPosition by remember { mutableStateOf(0) }
+            // 创建当前动画状态
+            var animState by remember { mutableStateOf(AnimState.Static) }
+            // 创建Transition，管理状态
+            val transition = updateTransition(targetState = animState, label = "iconTransition")
+            // 根据transition来创建动画值
+            val rotate by transition.animateFloat(label = "rotate") { state ->
+                when (state) {
+                    AnimState.Static -> 0f
+                    AnimState.Start -> 45f
+                    AnimState.Reverse -> 0f
+                }
+            }
+            // 根据transition来创建动画值
+            val scale by transition.animateFloat(label = "scale") { state ->
+                when (state) {
+                    AnimState.Static -> 1f
+                    AnimState.Start -> 1.2f
+                    AnimState.Reverse -> 1f
+                }
+            }
             naviItems.forEachIndexed { index, naviItem ->
                 naviItem?.let {
                     Column(
                         modifier = Modifier
                             .width(0.dp)
                             .weight(1f)
-                            .wrapContentHeight(),
+                            .wrapContentHeight()
+                            .noRippleClickable {
+                                if (selectedPosition != index) {
+                                    selectedPosition = index
+                                    isDarkMode = index == 1
+                                    coroutineScope.launch {
+                                        animState = AnimState.Start
+                                        delay(200)
+                                        animState = AnimState.Reverse
+                                    }
+                                }
+                            },
                         horizontalAlignment = Alignment.CenterHorizontally,
                     ) {
-                        AsyncImage(model = it.icon, contentDescription = null)
+                        AsyncImage(
+                            model = if (selectedPosition == index) it.selectedIcon else it.icon,
+                            contentDescription = null,
+                            colorFilter = if (isDarkMode) ColorFilter.tint(color = Color.White) else null,
+                            modifier = Modifier
+                                .rotate(if (selectedPosition == index) rotate else 0f)
+                                .scale(if (selectedPosition == index) scale else 1f)
+                        )
                         Text(text = it.name, style = TextStyle(fontSize = it.textSize, color = it.color))
                     }
                 } ?: Box(
@@ -145,6 +202,15 @@ fun BottomNavigationBar(
                 )
             }
         }
+        // 发布帖子
+        AsyncImage(
+            model = R.mipmap.ic_homepage_post_yellow,
+            contentDescription = null,
+            modifier = Modifier
+                .size(centerIconSize)
+                .align(alignment = Alignment.Center),
+            colorFilter = if (isDarkMode) ColorFilter.tint(color = Color.White) else null,
+        )
     }
 }
 
@@ -161,3 +227,13 @@ data class NaviItem(
     val selectedColor: Color = Color.Black,
     val textSize: TextUnit = 12.sp,
 )
+
+/**
+ * @desc：
+ * @date：2023/03/16 17:28
+ */
+enum class AnimState {
+    Static,
+    Start,
+    Reverse,
+}
