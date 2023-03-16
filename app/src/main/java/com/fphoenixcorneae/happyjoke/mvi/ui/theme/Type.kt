@@ -1,4 +1,4 @@
-package com.fphoenixcorneae.happyjoke.ui.theme
+package com.fphoenixcorneae.happyjoke.mvi.ui.theme
 
 import androidx.compose.material3.Typography
 import androidx.compose.ui.text.TextStyle

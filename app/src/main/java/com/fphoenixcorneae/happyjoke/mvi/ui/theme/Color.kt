@@ -1,4 +1,4 @@
-package com.fphoenixcorneae.happyjoke.ui.theme
+package com.fphoenixcorneae.happyjoke.mvi.ui.theme
 
 import androidx.compose.ui.graphics.Color
 

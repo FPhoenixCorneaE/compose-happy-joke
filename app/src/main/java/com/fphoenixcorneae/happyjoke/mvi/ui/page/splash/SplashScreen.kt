@@ -1,6 +1,6 @@
 @file:OptIn(ExperimentalAnimationApi::class)
 
-package com.fphoenixcorneae.happyjoke.ui.page.splash
+package com.fphoenixcorneae.happyjoke.mvi.ui.page.splash
 
 import android.Manifest
 import android.annotation.SuppressLint
@@ -25,7 +25,7 @@ import androidx.navigation.NavHostController
 import com.fphoenixcorneae.happyjoke.R
 import com.fphoenixcorneae.happyjoke.const.Constant
 import com.fphoenixcorneae.happyjoke.ext.getDSFlow
-import com.fphoenixcorneae.happyjoke.ui.page.dialog.PrivacyPolicyDialog
+import com.fphoenixcorneae.happyjoke.mvi.ui.page.dialog.PrivacyPolicyDialog
 import com.google.accompanist.navigation.animation.rememberAnimatedNavController
 import com.google.accompanist.permissions.ExperimentalPermissionsApi
 import com.google.accompanist.permissions.rememberMultiplePermissionsState

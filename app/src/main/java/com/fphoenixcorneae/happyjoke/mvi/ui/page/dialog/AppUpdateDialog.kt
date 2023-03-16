@@ -1,9 +1,10 @@
-package com.fphoenixcorneae.happyjoke.ui.page.dialog
+package com.fphoenixcorneae.happyjoke.mvi.ui.page.dialog
 
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.*
 import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
+import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
@@ -62,7 +63,7 @@ fun AppUpdateDialog(onDismiss: () -> Unit = {}) {
                         .fillMaxWidth()
                         .height(36.dp),
                     colors = ButtonDefaults.buttonColors(
-                        containerColor = Color(0xFFFF7533),
+                        containerColor = MaterialTheme.colorScheme.onSecondary,
                         contentColor = Color.White,
                     ),
                 ) {

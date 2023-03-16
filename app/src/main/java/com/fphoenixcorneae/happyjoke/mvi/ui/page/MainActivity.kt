@@ -1,4 +1,4 @@
-package com.fphoenixcorneae.happyjoke
+package com.fphoenixcorneae.happyjoke.mvi.ui.page
 
 import android.os.Bundle
 import androidx.activity.ComponentActivity
@@ -11,9 +11,9 @@ import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Surface
 import androidx.compose.ui.Modifier
 import com.fphoenixcorneae.happyjoke.const.Constant
-import com.fphoenixcorneae.happyjoke.ui.page.home.HomepageScreen
-import com.fphoenixcorneae.happyjoke.ui.page.splash.SplashScreen
-import com.fphoenixcorneae.happyjoke.ui.theme.ComposeHappyJokeTheme
+import com.fphoenixcorneae.happyjoke.mvi.ui.page.home.HomepageScreen
+import com.fphoenixcorneae.happyjoke.mvi.ui.page.splash.SplashScreen
+import com.fphoenixcorneae.happyjoke.mvi.ui.theme.ComposeHappyJokeTheme
 import com.google.accompanist.navigation.animation.AnimatedNavHost
 import com.google.accompanist.navigation.animation.composable
 import com.google.accompanist.navigation.animation.rememberAnimatedNavController

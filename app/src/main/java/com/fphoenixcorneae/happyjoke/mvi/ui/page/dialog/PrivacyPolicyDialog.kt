@@ -1,4 +1,4 @@
-package com.fphoenixcorneae.happyjoke.ui.page.dialog
+package com.fphoenixcorneae.happyjoke.mvi.ui.page.dialog
 
 import android.util.Log
 import androidx.compose.foundation.background
@@ -24,10 +24,7 @@ import androidx.compose.ui.text.withStyle
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import androidx.datastore.preferences.core.booleanPreferencesKey
-import androidx.datastore.preferences.core.edit
 import com.fphoenixcorneae.happyjoke.const.Constant
-import com.fphoenixcorneae.happyjoke.ext.dataStore
 import com.fphoenixcorneae.happyjoke.ext.noRippleClickable
 import com.fphoenixcorneae.happyjoke.ext.saveDS
 import kotlinx.coroutines.launch
