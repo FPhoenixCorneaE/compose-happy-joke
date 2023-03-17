@@ -1,3 +1,22 @@
 <resources>
     <string name="app_name">段子乐</string>
+    <string name="homepage">首页</string>
+    <string name="sweep">划一划</string>
+    <string name="message">消息</string>
+    <string name="mine">我的</string>
+    <string name="update_now">立即更新</string>
+    <string name="privacy_policy">隐私政策</string>
+    <string name="privacy_policy_prompt">尊敬的用户您好，段子乐根据最新的法律法规及监管政策要求，向您推送本提示。为了更好的通知您新的消息，我们需要您为本应用授权通知权限。为了发布图片和视频内容，需要您授权相机权限。为了更精准的推荐内容，需要您同意设备信息收集授权。以及为了更加稳定的提供服务，需要收集一些日志信息。</string>
+    <string name="refuse">拒绝</string>
+    <string name="agree">同意</string>
+    <string name="privacy_policy_protocol">《隐私政策》</string>
+    <string name="user_protocol">《用户协议》</string>
+    <string name="privacy_policy_tips_str_1">您可以点击</string>
+    <string name="privacy_policy_tips_str_2">和</string>
+    <string name="privacy_policy_tips_str_3">阅读完整版条款内容。如您同意，请点击“同意”开始接受我们的服务。</string>
+    <string name="follow">关注</string>
+    <string name="recommend">推荐</string>
+    <string name="fresh">新鲜</string>
+    <string name="polite_letters">纯文</string>
+    <string name="funny_pictures">趣图</string>
 </resources>

@@ -11,7 +11,7 @@ import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Surface
 import androidx.compose.ui.Modifier
 import com.fphoenixcorneae.happyjoke.const.Constant
-import com.fphoenixcorneae.happyjoke.mvi.ui.page.home.HomepageScreen
+import com.fphoenixcorneae.happyjoke.mvi.ui.page.main.MainScreen
 import com.fphoenixcorneae.happyjoke.mvi.ui.page.splash.SplashScreen
 import com.fphoenixcorneae.happyjoke.mvi.ui.theme.ComposeHappyJokeTheme
 import com.google.accompanist.navigation.animation.AnimatedNavHost
@@ -33,23 +33,23 @@ class MainActivity : ComponentActivity() {
                     val navController = rememberAnimatedNavController()
                     AnimatedNavHost(
                         navController = navController,
-                        startDestination = Constant.NavRoute.Splash,
+                        startDestination = Constant.NavRoute.SPLASH,
                     ) {
                         composable(
-                            route = Constant.NavRoute.Splash,
+                            route = Constant.NavRoute.SPLASH,
                             enterTransition = { fadeIn() },
                             exitTransition = { fadeOut() },
                         ) {
                             SplashScreen(window = window, navController)
                         }
                         composable(
-                            Constant.NavRoute.Homepage,
+                            Constant.NavRoute.MAIN,
                             enterTransition = { fadeIn() },
                             exitTransition = { fadeOut() },
                             popEnterTransition = { fadeIn() },
                             popExitTransition = { fadeOut() },
                         ) {
-                            HomepageScreen()
+                            MainScreen(window = window)
                         }
                     }
                 }

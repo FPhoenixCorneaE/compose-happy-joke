@@ -1,4 +1,4 @@
-package com.fphoenixcorneae.happyjoke.mvi.ui.page.home
+package com.fphoenixcorneae.happyjoke.mvi.ui.widget
 
 import androidx.annotation.Keep
 import androidx.compose.animation.Animatable
@@ -22,6 +22,7 @@ import androidx.compose.ui.graphics.ColorFilter
 import androidx.compose.ui.graphics.Paint
 import androidx.compose.ui.graphics.PaintingStyle
 import androidx.compose.ui.graphics.drawscope.drawIntoCanvas
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.Dp
@@ -50,29 +51,31 @@ fun BottomNavigationBar(
     lineMarginTop: Dp = 10.dp,
     centerArcRadius: Dp = 30.dp,
     darkMode: Boolean = false,
+    onCenterIconClick: () -> Unit = {},
+    onNavItemClick: (Int) -> Unit = {},
 ) {
     val naviItems = listOf(
         NaviItem(
-            name = "首页",
+            name = stringResource(R.string.homepage),
             icon = R.mipmap.ic_homepage_home_gray,
             selectedIcon = R.mipmap.ic_homepage_home_selected,
             selectedColor = MaterialTheme.colorScheme.onSecondary,
         ),
         NaviItem(
-            name = "划一划",
+            name = stringResource(R.string.sweep),
             icon = R.mipmap.ic_homepage_sweep_gray,
             selectedIcon = R.mipmap.ic_homepage_sweep_selected,
             selectedColor = MaterialTheme.colorScheme.onSecondary,
         ),
         null,
         NaviItem(
-            name = "消息",
+            name = stringResource(R.string.message),
             icon = R.mipmap.ic_homepage_message_gray,
             selectedIcon = R.mipmap.ic_homepage_message_selected,
             selectedColor = MaterialTheme.colorScheme.onSecondary,
         ),
         NaviItem(
-            name = "我的",
+            name = stringResource(R.string.mine),
             icon = R.mipmap.ic_homepage_mine_gray,
             selectedIcon = R.mipmap.ic_homepage_mine_selected,
             selectedColor = MaterialTheme.colorScheme.onSecondary,
@@ -85,6 +88,17 @@ fun BottomNavigationBar(
             .fillMaxWidth()
             .height(naviBarHeight)
             .drawWithContent {
+                if (!isDarkMode) {
+                    drawIntoCanvas { canvas ->
+                        canvas.drawCircle(
+                            Offset(size.width / 2, size.height / 2),
+                            centerArcRadius.toPx(),
+                            Paint().apply {
+                                color = Color.White
+                            },
+                        )
+                    }
+                }
                 drawContent()
                 if (isDarkMode) {
                     return@drawWithContent
@@ -180,6 +194,7 @@ fun BottomNavigationBar(
                                         delay(200)
                                         animState = AnimState.Reverse
                                     }
+                                    onNavItemClick(index)
                                 }
                             },
                         horizontalAlignment = Alignment.CenterHorizontally,
@@ -208,7 +223,10 @@ fun BottomNavigationBar(
             contentDescription = null,
             modifier = Modifier
                 .size(centerIconSize)
-                .align(alignment = Alignment.Center),
+                .align(alignment = Alignment.Center)
+                .noRippleClickable {
+                    onCenterIconClick()
+                },
             colorFilter = if (isDarkMode) ColorFilter.tint(color = Color.White) else null,
         )
     }

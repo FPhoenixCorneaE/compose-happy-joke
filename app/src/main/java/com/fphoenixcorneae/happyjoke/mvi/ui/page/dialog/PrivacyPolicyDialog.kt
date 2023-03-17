@@ -1,6 +1,5 @@
 package com.fphoenixcorneae.happyjoke.mvi.ui.page.dialog
 
-import android.util.Log
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.shape.RoundedCornerShape
@@ -14,6 +13,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.SpanStyle
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.buildAnnotatedString
@@ -24,6 +24,7 @@ import androidx.compose.ui.text.withStyle
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import com.fphoenixcorneae.happyjoke.R
 import com.fphoenixcorneae.happyjoke.const.Constant
 import com.fphoenixcorneae.happyjoke.ext.noRippleClickable
 import com.fphoenixcorneae.happyjoke.ext.saveDS
@@ -52,7 +53,7 @@ fun PrivacyPolicyDialog() {
                 .align(alignment = Alignment.Center)
         ) {
             Text(
-                text = "隐私政策",
+                text = stringResource(R.string.privacy_policy),
                 style = TextStyle(
                     color = Color.Black,
                     fontSize = 22.sp,
@@ -64,7 +65,7 @@ fun PrivacyPolicyDialog() {
                     .padding(top = 20.dp),
             )
             Text(
-                text = "尊敬的用户您好，段子乐根据最新的法律法规及监管政策要求，向您推送本提示。为了更好的通知您新的消息，我们需要您为本应用授权通知权限。为了发布图片和视频内容，需要您授权相机权限。为了更精准的推荐内容，需要您同意设备信息收集授权。以及为了更加稳定的提供服务，需要收集一些日志信息。",
+                text = stringResource(R.string.privacy_policy_prompt),
                 style = TextStyle(
                     color = Color.Gray,
                     fontSize = 18.sp,
@@ -78,19 +79,19 @@ fun PrivacyPolicyDialog() {
             )
             ClickableText(
                 text = buildAnnotatedString {
-                    append("您可以点击")
+                    append(stringResource(R.string.privacy_policy_tips_str_1))
                     withStyle(
                         SpanStyle(color = MaterialTheme.colorScheme.primary)
                     ) {
-                        append("《隐私政策》")
+                        append(stringResource(R.string.privacy_policy_protocol))
                     }
-                    append("和")
+                    append(stringResource(R.string.privacy_policy_tips_str_2))
                     withStyle(
                         SpanStyle(color = MaterialTheme.colorScheme.primary)
                     ) {
-                        append("《用户协议》")
+                        append(stringResource(R.string.user_protocol))
                     }
-                    append("阅读完整版条款内容。如您同意，请点击“同意”开始接受我们的服务。")
+                    append(stringResource(R.string.privacy_policy_tips_str_3))
                 },
                 style = TextStyle(
                     color = Color.Gray,
@@ -106,11 +107,9 @@ fun PrivacyPolicyDialog() {
                 when (it) {
                     in 5..10 -> {
                         // 点击了《隐私政策》
-                        Log.d("ClickableText", "点击了《隐私政策》")
                     }
                     in 12..17 -> {
                         // 点击了《用户协议》
-                        Log.d("ClickableText", "点击了《用户协议》")
                     }
                 }
             }
@@ -135,7 +134,7 @@ fun PrivacyPolicyDialog() {
                         }
                 ) {
                     Text(
-                        text = "拒绝",
+                        text = stringResource(R.string.refuse),
                         style = TextStyle(
                             color = Color.Black,
                             fontSize = 20.sp,
@@ -164,7 +163,7 @@ fun PrivacyPolicyDialog() {
                         }
                 ) {
                     Text(
-                        text = "同意",
+                        text = stringResource(R.string.agree),
                         style = TextStyle(
                             color = MaterialTheme.colorScheme.primary,
                             fontSize = 20.sp,
