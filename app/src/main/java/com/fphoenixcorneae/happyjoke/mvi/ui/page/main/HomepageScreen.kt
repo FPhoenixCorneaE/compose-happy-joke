@@ -30,6 +30,7 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.constraintlayout.compose.ConstraintLayout
+import androidx.lifecycle.viewmodel.compose.viewModel
 import coil.compose.AsyncImage
 import coil.request.ImageRequest
 import coil.transform.CircleCropTransformation
@@ -38,6 +39,7 @@ import com.fphoenixcorneae.happyjoke.ext.noRippleClickable
 import com.fphoenixcorneae.happyjoke.mvi.ui.theme.GreyLine
 import com.fphoenixcorneae.happyjoke.mvi.ui.widget.ShortVideoPlayer
 import com.fphoenixcorneae.happyjoke.mvi.ui.widget.SystemUiScaffold
+import com.fphoenixcorneae.happyjoke.mvi.viewmodel.HomepageViewModel
 
 /**
  * @desc：首页
@@ -47,6 +49,7 @@ import com.fphoenixcorneae.happyjoke.mvi.ui.widget.SystemUiScaffold
 @Composable
 fun HomepageScreen(
     window: Window? = null,
+    viewModel: HomepageViewModel = viewModel(),
 ) {
     SystemUiScaffold(
         window = window,

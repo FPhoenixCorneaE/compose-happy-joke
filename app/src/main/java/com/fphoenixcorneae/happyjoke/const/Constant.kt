@@ -5,6 +5,7 @@ package com.fphoenixcorneae.happyjoke.const
  * @date：2023/03/09 13:43
  */
 object Constant {
+    const val HOST_URL = "http://tools.cretinzp.com/"
     const val PROJECT_TOKEN = "E4185C527B23474E85C2478E181D7EFE"
 
     /**
