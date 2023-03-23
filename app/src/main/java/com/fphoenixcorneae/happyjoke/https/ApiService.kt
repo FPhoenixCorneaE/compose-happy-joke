@@ -1,7 +1,9 @@
 package com.fphoenixcorneae.happyjoke.https
 
+import com.fphoenixcorneae.happyjoke.mvi.model.HomepageRecommend
 import retrofit2.http.POST
 
+// 双重校验锁式-单例 封装 ApiService 方便直接快速调用简单的接口
 val apiService by lazy {
     RetrofitFactory.Builder().build().create(ApiService::class.java)
 }
@@ -13,8 +15,8 @@ val apiService by lazy {
 interface ApiService {
 
     /**
-     * 获取主页的推荐列表数据
+     * 获取首页的推荐列表数据
      */
     @POST("/jokes/home/recommend")
-    suspend fun homeRecommend(): Any?
+    suspend fun homepageRecommend(): HomepageRecommend?
 }

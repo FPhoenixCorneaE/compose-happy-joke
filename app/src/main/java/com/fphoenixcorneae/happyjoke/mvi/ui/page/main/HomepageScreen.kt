@@ -11,17 +11,15 @@ import androidx.compose.material3.Divider
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
-import androidx.compose.runtime.Composable
-import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.*
 import androidx.compose.runtime.saveable.rememberSaveable
-import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.toArgb
 import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.TextStyle
@@ -34,8 +32,10 @@ import androidx.lifecycle.viewmodel.compose.viewModel
 import coil.compose.AsyncImage
 import coil.request.ImageRequest
 import coil.transform.CircleCropTransformation
+import coil.transform.RoundedCornersTransformation
 import com.fphoenixcorneae.happyjoke.R
 import com.fphoenixcorneae.happyjoke.ext.noRippleClickable
+import com.fphoenixcorneae.happyjoke.mvi.model.HomepageRecommend
 import com.fphoenixcorneae.happyjoke.mvi.ui.theme.GreyLine
 import com.fphoenixcorneae.happyjoke.mvi.ui.widget.ShortVideoPlayer
 import com.fphoenixcorneae.happyjoke.mvi.ui.widget.SystemUiScaffold
@@ -108,9 +108,11 @@ fun HomepageScreen(
                 )
             }
             Divider(color = GreyLine, thickness = 0.5.dp)
+            val homepageState = viewModel.state.collectAsState()
             LazyColumn(modifier = Modifier.fillMaxSize(), contentPadding = PaddingValues(bottom = 60.dp)) {
-                items(count = 10) {
-                    HomepageItem()
+                items(count = homepageState.value.homepageRecommend?.data?.size ?: 0) {
+                    val homepageRecommend = homepageState.value.homepageRecommend?.data?.getOrNull(it)
+                    HomepageRecommendItem(homepageRecommend)
                 }
             }
         }
@@ -123,12 +125,16 @@ fun HomepageScreen(
  */
 @Preview
 @Composable
-fun HomepageItem() {
+fun HomepageRecommendItem(
+    homepageRecommend: HomepageRecommend.Data? = null,
+) {
     val context = LocalContext.current
+    val density = LocalDensity.current
     Column {
         Column(
             modifier = Modifier
-                .background(color = MaterialTheme.colorScheme.background)
+                .background(color = MaterialTheme.colorScheme.background),
+            horizontalAlignment = Alignment.CenterHorizontally
         ) {
             ConstraintLayout(
                 modifier = Modifier
@@ -136,9 +142,11 @@ fun HomepageItem() {
                     .height(60.dp)
             ) {
                 val (avatar, name, desc, more) = createRefs()
+                // 用户头像
                 AsyncImage(
                     model = ImageRequest.Builder(context)
-                        .data(ColorDrawable(Color.Gray.toArgb()))
+                        .data(homepageRecommend?.user?.avatar)
+                        .error(ColorDrawable(Color.Gray.toArgb()))
                         .transformations(CircleCropTransformation())
                         .crossfade(true)
                         .build(),
@@ -151,22 +159,25 @@ fun HomepageItem() {
                             bottom.linkTo(parent.bottom)
                         }
                 )
+                // 用户昵称
                 Text(
-                    text = "偷蜂蜜的跳跳虎",
+                    text = homepageRecommend?.user?.nickName.orEmpty(),
                     style = TextStyle(color = Color.Black, fontSize = 14.sp),
                     modifier = Modifier.constrainAs(name) {
                         start.linkTo(avatar.end, margin = 8.dp)
                         top.linkTo(avatar.top)
                     },
                 )
+                // 用户签名信息
                 Text(
-                    text = "偷蜂蜜的跳跳虎",
+                    text = homepageRecommend?.user?.signature.orEmpty(),
                     style = TextStyle(color = Color.Gray, fontSize = 13.sp),
                     modifier = Modifier.constrainAs(desc) {
                         start.linkTo(name.start)
                         top.linkTo(name.bottom, margin = 2.dp)
                     },
                 )
+                // 更多
                 Icon(
                     painter = painterResource(id = R.mipmap.ic_more),
                     contentDescription = null,
@@ -179,25 +190,67 @@ fun HomepageItem() {
                         },
                 )
             }
+            // 段子内容
             Text(
-                text = "愤怒的备胎",
+                text = homepageRecommend?.joke?.content.orEmpty(),
                 style = TextStyle(color = Color.Black, fontSize = 14.sp),
-                modifier = Modifier.padding(start = 16.dp, top = 8.dp),
-            )
-            ShortVideoPlayer(
                 modifier = Modifier
+                    .padding(start = 16.dp, end = 16.dp)
                     .fillMaxWidth()
-                    .height(120.dp)
-                    .padding(start = 16.dp, top = 8.dp, end = 16.dp)
-                    .clip(shape = RoundedCornerShape(8.dp)),
-                videoUrl = "https://prod-streaming-video-msn-com.akamaized.net/a8c412fa-f696-4ff2-9c76-e8ed9cdffe0f/604a87fc-e7bc-463e-8d56-cde7e661d690.mp4"
+                    .wrapContentHeight(),
             )
+            if (homepageRecommend?.joke?.type == 2) {
+                // 图片
+                AsyncImage(
+                    model = ImageRequest.Builder(context)
+                        .data(homepageRecommend.joke.imageUrl)
+                        .error(ColorDrawable(Color.Gray.toArgb()))
+                        .transformations(RoundedCornersTransformation(density.run { 8.dp.toPx() }))
+                        .crossfade(true)
+                        .build(),
+                    contentDescription = null,
+                    modifier = Modifier
+                        .width(density.run {
+                            (homepageRecommend.joke.imageSize
+                                ?.split(",")
+                                ?.getOrNull(0)
+                                ?.toIntOrNull() ?: 0).toDp()
+                        })
+                        .height(density.run {
+                            (homepageRecommend.joke.imageSize
+                                ?.split(",")
+                                ?.getOrNull(1)
+                                ?.toIntOrNull() ?: 0).toDp()
+                        })
+                )
+            } else if (homepageRecommend?.joke?.type == 3) {
+                // 视频
+                ShortVideoPlayer(
+                    modifier = Modifier
+                        .width(density.run {
+                            (homepageRecommend.joke.videoSize
+                                ?.split(",")
+                                ?.getOrNull(0)
+                                ?.toIntOrNull() ?: 0).toDp()
+                        })
+                        .height(density.run {
+                            (homepageRecommend.joke.videoSize
+                                ?.split(",")
+                                ?.getOrNull(1)
+                                ?.toIntOrNull() ?: 0).toDp()
+                        })
+                        .padding(start = 16.dp, top = 8.dp, end = 16.dp)
+                        .clip(shape = RoundedCornerShape(8.dp)),
+                    videoUrl = homepageRecommend.joke.videoUrl
+                )
+            }
             Row(
                 modifier = Modifier
                     .fillMaxWidth()
                     .height(40.dp),
                 verticalAlignment = Alignment.CenterVertically
             ) {
+                // 点赞数
                 Row(
                     modifier = Modifier.weight(1f),
                     horizontalArrangement = Arrangement.Center,
@@ -209,10 +262,11 @@ fun HomepageItem() {
                         modifier = Modifier.size(24.dp)
                     )
                     Text(
-                        text = "1",
+                        text = (homepageRecommend?.info?.likeNum ?: 0).toString(),
                         style = TextStyle(color = Color.Black, fontSize = 10.sp),
                     )
                 }
+                // 踩的数量
                 Row(
                     modifier = Modifier.weight(1f),
                     horizontalArrangement = Arrangement.Center,
@@ -224,10 +278,11 @@ fun HomepageItem() {
                         modifier = Modifier.size(24.dp)
                     )
                     Text(
-                        text = "88",
+                        text = (homepageRecommend?.info?.disLikeNum ?: 0).toString(),
                         style = TextStyle(color = Color.Black, fontSize = 10.sp),
                     )
                 }
+                // 评论数
                 Row(
                     modifier = Modifier.weight(1f),
                     horizontalArrangement = Arrangement.Center,
@@ -239,10 +294,11 @@ fun HomepageItem() {
                         modifier = Modifier.size(24.dp)
                     )
                     Text(
-                        text = "20",
+                        text = (homepageRecommend?.info?.commentNum ?: 0).toString(),
                         style = TextStyle(color = Color.Black, fontSize = 10.sp),
                     )
                 }
+                // 分享数
                 Row(
                     modifier = Modifier.weight(1f),
                     horizontalArrangement = Arrangement.Center,
@@ -254,7 +310,7 @@ fun HomepageItem() {
                         modifier = Modifier.size(24.dp)
                     )
                     Text(
-                        text = "38",
+                        text = (homepageRecommend?.info?.shareNum ?: 0).toString(),
                         style = TextStyle(color = Color.Black, fontSize = 10.sp),
                     )
                 }
