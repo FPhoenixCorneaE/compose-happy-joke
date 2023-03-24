@@ -1,5 +1,7 @@
 package com.fphoenixcorneae.happyjoke.mvi.ui.page.dialog
 
+import android.content.Intent
+import android.net.Uri
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.shape.RoundedCornerShape
@@ -107,9 +109,11 @@ fun PrivacyPolicyDialog() {
                 when (it) {
                     in 5..10 -> {
                         // 点击了《隐私政策》
+                        context.startActivity(Intent(Intent.ACTION_VIEW, Uri.parse(Constant.WEB_PRIVACY)))
                     }
                     in 12..17 -> {
                         // 点击了《用户协议》
+                        context.startActivity(Intent(Intent.ACTION_VIEW, Uri.parse(Constant.WEB_PROTO)))
                     }
                 }
             }

@@ -7,6 +7,8 @@ package com.fphoenixcorneae.happyjoke.const
 object Constant {
     const val HOST_URL = "http://tools.cretinzp.com/"
     const val PROJECT_TOKEN = "E4185C527B23474E85C2478E181D7EFE"
+    const val WEB_PRIVACY = "http://jokes-avatar.cretinzp.com/static/web/jokes-privacy.html"
+    const val WEB_PROTO = "http://jokes-avatar.cretinzp.com/static/web/jokes-protocol.html"
 
     /**
      * @desc：导航路由
