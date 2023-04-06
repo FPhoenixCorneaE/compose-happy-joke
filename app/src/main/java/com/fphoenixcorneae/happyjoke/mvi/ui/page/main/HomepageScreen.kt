@@ -6,6 +6,7 @@ import androidx.compose.animation.core.animateFloatAsState
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
+import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.Divider
 import androidx.compose.material3.Icon
@@ -37,9 +38,15 @@ import com.fphoenixcorneae.happyjoke.R
 import com.fphoenixcorneae.happyjoke.ext.noRippleClickable
 import com.fphoenixcorneae.happyjoke.mvi.model.HomepageRecommend
 import com.fphoenixcorneae.happyjoke.mvi.ui.theme.GreyLine
+import com.fphoenixcorneae.happyjoke.mvi.ui.theme.GreyPlaceholder
 import com.fphoenixcorneae.happyjoke.mvi.ui.widget.ShortVideoPlayer
 import com.fphoenixcorneae.happyjoke.mvi.ui.widget.SystemUiScaffold
 import com.fphoenixcorneae.happyjoke.mvi.viewmodel.HomepageViewModel
+import com.google.accompanist.placeholder.PlaceholderHighlight
+import com.google.accompanist.placeholder.placeholder
+import com.google.accompanist.placeholder.shimmer
+import kotlinx.coroutines.delay
+import kotlinx.coroutines.launch
 
 /**
  * @desc：首页
@@ -130,6 +137,14 @@ fun HomepageRecommendItem(
 ) {
     val context = LocalContext.current
     val density = LocalDensity.current
+    val coroutineScope = rememberCoroutineScope()
+    var visiblePlaceholder by remember { mutableStateOf(true) }
+    LaunchedEffect(Unit) {
+        coroutineScope.launch {
+            delay(4000)
+            visiblePlaceholder = homepageRecommend == null
+        }
+    }
     Column {
         Column(
             modifier = Modifier
@@ -158,24 +173,44 @@ fun HomepageRecommendItem(
                             top.linkTo(parent.top)
                             bottom.linkTo(parent.bottom)
                         }
+                        .placeholder(
+                            visible = visiblePlaceholder,
+                            color = GreyPlaceholder,
+                            shape = CircleShape,
+                            highlight = PlaceholderHighlight.shimmer(highlightColor = Color.White),
+                        )
                 )
                 // 用户昵称
                 Text(
                     text = homepageRecommend?.user?.nickName.orEmpty(),
                     style = TextStyle(color = Color.Black, fontSize = 14.sp),
-                    modifier = Modifier.constrainAs(name) {
-                        start.linkTo(avatar.end, margin = 8.dp)
-                        top.linkTo(avatar.top)
-                    },
+                    modifier = Modifier
+                        .constrainAs(name) {
+                            start.linkTo(avatar.end, margin = 8.dp)
+                            top.linkTo(avatar.top)
+                        }
+                        .placeholder(
+                            visible = visiblePlaceholder,
+                            color = GreyPlaceholder,
+                            shape = RoundedCornerShape(4.dp),
+                            highlight = PlaceholderHighlight.shimmer(highlightColor = Color.White),
+                        ),
                 )
                 // 用户签名信息
                 Text(
                     text = homepageRecommend?.user?.signature.orEmpty(),
                     style = TextStyle(color = Color.Gray, fontSize = 13.sp),
-                    modifier = Modifier.constrainAs(desc) {
-                        start.linkTo(name.start)
-                        top.linkTo(name.bottom, margin = 2.dp)
-                    },
+                    modifier = Modifier
+                        .constrainAs(desc) {
+                            start.linkTo(name.start)
+                            top.linkTo(name.bottom, margin = 2.dp)
+                        }
+                        .placeholder(
+                            visible = visiblePlaceholder,
+                            color = GreyPlaceholder,
+                            shape = RoundedCornerShape(4.dp),
+                            highlight = PlaceholderHighlight.shimmer(highlightColor = Color.White),
+                        ),
                 )
                 // 更多
                 Icon(
@@ -197,7 +232,13 @@ fun HomepageRecommendItem(
                 modifier = Modifier
                     .padding(start = 16.dp, end = 16.dp)
                     .fillMaxWidth()
-                    .wrapContentHeight(),
+                    .wrapContentHeight()
+                    .placeholder(
+                        visible = visiblePlaceholder,
+                        color = GreyPlaceholder,
+                        shape = RoundedCornerShape(4.dp),
+                        highlight = PlaceholderHighlight.shimmer(highlightColor = Color.White),
+                    ),
             )
             if (homepageRecommend?.joke?.type == 2) {
                 // 图片
@@ -222,6 +263,12 @@ fun HomepageRecommendItem(
                                 ?.getOrNull(1)
                                 ?.toIntOrNull() ?: 0).toDp()
                         })
+                        .placeholder(
+                            visible = visiblePlaceholder,
+                            color = GreyPlaceholder,
+                            shape = RoundedCornerShape(4.dp),
+                            highlight = PlaceholderHighlight.shimmer(highlightColor = Color.White),
+                        ),
                 )
             } else if (homepageRecommend?.joke?.type == 3) {
                 // 视频
@@ -240,7 +287,13 @@ fun HomepageRecommendItem(
                                 ?.toIntOrNull() ?: 0).toDp()
                         })
                         .padding(start = 16.dp, top = 8.dp, end = 16.dp)
-                        .clip(shape = RoundedCornerShape(8.dp)),
+                        .clip(shape = RoundedCornerShape(8.dp))
+                        .placeholder(
+                            visible = visiblePlaceholder,
+                            color = GreyPlaceholder,
+                            shape = RoundedCornerShape(4.dp),
+                            highlight = PlaceholderHighlight.shimmer(highlightColor = Color.White),
+                        ),
                     videoUrl = homepageRecommend.joke.videoUrl
                 )
             }
@@ -252,7 +305,8 @@ fun HomepageRecommendItem(
             ) {
                 // 点赞数
                 Row(
-                    modifier = Modifier.weight(1f),
+                    modifier = Modifier
+                        .weight(1f),
                     horizontalArrangement = Arrangement.Center,
                     verticalAlignment = Alignment.CenterVertically,
                 ) {
@@ -264,11 +318,20 @@ fun HomepageRecommendItem(
                     Text(
                         text = (homepageRecommend?.info?.likeNum ?: 0).toString(),
                         style = TextStyle(color = Color.Black, fontSize = 10.sp),
+                        modifier = Modifier
+                            .defaultMinSize(minWidth = 30.dp)
+                            .placeholder(
+                                visible = visiblePlaceholder,
+                                color = GreyPlaceholder,
+                                shape = RoundedCornerShape(4.dp),
+                                highlight = PlaceholderHighlight.shimmer(highlightColor = Color.White),
+                            ),
                     )
                 }
                 // 踩的数量
                 Row(
-                    modifier = Modifier.weight(1f),
+                    modifier = Modifier
+                        .weight(1f),
                     horizontalArrangement = Arrangement.Center,
                     verticalAlignment = Alignment.CenterVertically,
                 ) {
@@ -280,11 +343,20 @@ fun HomepageRecommendItem(
                     Text(
                         text = (homepageRecommend?.info?.disLikeNum ?: 0).toString(),
                         style = TextStyle(color = Color.Black, fontSize = 10.sp),
+                        modifier = Modifier
+                            .defaultMinSize(minWidth = 30.dp)
+                            .placeholder(
+                                visible = visiblePlaceholder,
+                                color = GreyPlaceholder,
+                                shape = RoundedCornerShape(4.dp),
+                                highlight = PlaceholderHighlight.shimmer(highlightColor = Color.White),
+                            ),
                     )
                 }
                 // 评论数
                 Row(
-                    modifier = Modifier.weight(1f),
+                    modifier = Modifier
+                        .weight(1f),
                     horizontalArrangement = Arrangement.Center,
                     verticalAlignment = Alignment.CenterVertically,
                 ) {
@@ -296,11 +368,20 @@ fun HomepageRecommendItem(
                     Text(
                         text = (homepageRecommend?.info?.commentNum ?: 0).toString(),
                         style = TextStyle(color = Color.Black, fontSize = 10.sp),
+                        modifier = Modifier
+                            .defaultMinSize(minWidth = 30.dp)
+                            .placeholder(
+                                visible = visiblePlaceholder,
+                                color = GreyPlaceholder,
+                                shape = RoundedCornerShape(4.dp),
+                                highlight = PlaceholderHighlight.shimmer(highlightColor = Color.White),
+                            ),
                     )
                 }
                 // 分享数
                 Row(
-                    modifier = Modifier.weight(1f),
+                    modifier = Modifier
+                        .weight(1f),
                     horizontalArrangement = Arrangement.Center,
                     verticalAlignment = Alignment.CenterVertically,
                 ) {
@@ -312,6 +393,14 @@ fun HomepageRecommendItem(
                     Text(
                         text = (homepageRecommend?.info?.shareNum ?: 0).toString(),
                         style = TextStyle(color = Color.Black, fontSize = 10.sp),
+                        modifier = Modifier
+                            .defaultMinSize(minWidth = 30.dp)
+                            .placeholder(
+                                visible = visiblePlaceholder,
+                                color = GreyPlaceholder,
+                                shape = RoundedCornerShape(4.dp),
+                                highlight = PlaceholderHighlight.shimmer(highlightColor = Color.White),
+                            ),
                     )
                 }
             }
