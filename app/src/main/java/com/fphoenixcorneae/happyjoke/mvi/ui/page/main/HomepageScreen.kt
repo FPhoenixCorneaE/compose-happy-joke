@@ -8,6 +8,10 @@ import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.material.ExperimentalMaterialApi
+import androidx.compose.material.pullrefresh.PullRefreshIndicator
+import androidx.compose.material.pullrefresh.pullRefresh
+import androidx.compose.material.pullrefresh.rememberPullRefreshState
 import androidx.compose.material3.Divider
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
@@ -28,6 +32,7 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.compose.ui.zIndex
 import androidx.constraintlayout.compose.ConstraintLayout
 import androidx.lifecycle.viewmodel.compose.viewModel
 import coil.compose.AsyncImage
@@ -45,13 +50,12 @@ import com.fphoenixcorneae.happyjoke.mvi.viewmodel.HomepageViewModel
 import com.google.accompanist.placeholder.PlaceholderHighlight
 import com.google.accompanist.placeholder.placeholder
 import com.google.accompanist.placeholder.shimmer
-import kotlinx.coroutines.delay
-import kotlinx.coroutines.launch
 
 /**
  * @desc：首页
  * @date：2023/03/17 09:30
  */
+@OptIn(ExperimentalMaterialApi::class)
 @Preview
 @Composable
 fun HomepageScreen(
@@ -68,6 +72,8 @@ fun HomepageScreen(
                 modifier = Modifier
                     .fillMaxWidth()
                     .height(40.dp)
+                    .background(color = MaterialTheme.colorScheme.background)
+                    .zIndex(1f),
             ) {
                 var selectedPosition by rememberSaveable { mutableStateOf(1) }
                 val selectedLabelColor = MaterialTheme.colorScheme.onSecondary
@@ -115,12 +121,24 @@ fun HomepageScreen(
                 )
             }
             Divider(color = GreyLine, thickness = 0.5.dp)
-            val homepageState = viewModel.state.collectAsState()
-            LazyColumn(modifier = Modifier.fillMaxSize(), contentPadding = PaddingValues(bottom = 60.dp)) {
-                items(count = homepageState.value.homepageRecommend?.data?.size ?: 0) {
-                    val homepageRecommend = homepageState.value.homepageRecommend?.data?.getOrNull(it)
-                    HomepageRecommendItem(homepageRecommend)
+            val homepageState by viewModel.state.collectAsState()
+            val pullRefreshState = rememberPullRefreshState(
+                refreshing = homepageState.isRefreshing,
+                onRefresh = { viewModel.refresh() },
+            )
+            Box(modifier = Modifier.pullRefresh(state = pullRefreshState)) {
+                LazyColumn(modifier = Modifier.fillMaxSize(), contentPadding = PaddingValues(bottom = 60.dp)) {
+                    items(count = homepageState.homepageRecommend?.data?.size ?: 0) {
+                        val homepageRecommend = homepageState.homepageRecommend?.data?.getOrNull(it)
+                        HomepageRecommendItem(homepageRecommend, homepageState.isLoading)
+                    }
                 }
+
+                PullRefreshIndicator(
+                    refreshing = homepageState.isRefreshing,
+                    state = pullRefreshState,
+                    modifier = Modifier.align(Alignment.TopCenter),
+                )
             }
         }
     }
@@ -134,17 +152,10 @@ fun HomepageScreen(
 @Composable
 fun HomepageRecommendItem(
     homepageRecommend: HomepageRecommend.Data? = null,
+    isLoading: Boolean = true,
 ) {
     val context = LocalContext.current
     val density = LocalDensity.current
-    val coroutineScope = rememberCoroutineScope()
-    var visiblePlaceholder by remember { mutableStateOf(true) }
-    LaunchedEffect(Unit) {
-        coroutineScope.launch {
-            delay(4000)
-            visiblePlaceholder = homepageRecommend == null
-        }
-    }
     Column {
         Column(
             modifier = Modifier
@@ -174,7 +185,7 @@ fun HomepageRecommendItem(
                             bottom.linkTo(parent.bottom)
                         }
                         .placeholder(
-                            visible = visiblePlaceholder,
+                            visible = isLoading,
                             color = GreyPlaceholder,
                             shape = CircleShape,
                             highlight = PlaceholderHighlight.shimmer(highlightColor = Color.White),
@@ -190,7 +201,7 @@ fun HomepageRecommendItem(
                             top.linkTo(avatar.top)
                         }
                         .placeholder(
-                            visible = visiblePlaceholder,
+                            visible = isLoading,
                             color = GreyPlaceholder,
                             shape = RoundedCornerShape(4.dp),
                             highlight = PlaceholderHighlight.shimmer(highlightColor = Color.White),
@@ -206,7 +217,7 @@ fun HomepageRecommendItem(
                             top.linkTo(name.bottom, margin = 2.dp)
                         }
                         .placeholder(
-                            visible = visiblePlaceholder,
+                            visible = isLoading,
                             color = GreyPlaceholder,
                             shape = RoundedCornerShape(4.dp),
                             highlight = PlaceholderHighlight.shimmer(highlightColor = Color.White),
@@ -234,7 +245,7 @@ fun HomepageRecommendItem(
                     .fillMaxWidth()
                     .wrapContentHeight()
                     .placeholder(
-                        visible = visiblePlaceholder,
+                        visible = isLoading,
                         color = GreyPlaceholder,
                         shape = RoundedCornerShape(4.dp),
                         highlight = PlaceholderHighlight.shimmer(highlightColor = Color.White),
@@ -264,7 +275,7 @@ fun HomepageRecommendItem(
                                 ?.toIntOrNull() ?: 0).toDp()
                         })
                         .placeholder(
-                            visible = visiblePlaceholder,
+                            visible = isLoading,
                             color = GreyPlaceholder,
                             shape = RoundedCornerShape(4.dp),
                             highlight = PlaceholderHighlight.shimmer(highlightColor = Color.White),
@@ -289,7 +300,7 @@ fun HomepageRecommendItem(
                         .padding(start = 16.dp, top = 8.dp, end = 16.dp)
                         .clip(shape = RoundedCornerShape(8.dp))
                         .placeholder(
-                            visible = visiblePlaceholder,
+                            visible = isLoading,
                             color = GreyPlaceholder,
                             shape = RoundedCornerShape(4.dp),
                             highlight = PlaceholderHighlight.shimmer(highlightColor = Color.White),
@@ -297,6 +308,12 @@ fun HomepageRecommendItem(
                     videoUrl = homepageRecommend.joke.videoUrl
                 )
             }
+            Spacer(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .height(8.dp)
+            )
+            Divider(color = GreyLine, thickness = 0.5.dp)
             Row(
                 modifier = Modifier
                     .fillMaxWidth()
@@ -321,7 +338,7 @@ fun HomepageRecommendItem(
                         modifier = Modifier
                             .defaultMinSize(minWidth = 30.dp)
                             .placeholder(
-                                visible = visiblePlaceholder,
+                                visible = isLoading,
                                 color = GreyPlaceholder,
                                 shape = RoundedCornerShape(4.dp),
                                 highlight = PlaceholderHighlight.shimmer(highlightColor = Color.White),
@@ -346,7 +363,7 @@ fun HomepageRecommendItem(
                         modifier = Modifier
                             .defaultMinSize(minWidth = 30.dp)
                             .placeholder(
-                                visible = visiblePlaceholder,
+                                visible = isLoading,
                                 color = GreyPlaceholder,
                                 shape = RoundedCornerShape(4.dp),
                                 highlight = PlaceholderHighlight.shimmer(highlightColor = Color.White),
@@ -371,7 +388,7 @@ fun HomepageRecommendItem(
                         modifier = Modifier
                             .defaultMinSize(minWidth = 30.dp)
                             .placeholder(
-                                visible = visiblePlaceholder,
+                                visible = isLoading,
                                 color = GreyPlaceholder,
                                 shape = RoundedCornerShape(4.dp),
                                 highlight = PlaceholderHighlight.shimmer(highlightColor = Color.White),
@@ -396,7 +413,7 @@ fun HomepageRecommendItem(
                         modifier = Modifier
                             .defaultMinSize(minWidth = 30.dp)
                             .placeholder(
-                                visible = visiblePlaceholder,
+                                visible = isLoading,
                                 color = GreyPlaceholder,
                                 shape = RoundedCornerShape(4.dp),
                                 highlight = PlaceholderHighlight.shimmer(highlightColor = Color.White),

@@ -37,7 +37,7 @@ android {
         compose true
     }
     composeOptions {
-        kotlinCompilerExtensionVersion '1.2.0'
+        kotlinCompilerExtensionVersion = "1.4.3"
     }
     packagingOptions {
         resources {
@@ -50,18 +50,19 @@ dependencies {
     implementation "androidx.constraintlayout:constraintlayout-compose:1.0.1"
     implementation 'androidx.core:core-ktx:1.9.0'
     implementation 'androidx.lifecycle:lifecycle-runtime-ktx:2.5.1'
-    implementation 'androidx.activity:activity-compose:1.5.1'
+    implementation 'androidx.activity:activity-compose:1.6.1'
     implementation "androidx.compose.ui:ui:$compose_version"
     implementation "androidx.compose.ui:ui-tooling-preview:$compose_version"
-    implementation 'androidx.compose.material3:material3:1.0.0-alpha11'
+    implementation 'androidx.compose.material3:material3:1.0.1'
     // datastore
     implementation "androidx.datastore:datastore-preferences:1.0.0"
     // accompanist: https://google.github.io/accompanist/
-    def accompanist = "0.25.1"
+    def accompanist = "0.28.0"
     implementation "com.google.accompanist:accompanist-insets:$accompanist"
     implementation "com.google.accompanist:accompanist-insets-ui:$accompanist"
     implementation "com.google.accompanist:accompanist-systemuicontroller:$accompanist"
     implementation "com.google.accompanist:accompanist-permissions:$accompanist"
+    implementation "com.google.accompanist:accompanist-swiperefresh:$accompanist"
     implementation "com.google.accompanist:accompanist-placeholder-material:$accompanist"
     implementation "com.google.accompanist:accompanist-navigation-animation:$accompanist"
     implementation "com.google.accompanist:accompanist-navigation-material:$accompanist"
