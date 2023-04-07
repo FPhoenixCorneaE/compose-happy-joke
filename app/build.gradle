@@ -72,6 +72,8 @@ dependencies {
 
     // 视频播放器
     implementation("com.google.android.exoplayer:exoplayer:2.18.4")
+    // 视频缓存
+//    implementation("com.danikula:videocache:2.7.0")
 
     // retrofit
     implementation 'com.squareup.retrofit2:retrofit:2.9.0'

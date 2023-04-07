@@ -1,6 +1,7 @@
 package com.fphoenixcorneae.happyjoke.mvi.ui.page.main
 
 import android.graphics.drawable.ColorDrawable
+import android.util.Log
 import android.view.Window
 import androidx.compose.animation.core.animateFloatAsState
 import androidx.compose.foundation.background
@@ -40,6 +41,7 @@ import coil.request.ImageRequest
 import coil.transform.CircleCropTransformation
 import coil.transform.RoundedCornersTransformation
 import com.fphoenixcorneae.happyjoke.R
+import com.fphoenixcorneae.happyjoke.ext.desDecrypt
 import com.fphoenixcorneae.happyjoke.ext.noRippleClickable
 import com.fphoenixcorneae.happyjoke.mvi.model.HomepageRecommend
 import com.fphoenixcorneae.happyjoke.mvi.ui.theme.GreyLine
@@ -255,7 +257,9 @@ fun HomepageRecommendItem(
                 // 图片
                 AsyncImage(
                     model = ImageRequest.Builder(context)
-                        .data(homepageRecommend.joke.imageUrl)
+                        .data(homepageRecommend.joke.imageUrl?.substring("ftp://".length).desDecrypt().also {
+                            Log.d("段子乐", "解码后的图片地址：$it")
+                        })
                         .error(ColorDrawable(Color.Gray.toArgb()))
                         .transformations(RoundedCornersTransformation(density.run { 8.dp.toPx() }))
                         .crossfade(true)
@@ -305,7 +309,9 @@ fun HomepageRecommendItem(
                             shape = RoundedCornerShape(4.dp),
                             highlight = PlaceholderHighlight.shimmer(highlightColor = Color.White),
                         ),
-                    videoUrl = homepageRecommend.joke.videoUrl
+                    videoUrl = homepageRecommend.joke.videoUrl?.substring("ftp://".length).desDecrypt().also {
+                        Log.d("段子乐", "解码后的视频地址：$it")
+                    },
                 )
             }
             Spacer(

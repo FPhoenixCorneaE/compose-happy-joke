@@ -9,7 +9,7 @@ val apiService by lazy {
 }
 
 /**
- * @desc：
+ * @desc：接口地址：http://tools.cretinzp.com/jokes/doc.html
  * @date：2023/03/22 10:05
  */
 interface ApiService {
