@@ -62,7 +62,7 @@ fun ShortVideoPlayer(
                 .apply {
                     videoScalingMode = C.VIDEO_SCALING_MODE_SCALE_TO_FIT_WITH_CROPPING
                     repeatMode = Player.REPEAT_MODE_ONE
-                    val videoUri = Uri.parse(videoUrl)
+                    val videoUri = Uri.parse(videoUrl.orEmpty())
                     val dataSourceFactory = DefaultDataSource.Factory(context)
                     val mediaSource = when (Util.inferContentType(videoUri)) {
                         C.CONTENT_TYPE_DASH -> DashMediaSource.Factory(dataSourceFactory)

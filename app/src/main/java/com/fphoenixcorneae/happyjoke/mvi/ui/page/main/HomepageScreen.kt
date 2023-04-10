@@ -253,66 +253,73 @@ fun HomepageRecommendItem(
                         highlight = PlaceholderHighlight.shimmer(highlightColor = Color.White),
                     ),
             )
-            if (homepageRecommend?.joke?.type == 2) {
-                // 图片
-                AsyncImage(
-                    model = ImageRequest.Builder(context)
-                        .data(homepageRecommend.joke.imageUrl?.substring("ftp://".length).desDecrypt().also {
-                            Log.d("段子乐", "解码后的图片地址：$it")
-                        })
-                        .error(ColorDrawable(Color.Gray.toArgb()))
-                        .transformations(RoundedCornersTransformation(density.run { 8.dp.toPx() }))
-                        .crossfade(true)
-                        .build(),
-                    contentDescription = null,
-                    modifier = Modifier
-                        .width(density.run {
-                            (homepageRecommend.joke.imageSize
-                                ?.split(",")
-                                ?.getOrNull(0)
-                                ?.toIntOrNull() ?: 0).toDp()
-                        })
-                        .height(density.run {
-                            (homepageRecommend.joke.imageSize
-                                ?.split(",")
-                                ?.getOrNull(1)
-                                ?.toIntOrNull() ?: 0).toDp()
-                        })
-                        .placeholder(
-                            visible = isLoading,
-                            color = GreyPlaceholder,
-                            shape = RoundedCornerShape(4.dp),
-                            highlight = PlaceholderHighlight.shimmer(highlightColor = Color.White),
-                        ),
-                )
-            } else if (homepageRecommend?.joke?.type == 3) {
-                // 视频
-                ShortVideoPlayer(
-                    modifier = Modifier
-                        .width(density.run {
-                            (homepageRecommend.joke.videoSize
-                                ?.split(",")
-                                ?.getOrNull(0)
-                                ?.toIntOrNull() ?: 0).toDp()
-                        })
-                        .height(density.run {
-                            (homepageRecommend.joke.videoSize
-                                ?.split(",")
-                                ?.getOrNull(1)
-                                ?.toIntOrNull() ?: 0).toDp()
-                        })
-                        .padding(start = 16.dp, top = 8.dp, end = 16.dp)
-                        .clip(shape = RoundedCornerShape(8.dp))
-                        .placeholder(
-                            visible = isLoading,
-                            color = GreyPlaceholder,
-                            shape = RoundedCornerShape(4.dp),
-                            highlight = PlaceholderHighlight.shimmer(highlightColor = Color.White),
-                        ),
-                    videoUrl = homepageRecommend.joke.videoUrl?.substring("ftp://".length).desDecrypt().also {
-                        Log.d("段子乐", "解码后的视频地址：$it")
-                    },
-                )
+            when (homepageRecommend?.joke?.type) {
+                2 -> {
+                    // 图片
+                    AsyncImage(
+                        model = ImageRequest.Builder(context)
+                            .data(
+                                homepageRecommend.joke.imageUrl?.split(",")?.filter { it.isNotBlank() }?.first()
+                                    .desDecrypt().also {
+                                        Log.d("段子乐", "解码后的图片地址：$it")
+                                    })
+                            .error(ColorDrawable(Color.Gray.toArgb()))
+                            .transformations(RoundedCornersTransformation(density.run { 8.dp.toPx() }))
+                            .crossfade(true)
+                            .build(),
+                        contentDescription = null,
+                        modifier = Modifier
+                            .width(density.run {
+                                (homepageRecommend.joke.imageSize
+                                    ?.split("x")
+                                    ?.getOrNull(0)
+                                    ?.toIntOrNull() ?: 0).toDp()
+                            })
+                            .height(density.run {
+                                (homepageRecommend.joke.imageSize
+                                    ?.split("x")
+                                    ?.getOrNull(1)
+                                    ?.toIntOrNull() ?: 0).toDp()
+                            })
+                            .padding(start = 16.dp, top = 8.dp, end = 16.dp)
+                            .placeholder(
+                                visible = isLoading,
+                                color = GreyPlaceholder,
+                                shape = RoundedCornerShape(4.dp),
+                                highlight = PlaceholderHighlight.shimmer(highlightColor = Color.White),
+                            ),
+                    )
+                }
+                3, 4 -> {
+                    // 视频
+                    ShortVideoPlayer(
+                        modifier = Modifier
+                            .width(density.run {
+                                (homepageRecommend.joke.videoSize
+                                    ?.split(",")
+                                    ?.getOrNull(0)
+                                    ?.toIntOrNull() ?: 0).toDp()
+                            })
+                            .height(density.run {
+                                (homepageRecommend.joke.videoSize
+                                    ?.split(",")
+                                    ?.getOrNull(1)
+                                    ?.toIntOrNull() ?: 0).toDp()
+                            })
+                            .padding(start = 16.dp, top = 8.dp, end = 16.dp)
+                            .clip(shape = RoundedCornerShape(8.dp))
+                            .placeholder(
+                                visible = isLoading,
+                                color = GreyPlaceholder,
+                                shape = RoundedCornerShape(4.dp),
+                                highlight = PlaceholderHighlight.shimmer(highlightColor = Color.White),
+                            ),
+                        videoUrl = homepageRecommend.joke.videoUrl?.split(",")?.filter { it.isNotBlank() }?.first()
+                            .desDecrypt().also {
+                                Log.d("段子乐", "解码后的视频地址：$it")
+                            },
+                    )
+                }
             }
             Spacer(
                 modifier = Modifier

@@ -1,6 +1,6 @@
 package com.fphoenixcorneae.happyjoke.ext
 
-import com.fphoenixcorneae.happyjoke.tool.DESTool
+import com.fphoenixcorneae.happyjoke.tool.AESTool
 import java.net.URLDecoder
 import java.net.URLEncoder
 
@@ -25,4 +25,12 @@ fun String?.decodeURL() = runCatching {
 /**
  * DES 解密
  */
-fun String?.desDecrypt() = DESTool.decryptText(this)
+fun String?.desDecrypt(): String? = this?.run {
+    if (startsWith("http://") || !startsWith("ftp://")) {
+        this
+    } else {
+        substring(6)
+    }
+}?.run {
+    AESTool.decrypt(this)
+}
