@@ -1,5 +1,6 @@
 package com.fphoenixcorneae.happyjoke.tool
 
+import android.annotation.SuppressLint
 import android.util.Base64
 import javax.crypto.Cipher
 import javax.crypto.SecretKey
@@ -12,20 +13,15 @@ import javax.crypto.spec.SecretKeySpec
 object AESTool {
 
     private const val KEY = "cretinzp**273846"
+
+    /** "算法/模式/补码方式" */
     private const val TRANSFORMATION = "AES/ECB/PKCS5Padding"
     private const val ALGORITHM = "AES"
 
+    @SuppressLint("GetInstance")
     private fun createCipher(): Cipher = Cipher.getInstance(/* transformation = */ TRANSFORMATION)
 
     private fun getSecretKey(): SecretKey = SecretKeySpec(/* key = */ KEY.toByteArray(), /* algorithm = */ ALGORITHM)
-
-    private fun ByteArray?.toBase64ByteArray(): ByteArray = run {
-        if (this == null || isEmpty()) {
-            byteArrayOf()
-        } else {
-            Base64.decode(this, Base64.DEFAULT)
-        }
-    }
 
     /**
      * 加密后再进行Base64编码
@@ -33,7 +29,9 @@ object AESTool {
     fun encrypt(s: String?): String? = runCatching {
         val c = createCipher()
         c.init(Cipher.ENCRYPT_MODE, getSecretKey())
-        String(Base64.encode(c.doFinal(s?.toByteArray()), Base64.DEFAULT))
+        val encrypted = c.doFinal(s?.toByteArray())
+        // 此处使用Base64做转码功能，能起到二次加密的作用
+        Base64.encodeToString(encrypted, Base64.DEFAULT)
     }.onFailure {
         it.printStackTrace()
     }.getOrNull()
@@ -44,7 +42,10 @@ object AESTool {
     fun decrypt(s: String?): String? = runCatching {
         val c = createCipher()
         c.init(Cipher.DECRYPT_MODE, getSecretKey())
-        String(c.doFinal(Base64.decode(s?.toByteArray(), Base64.DEFAULT)))
+        // 先Base64解码
+        val encrypted = Base64.decode(s?.toByteArray(), Base64.DEFAULT)
+        val original = c.doFinal(encrypted)
+        String(original)
     }.onFailure {
         it.printStackTrace()
     }.getOrNull()

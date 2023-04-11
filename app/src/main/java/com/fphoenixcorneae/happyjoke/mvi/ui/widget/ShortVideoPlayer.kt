@@ -1,5 +1,6 @@
 package com.fphoenixcorneae.happyjoke.mvi.ui.widget
 
+import android.graphics.drawable.ColorDrawable
 import android.net.Uri
 import android.view.ViewGroup
 import android.widget.FrameLayout
@@ -14,10 +15,13 @@ import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.graphics.toArgb
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.viewinterop.AndroidView
+import coil.compose.AsyncImage
+import coil.request.ImageRequest
 import com.fphoenixcorneae.happyjoke.R
 import com.fphoenixcorneae.happyjoke.ext.noRippleClickable
 import com.google.android.exoplayer2.C
@@ -43,6 +47,7 @@ import kotlinx.coroutines.launch
 fun ShortVideoPlayer(
     modifier: Modifier,
     videoUrl: String?,
+    thumbUrl: String?,
 ) {
     Box(modifier = modifier) {
         val context = LocalContext.current
@@ -78,7 +83,7 @@ fun ShortVideoPlayer(
         }
         DisposableEffect(
             Box(modifier = Modifier.fillMaxSize()) {
-                var visible by remember { mutableStateOf(true) }
+                var visibleController by remember { mutableStateOf(true) }
                 AndroidView(
                     factory = {
                         StyledPlayerView(context).apply {
@@ -93,12 +98,26 @@ fun ShortVideoPlayer(
                         }
                     },
                     modifier = Modifier.noRippleClickable {
-                        visible = !visible
+                        visibleController = !visibleController
                     }
                 )
+                // 视频封面
+                var visibleThumb by remember { mutableStateOf(true) }
+                AnimatedVisibility(visible = visibleThumb) {
+                    AsyncImage(
+                        model = ImageRequest.Builder(context)
+                            .data(thumbUrl)
+                            .error(ColorDrawable(Color.Black.toArgb()))
+                            .crossfade(true)
+                            .build(),
+                        contentDescription = null,
+                        modifier = Modifier
+                            .fillMaxSize(),
+                    )
+                }
                 var isPlaying by remember { mutableStateOf(exoPlayer.isPlaying) }
                 AnimatedVisibility(
-                    visible = visible,
+                    visible = visibleController,
                     enter = fadeIn(),
                     exit = fadeOut(),
                     modifier = Modifier
@@ -112,6 +131,7 @@ fun ShortVideoPlayer(
                                     false
                                 } else {
                                     exoPlayer.play()
+                                    visibleThumb = false
                                     true
                                 }
                             }
@@ -125,7 +145,7 @@ fun ShortVideoPlayer(
                     if (isPlaying) {
                         LaunchedEffect(Unit) {
                             delay(5000)
-                            visible = false
+                            visibleController = false
                         }
                     }
                 }

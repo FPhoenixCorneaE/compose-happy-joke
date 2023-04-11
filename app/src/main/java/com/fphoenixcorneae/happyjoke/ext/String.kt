@@ -7,7 +7,7 @@ import java.net.URLEncoder
 /**
  * URL "utf-8"编码
  */
-fun String?.encodeURL() = runCatching {
+fun String?.urlEncode() = runCatching {
     URLEncoder.encode(this, "UTF-8")
 }.onFailure {
     it.printStackTrace()
@@ -16,7 +16,7 @@ fun String?.encodeURL() = runCatching {
 /**
  * URL "utf-8"解码
  */
-fun String?.decodeURL() = runCatching {
+fun String?.urlDecode() = runCatching {
     URLDecoder.decode(this, "UTF-8")
 }.onFailure {
     it.printStackTrace()
@@ -25,7 +25,7 @@ fun String?.decodeURL() = runCatching {
 /**
  * DES 解密
  */
-fun String?.desDecrypt(): String? = this?.run {
+fun String?.urlDESDecrypt(): String? = this?.run {
     if (startsWith("http://") || !startsWith("ftp://")) {
         this
     } else {

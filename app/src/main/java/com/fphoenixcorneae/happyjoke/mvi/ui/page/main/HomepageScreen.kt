@@ -41,8 +41,8 @@ import coil.request.ImageRequest
 import coil.transform.CircleCropTransformation
 import coil.transform.RoundedCornersTransformation
 import com.fphoenixcorneae.happyjoke.R
-import com.fphoenixcorneae.happyjoke.ext.desDecrypt
 import com.fphoenixcorneae.happyjoke.ext.noRippleClickable
+import com.fphoenixcorneae.happyjoke.ext.urlDESDecrypt
 import com.fphoenixcorneae.happyjoke.mvi.model.HomepageRecommend
 import com.fphoenixcorneae.happyjoke.mvi.ui.theme.GreyLine
 import com.fphoenixcorneae.happyjoke.mvi.ui.theme.GreyPlaceholder
@@ -253,14 +253,14 @@ fun HomepageRecommendItem(
                         highlight = PlaceholderHighlight.shimmer(highlightColor = Color.White),
                     ),
             )
-            when (homepageRecommend?.joke?.type) {
-                2 -> {
+            when {
+                homepageRecommend?.joke?.type == 2 -> {
                     // 图片
                     AsyncImage(
                         model = ImageRequest.Builder(context)
                             .data(
                                 homepageRecommend.joke.imageUrl?.split(",")?.filter { it.isNotBlank() }?.first()
-                                    .desDecrypt().also {
+                                    .urlDESDecrypt().also {
                                         Log.d("段子乐", "解码后的图片地址：$it")
                                     })
                             .error(ColorDrawable(Color.Gray.toArgb()))
@@ -271,12 +271,16 @@ fun HomepageRecommendItem(
                         modifier = Modifier
                             .width(density.run {
                                 (homepageRecommend.joke.imageSize
+                                    ?.split(",")
+                                    ?.getOrNull(0)
                                     ?.split("x")
                                     ?.getOrNull(0)
                                     ?.toIntOrNull() ?: 0).toDp()
                             })
                             .height(density.run {
                                 (homepageRecommend.joke.imageSize
+                                    ?.split(",")
+                                    ?.getOrNull(0)
                                     ?.split("x")
                                     ?.getOrNull(1)
                                     ?.toIntOrNull() ?: 0).toDp()
@@ -290,18 +294,18 @@ fun HomepageRecommendItem(
                             ),
                     )
                 }
-                3, 4 -> {
+                (homepageRecommend?.joke?.type ?: 0) >= 3 -> {
                     // 视频
                     ShortVideoPlayer(
                         modifier = Modifier
                             .width(density.run {
-                                (homepageRecommend.joke.videoSize
+                                (homepageRecommend?.joke?.videoSize
                                     ?.split(",")
                                     ?.getOrNull(0)
                                     ?.toIntOrNull() ?: 0).toDp()
                             })
                             .height(density.run {
-                                (homepageRecommend.joke.videoSize
+                                (homepageRecommend?.joke?.videoSize
                                     ?.split(",")
                                     ?.getOrNull(1)
                                     ?.toIntOrNull() ?: 0).toDp()
@@ -314,10 +318,12 @@ fun HomepageRecommendItem(
                                 shape = RoundedCornerShape(4.dp),
                                 highlight = PlaceholderHighlight.shimmer(highlightColor = Color.White),
                             ),
-                        videoUrl = homepageRecommend.joke.videoUrl?.split(",")?.filter { it.isNotBlank() }?.first()
-                            .desDecrypt().also {
-                                Log.d("段子乐", "解码后的视频地址：$it")
-                            },
+                        videoUrl = homepageRecommend?.joke?.videoUrl.urlDESDecrypt().also {
+                            Log.d("段子乐", "解码后的视频地址：$it")
+                        },
+                        thumbUrl = homepageRecommend?.joke?.thumbUrl?.urlDESDecrypt().also {
+                            Log.d("段子乐", "解码后的视频封面地址：$it")
+                        }
                     )
                 }
             }
