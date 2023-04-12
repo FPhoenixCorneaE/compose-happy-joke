@@ -23,9 +23,9 @@ fun String?.urlDecode() = runCatching {
 }.getOrNull()
 
 /**
- * DES 解密
+ * AES 解密
  */
-fun String?.urlDESDecrypt(): String? = this?.run {
+fun String?.urlAESDecrypt(): String? = this?.run {
     if (startsWith("http://") || !startsWith("ftp://")) {
         this
     } else {

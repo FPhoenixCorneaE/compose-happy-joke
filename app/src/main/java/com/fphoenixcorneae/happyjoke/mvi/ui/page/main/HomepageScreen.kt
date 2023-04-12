@@ -13,10 +13,7 @@ import androidx.compose.material.ExperimentalMaterialApi
 import androidx.compose.material.pullrefresh.PullRefreshIndicator
 import androidx.compose.material.pullrefresh.pullRefresh
 import androidx.compose.material.pullrefresh.rememberPullRefreshState
-import androidx.compose.material3.Divider
-import androidx.compose.material3.Icon
-import androidx.compose.material3.MaterialTheme
-import androidx.compose.material3.Text
+import androidx.compose.material3.*
 import androidx.compose.runtime.*
 import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.ui.Alignment
@@ -36,13 +33,16 @@ import androidx.compose.ui.unit.sp
 import androidx.compose.ui.zIndex
 import androidx.constraintlayout.compose.ConstraintLayout
 import androidx.lifecycle.viewmodel.compose.viewModel
+import androidx.paging.LoadState
+import androidx.paging.compose.collectAsLazyPagingItems
+import androidx.paging.compose.items
 import coil.compose.AsyncImage
 import coil.request.ImageRequest
 import coil.transform.CircleCropTransformation
 import coil.transform.RoundedCornersTransformation
 import com.fphoenixcorneae.happyjoke.R
 import com.fphoenixcorneae.happyjoke.ext.noRippleClickable
-import com.fphoenixcorneae.happyjoke.ext.urlDESDecrypt
+import com.fphoenixcorneae.happyjoke.ext.urlAESDecrypt
 import com.fphoenixcorneae.happyjoke.mvi.model.HomepageRecommend
 import com.fphoenixcorneae.happyjoke.mvi.ui.theme.GreyLine
 import com.fphoenixcorneae.happyjoke.mvi.ui.theme.GreyPlaceholder
@@ -52,6 +52,8 @@ import com.fphoenixcorneae.happyjoke.mvi.viewmodel.HomepageViewModel
 import com.google.accompanist.placeholder.PlaceholderHighlight
 import com.google.accompanist.placeholder.placeholder
 import com.google.accompanist.placeholder.shimmer
+import kotlinx.coroutines.delay
+import kotlinx.coroutines.launch
 
 /**
  * @desc：首页
@@ -64,6 +66,7 @@ fun HomepageScreen(
     window: Window? = null,
     viewModel: HomepageViewModel = viewModel(),
 ) {
+    val coroutineScope = rememberCoroutineScope()
     SystemUiScaffold(
         window = window,
         isFitsSystemWindows = true,
@@ -123,21 +126,34 @@ fun HomepageScreen(
                 )
             }
             Divider(color = GreyLine, thickness = 0.5.dp)
-            val homepageState by viewModel.state.collectAsState()
+            val homepageRecommends = viewModel.homepageRecommends.collectAsLazyPagingItems()
+            var refreshing by remember { mutableStateOf(false) }
             val pullRefreshState = rememberPullRefreshState(
-                refreshing = homepageState.isRefreshing,
-                onRefresh = { viewModel.refresh() },
+                refreshing = refreshing,
+                onRefresh = {
+                    refreshing = true
+                    homepageRecommends.refresh()
+                    coroutineScope.launch {
+                        delay(1000)
+                        refreshing = false
+                    }
+                },
             )
             Box(modifier = Modifier.pullRefresh(state = pullRefreshState)) {
                 LazyColumn(modifier = Modifier.fillMaxSize(), contentPadding = PaddingValues(bottom = 60.dp)) {
-                    items(count = homepageState.homepageRecommend?.data?.size ?: 0) {
-                        val homepageRecommend = homepageState.homepageRecommend?.data?.getOrNull(it)
-                        HomepageRecommendItem(homepageRecommend, homepageState.isLoading)
+                    items(homepageRecommends) { item ->
+                        val isLoading = homepageRecommends.loadState.append is LoadState.Loading
+                        HomepageRecommendItem(item, isLoading)
+                    }
+                    // Add a retry button if there was an error loading the data
+                    if (homepageRecommends.loadState.refresh is LoadState.Error) {
+                        item {
+//                        RetryButton(onClick = homepageState.retry())
+                        }
                     }
                 }
-
                 PullRefreshIndicator(
-                    refreshing = homepageState.isRefreshing,
+                    refreshing = refreshing,
                     state = pullRefreshState,
                     modifier = Modifier.align(Alignment.TopCenter),
                 )
@@ -260,7 +276,7 @@ fun HomepageRecommendItem(
                         model = ImageRequest.Builder(context)
                             .data(
                                 homepageRecommend.joke.imageUrl?.split(",")?.filter { it.isNotBlank() }?.first()
-                                    .urlDESDecrypt().also {
+                                    .urlAESDecrypt().also {
                                         Log.d("段子乐", "解码后的图片地址：$it")
                                     })
                             .error(ColorDrawable(Color.Gray.toArgb()))
@@ -318,10 +334,10 @@ fun HomepageRecommendItem(
                                 shape = RoundedCornerShape(4.dp),
                                 highlight = PlaceholderHighlight.shimmer(highlightColor = Color.White),
                             ),
-                        videoUrl = homepageRecommend?.joke?.videoUrl.urlDESDecrypt().also {
+                        videoUrl = homepageRecommend?.joke?.videoUrl.urlAESDecrypt().also {
                             Log.d("段子乐", "解码后的视频地址：$it")
                         },
-                        thumbUrl = homepageRecommend?.joke?.thumbUrl?.urlDESDecrypt().also {
+                        thumbUrl = homepageRecommend?.joke?.thumbUrl?.urlAESDecrypt().also {
                             Log.d("段子乐", "解码后的视频封面地址：$it")
                         }
                     )

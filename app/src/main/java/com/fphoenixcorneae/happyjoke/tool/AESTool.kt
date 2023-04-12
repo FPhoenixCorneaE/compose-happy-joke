@@ -31,7 +31,7 @@ object AESTool {
         c.init(Cipher.ENCRYPT_MODE, getSecretKey())
         val encrypted = c.doFinal(s?.toByteArray())
         // 此处使用Base64做转码功能，能起到二次加密的作用
-        Base64.encodeToString(encrypted, Base64.DEFAULT)
+        Base64.encodeToString(encrypted, Base64.NO_WRAP)
     }.onFailure {
         it.printStackTrace()
     }.getOrNull()
@@ -43,7 +43,7 @@ object AESTool {
         val c = createCipher()
         c.init(Cipher.DECRYPT_MODE, getSecretKey())
         // 先Base64解码
-        val encrypted = Base64.decode(s?.toByteArray(), Base64.DEFAULT)
+        val encrypted = Base64.decode(s?.toByteArray(), Base64.NO_WRAP)
         val original = c.doFinal(encrypted)
         String(original)
     }.onFailure {

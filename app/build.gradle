@@ -56,6 +56,9 @@ dependencies {
     implementation 'androidx.compose.material3:material3:1.0.1'
     // datastore
     implementation "androidx.datastore:datastore-preferences:1.0.0"
+    // paging
+    implementation "androidx.paging:paging-runtime-ktx:3.1.1"
+    implementation "androidx.paging:paging-compose:1.0.0-alpha18"
     // accompanist: https://google.github.io/accompanist/
     def accompanist = "0.28.0"
     implementation "com.google.accompanist:accompanist-insets:$accompanist"
