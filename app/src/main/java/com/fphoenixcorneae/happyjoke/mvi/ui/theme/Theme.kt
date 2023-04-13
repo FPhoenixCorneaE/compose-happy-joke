@@ -5,11 +5,14 @@ import android.os.Build
 import androidx.compose.foundation.isSystemInDarkTheme
 import androidx.compose.material3.*
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.CompositionLocalProvider
 import androidx.compose.runtime.SideEffect
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.toArgb
 import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.platform.LocalView
+import androidx.compose.ui.unit.Density
 import androidx.core.view.ViewCompat
 
 private val DarkColorScheme = darkColorScheme(
@@ -55,10 +58,22 @@ fun ComposeHappyJokeTheme(
             ViewCompat.getWindowInsetsController(view)?.isAppearanceLightStatusBars = darkTheme
         }
     }
-
+    val fontScale = LocalDensity.current.fontScale
+    val displayMetrics = LocalContext.current.resources.displayMetrics
+    val widthPixels = displayMetrics.widthPixels
     MaterialTheme(
         colorScheme = colorScheme,
         typography = Typography,
-        content = content
+        content = {
+            // 今日头条方案进行屏幕适配
+            CompositionLocalProvider(
+                LocalDensity provides Density(
+                    density = widthPixels / 360f,
+                    fontScale = fontScale,
+                )
+            ) {
+                content()
+            }
+        }
     )
 }
