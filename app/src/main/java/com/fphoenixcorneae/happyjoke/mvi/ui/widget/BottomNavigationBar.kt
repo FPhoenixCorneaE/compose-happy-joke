@@ -65,7 +65,7 @@ fun BottomNavigationBar(
             name = stringResource(R.string.sweep),
             icon = R.mipmap.ic_homepage_sweep_gray,
             selectedIcon = R.mipmap.ic_homepage_sweep_selected,
-            selectedColor = MaterialTheme.colorScheme.onSecondary,
+            selectedColor = MaterialTheme.colorScheme.background,
         ),
         null,
         NaviItem(
@@ -207,7 +207,13 @@ fun BottomNavigationBar(
                                 .rotate(if (selectedPosition == index) rotate else 0f)
                                 .scale(if (selectedPosition == index) scale else 1f)
                         )
-                        Text(text = it.name, style = TextStyle(fontSize = it.textSize, color = it.color))
+                        Text(
+                            text = it.name,
+                            style = TextStyle(
+                                fontSize = it.textSize,
+                                color = if (selectedPosition == index) it.selectedColor else it.color,
+                            ),
+                        )
                     }
                 } ?: Box(
                     modifier = Modifier

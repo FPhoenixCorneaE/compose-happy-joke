@@ -53,7 +53,7 @@ fun MainScreen(
                     enterTransition = { fadeIn() },
                     exitTransition = { fadeOut() },
                 ) {
-                    SweepScreen()
+                    SweepScreen(window = window)
                 }
                 composable(
                     route = Constant.NavRoute.Main.MESSAGE,

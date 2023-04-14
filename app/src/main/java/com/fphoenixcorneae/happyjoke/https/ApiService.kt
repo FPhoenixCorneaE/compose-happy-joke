@@ -1,6 +1,7 @@
 package com.fphoenixcorneae.happyjoke.https
 
 import com.fphoenixcorneae.happyjoke.mvi.model.HomepageRecommend
+import com.fphoenixcorneae.happyjoke.mvi.model.SweepDouYinVideo
 import retrofit2.http.POST
 
 // 双重校验锁式-单例 封装 ApiService 方便直接快速调用简单的接口
@@ -19,4 +20,10 @@ interface ApiService {
      */
     @POST("/jokes/home/recommend")
     suspend fun homepageRecommend(): HomepageRecommend?
+
+    /**
+     * 获取划一划页面的推荐列表数据
+     */
+    @POST("/jokes/douyin/list")
+    suspend fun sweepDouYinVideo(): SweepDouYinVideo?
 }

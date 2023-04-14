@@ -55,7 +55,7 @@ import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 
 /**
- * @desc：首页
+ * @desc：首页，默认推荐
  * @date：2023/03/17 09:30
  */
 @OptIn(ExperimentalMaterialApi::class)
