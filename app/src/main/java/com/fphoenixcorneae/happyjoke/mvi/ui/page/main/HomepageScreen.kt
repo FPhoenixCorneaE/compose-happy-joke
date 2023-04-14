@@ -1,7 +1,6 @@
 package com.fphoenixcorneae.happyjoke.mvi.ui.page.main
 
-import android.graphics.drawable.ColorDrawable
-import android.util.Log
+import android.graphics.drawable.GradientDrawable
 import android.view.Window
 import androidx.compose.animation.core.animateFloatAsState
 import androidx.compose.foundation.background
@@ -39,13 +38,13 @@ import androidx.paging.compose.items
 import coil.compose.AsyncImage
 import coil.request.ImageRequest
 import coil.transform.CircleCropTransformation
-import coil.transform.RoundedCornersTransformation
 import com.fphoenixcorneae.happyjoke.R
 import com.fphoenixcorneae.happyjoke.ext.noRippleClickable
 import com.fphoenixcorneae.happyjoke.ext.urlAESDecrypt
 import com.fphoenixcorneae.happyjoke.mvi.model.HomepageRecommend
 import com.fphoenixcorneae.happyjoke.mvi.ui.theme.GreyLine
 import com.fphoenixcorneae.happyjoke.mvi.ui.theme.GreyPlaceholder
+import com.fphoenixcorneae.happyjoke.mvi.ui.widget.NineGridImage
 import com.fphoenixcorneae.happyjoke.mvi.ui.widget.ShortVideoPlayer
 import com.fphoenixcorneae.happyjoke.mvi.ui.widget.SystemUiScaffold
 import com.fphoenixcorneae.happyjoke.mvi.viewmodel.HomepageViewModel
@@ -146,9 +145,21 @@ fun HomepageScreen(
                         HomepageRecommendItem(item, isLoading)
                     }
                     // Add a retry button if there was an error loading the data
-                    if (homepageRecommends.loadState.refresh is LoadState.Error) {
+                    if (homepageRecommends.loadState.append is LoadState.Error) {
                         item {
-//                        RetryButton(onClick = homepageState.retry())
+                            // 底部的重试按钮
+                            Box(
+                                modifier = Modifier
+                                    .fillMaxWidth()
+                                    .height(48.dp)
+                            ) {
+                                Button(
+                                    modifier = Modifier.align(alignment = Alignment.Center),
+                                    onClick = { homepageRecommends.retry() },
+                                ) {
+                                    Text(text = "加载失败！请重试")
+                                }
+                            }
                         }
                     }
                 }
@@ -190,7 +201,10 @@ fun HomepageRecommendItem(
                 AsyncImage(
                     model = ImageRequest.Builder(context)
                         .data(homepageRecommend?.user?.avatar)
-                        .error(ColorDrawable(Color.Gray.toArgb()))
+                        .error(GradientDrawable().apply {
+                            shape = GradientDrawable.OVAL
+                            setColor(Color.Gray.toArgb())
+                        })
                         .transformations(CircleCropTransformation())
                         .crossfade(true)
                         .build(),
@@ -272,45 +286,17 @@ fun HomepageRecommendItem(
             when {
                 homepageRecommend?.joke?.type == 2 -> {
                     // 图片
-                    AsyncImage(
-                        model = ImageRequest.Builder(context)
-                            .data(
-                                homepageRecommend.joke.imageUrl?.split(",")?.filter { it.isNotBlank() }?.first()
-                                    .urlAESDecrypt().also {
-                                        Log.d("段子乐", "解码后的图片地址：$it")
-                                    })
-                            .error(ColorDrawable(Color.Gray.toArgb()))
-                            .transformations(RoundedCornersTransformation(density.run { 8.dp.toPx() }))
-                            .crossfade(true)
-                            .build(),
-                        contentDescription = null,
+                    NineGridImage(
                         modifier = Modifier
-                            .width(density.run {
-                                (homepageRecommend.joke.imageSize
-                                    ?.split(",")
-                                    ?.getOrNull(0)
-                                    ?.split("x")
-                                    ?.getOrNull(0)
-                                    ?.toIntOrNull() ?: 0).toDp()
-                            })
-                            .height(density.run {
-                                (homepageRecommend.joke.imageSize
-                                    ?.split(",")
-                                    ?.getOrNull(0)
-                                    ?.split("x")
-                                    ?.getOrNull(1)
-                                    ?.toIntOrNull() ?: 0).toDp()
-                            })
-                            .padding(start = 16.dp, top = 8.dp, end = 16.dp)
-                            .placeholder(
-                                visible = isLoading,
-                                color = GreyPlaceholder,
-                                shape = RoundedCornerShape(4.dp),
-                                highlight = PlaceholderHighlight.shimmer(highlightColor = Color.White),
-                            ),
+                            .fillMaxWidth()
+                            .padding(start = 16.dp, top = 8.dp, end = 16.dp),
+                        imageDatas = homepageRecommend.joke.imageUrl?.split(",")?.mapNotNull {
+                            it.urlAESDecrypt()
+                        },
+                        isLoading = isLoading,
                     )
                 }
-                (homepageRecommend?.joke?.type ?: 0) >= 3 -> {
+                (homepageRecommend?.joke?.type ?: 0) == 3 -> {
                     // 视频
                     ShortVideoPlayer(
                         modifier = Modifier
@@ -334,12 +320,8 @@ fun HomepageRecommendItem(
                                 shape = RoundedCornerShape(4.dp),
                                 highlight = PlaceholderHighlight.shimmer(highlightColor = Color.White),
                             ),
-                        videoUrl = homepageRecommend?.joke?.videoUrl.urlAESDecrypt().also {
-                            Log.d("段子乐", "解码后的视频地址：$it")
-                        },
-                        thumbUrl = homepageRecommend?.joke?.thumbUrl?.urlAESDecrypt().also {
-                            Log.d("段子乐", "解码后的视频封面地址：$it")
-                        }
+                        videoUrl = homepageRecommend?.joke?.videoUrl.urlAESDecrypt(),
+                        thumbUrl = homepageRecommend?.joke?.thumbUrl?.urlAESDecrypt()
                     )
                 }
             }

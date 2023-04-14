@@ -1,5 +1,6 @@
 package com.fphoenixcorneae.happyjoke.https
 
+import android.annotation.SuppressLint
 import java.security.KeyManagementException
 import java.security.NoSuchAlgorithmException
 import java.security.SecureRandom
@@ -21,11 +22,14 @@ object SSLSocketClient {
     }
 
     val x509TrustManager: X509TrustManager
-        get() = object : X509TrustManager {
+        get() = @SuppressLint("CustomX509TrustManager")
+        object : X509TrustManager {
+            @SuppressLint("TrustAllX509TrustManager")
             @Throws(CertificateException::class)
             override fun checkClientTrusted(chain: Array<X509Certificate>, authType: String) {
             }
 
+            @SuppressLint("TrustAllX509TrustManager")
             @Throws(CertificateException::class)
             override fun checkServerTrusted(chain: Array<X509Certificate>, authType: String) {
             }
@@ -36,5 +40,5 @@ object SSLSocketClient {
         }
 
     val hostnameVerifier: HostnameVerifier
-        get() = HostnameVerifier { s: String?, sslSession: SSLSession? -> true }
+        get() = HostnameVerifier { hostname: String?, sslSession: SSLSession? -> true }
 }
