@@ -24,6 +24,7 @@ import androidx.compose.ui.graphics.PaintingStyle
 import androidx.compose.ui.graphics.drawscope.drawIntoCanvas
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.TextStyle
+import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.TextUnit
@@ -32,6 +33,7 @@ import androidx.compose.ui.unit.sp
 import coil.compose.AsyncImage
 import com.fphoenixcorneae.happyjoke.R
 import com.fphoenixcorneae.happyjoke.ext.noRippleClickable
+import com.fphoenixcorneae.happyjoke.mvi.ui.theme.Yellow40
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 import kotlin.math.acos
@@ -59,88 +61,84 @@ fun BottomNavigationBar(
             name = stringResource(R.string.homepage),
             icon = R.mipmap.ic_homepage_home_gray,
             selectedIcon = R.mipmap.ic_homepage_home_selected,
-            selectedColor = MaterialTheme.colorScheme.onSecondary,
+            selectedColor = Yellow40,
         ),
         NaviItem(
             name = stringResource(R.string.sweep),
             icon = R.mipmap.ic_homepage_sweep_gray,
             selectedIcon = R.mipmap.ic_homepage_sweep_selected,
-            selectedColor = MaterialTheme.colorScheme.background,
+            selectedColor = MaterialTheme.colorScheme.surface,
         ),
         null,
         NaviItem(
             name = stringResource(R.string.message),
             icon = R.mipmap.ic_homepage_message_gray,
             selectedIcon = R.mipmap.ic_homepage_message_selected,
-            selectedColor = MaterialTheme.colorScheme.onSecondary,
+            selectedColor = Yellow40,
         ),
         NaviItem(
             name = stringResource(R.string.mine),
             icon = R.mipmap.ic_homepage_mine_gray,
             selectedIcon = R.mipmap.ic_homepage_mine_selected,
-            selectedColor = MaterialTheme.colorScheme.onSecondary,
+            selectedColor = Yellow40,
         ),
     )
     var isDarkMode by remember { mutableStateOf(darkMode) }
-    Box(
-        modifier = Modifier
-            .then(modifier)
-            .fillMaxWidth()
-            .height(naviBarHeight)
-            .drawWithContent {
-                if (!isDarkMode) {
-                    drawIntoCanvas { canvas ->
-                        canvas.drawCircle(
-                            Offset(size.width / 2, size.height / 2),
-                            centerArcRadius.toPx(),
-                            Paint().apply {
-                                color = Color.White
-                            },
-                        )
-                    }
-                }
-                drawContent()
-                if (isDarkMode) {
-                    return@drawWithContent
-                }
-                val paint = Paint().apply {
-                    color = Color.Gray
-                    strokeWidth = 0.5f
-                    style = PaintingStyle.Stroke
-                }
+    Box(modifier = Modifier
+        .then(modifier)
+        .fillMaxWidth()
+        .height(naviBarHeight)
+        .drawWithContent {
+            if (!isDarkMode) {
                 drawIntoCanvas { canvas ->
-                    val radius = centerArcRadius.toPx()
-                    val marginTop = lineMarginTop.toPx()
-                    // 角度
-                    val degree = Math
-                        .toDegrees(acos((size.height / 2 - marginTop) / radius.toDouble()))
-                        .toFloat()
-                    // 对边长度
-                    val oppositeLength = radius * sin(Math.toRadians(degree.toDouble())).toFloat()
-                    canvas.drawLine(
-                        Offset(0f, marginTop),
-                        Offset(size.width / 2 - oppositeLength, marginTop),
-                        paint
-                    )
-                    // 绘制中间圆弧
-                    canvas.drawArc(
-                        left = size.width / 2 - radius,
-                        top = size.height / 2 - radius,
-                        right = size.width / 2 + radius,
-                        bottom = size.height / 2 + radius,
-                        startAngle = 270f - degree,
-                        sweepAngle = degree * 2,
-                        useCenter = false,
-                        paint = paint,
-                    )
-                    canvas.drawLine(
-                        Offset(size.width / 2 + oppositeLength, marginTop),
-                        Offset(size.width, marginTop),
-                        paint
+                    canvas.drawCircle(
+                        Offset(size.width / 2, size.height / 2),
+                        centerArcRadius.toPx(),
+                        Paint().apply {
+                            color = Color.White
+                        },
                     )
                 }
             }
-    ) {
+            drawContent()
+            if (isDarkMode) {
+                return@drawWithContent
+            }
+            val paint = Paint().apply {
+                color = Color.Gray
+                strokeWidth = 0.5f
+                style = PaintingStyle.Stroke
+            }
+            drawIntoCanvas { canvas ->
+                val radius = centerArcRadius.toPx()
+                val marginTop = lineMarginTop.toPx()
+                // 角度
+                val degree = Math
+                    .toDegrees(acos((size.height / 2 - marginTop) / radius.toDouble()))
+                    .toFloat()
+                // 对边长度
+                val oppositeLength = radius * sin(Math.toRadians(degree.toDouble())).toFloat()
+                canvas.drawLine(
+                    Offset(0f, marginTop), Offset(size.width / 2 - oppositeLength, marginTop), paint
+                )
+                // 绘制中间圆弧
+                canvas.drawArc(
+                    left = size.width / 2 - radius,
+                    top = size.height / 2 - radius,
+                    right = size.width / 2 + radius,
+                    bottom = size.height / 2 + radius,
+                    startAngle = 270f - degree,
+                    sweepAngle = degree * 2,
+                    useCenter = false,
+                    paint = paint,
+                )
+                canvas.drawLine(
+                    Offset(size.width / 2 + oppositeLength, marginTop),
+                    Offset(size.width, marginTop),
+                    paint
+                )
+            }
+        }) {
         val backgroundColor = remember { Animatable(Color.White) }
         LaunchedEffect(key1 = isDarkMode) {
             backgroundColor.animateTo(
@@ -154,7 +152,7 @@ fun BottomNavigationBar(
                 .height(naviItemHeight)
                 .align(alignment = Alignment.BottomCenter)
                 .background(color = backgroundColor.value, shape = RoundedCornerShape(2.dp)),
-            verticalAlignment = Alignment.CenterVertically
+            verticalAlignment = Alignment.CenterVertically,
         ) {
             val coroutineScope = rememberCoroutineScope()
             var selectedPosition by remember { mutableStateOf(0) }
@@ -210,8 +208,9 @@ fun BottomNavigationBar(
                         Text(
                             text = it.name,
                             style = TextStyle(
-                                fontSize = it.textSize,
                                 color = if (selectedPosition == index) it.selectedColor else it.color,
+                                fontSize = it.textSize,
+                                fontWeight = if (selectedPosition == index) FontWeight.Bold else null,
                             ),
                         )
                     }
@@ -257,7 +256,5 @@ data class NaviItem(
  * @date：2023/03/16 17:28
  */
 enum class AnimState {
-    Static,
-    Start,
-    Reverse,
+    Static, Start, Reverse,
 }

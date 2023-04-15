@@ -12,3 +12,5 @@ val Pink40 = Color(0xFF7D5260)
 
 val GreyLine = Color(0xFFEEEEEE)
 val GreyPlaceholder = Color.Gray.copy(alpha = 0.4f)
+
+val Yellow40 = Color(0xFFEFB54B)

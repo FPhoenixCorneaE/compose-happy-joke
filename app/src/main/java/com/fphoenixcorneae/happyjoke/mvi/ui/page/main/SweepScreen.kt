@@ -1,9 +1,13 @@
 package com.fphoenixcorneae.happyjoke.mvi.ui.page.main
 
 import android.view.Window
+import androidx.compose.foundation.background
+import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.rememberCoroutineScope
+import androidx.compose.ui.Modifier
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.lifecycle.viewmodel.compose.viewModel
 import com.fphoenixcorneae.happyjoke.mvi.ui.widget.SystemUiScaffold
@@ -22,9 +26,16 @@ fun SweepScreen(
     val coroutineScope = rememberCoroutineScope()
     SystemUiScaffold(
         window = window,
-        isFitsSystemWindows = true,
+        isFitsSystemWindows = false,
         statusBarColor = MaterialTheme.colorScheme.onBackground,
+        isDarkFont = false,
     ) {
+        Box(
+            modifier = Modifier
+                .fillMaxSize()
+                .background(color = MaterialTheme.colorScheme.onBackground)
+        ) {
 
+        }
     }
 }
