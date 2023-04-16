@@ -46,7 +46,7 @@ inline fun SystemUiScaffold(
 
     if (!isFitsSystemWindows && systemUiController.isStatusBarVisible) {
         // 如果是沉浸式需要设置 padding来占位
-        modifierNew = modifierNew.then(Modifier.statusBarsPadding())
+        modifierNew = modifierNew.then(Modifier.imePadding())
     }
 
     if (systemUiController.isNavigationBarVisible) {

@@ -6,6 +6,7 @@ import androidx.paging.Pager
 import androidx.paging.PagingConfig
 import androidx.paging.cachedIn
 import com.fphoenixcorneae.happyjoke.mvi.model.paging.HomepageRecommendSource
+import com.fphoenixcorneae.happyjoke.mvi.model.paging.SweepDouYinSource
 
 /**
  * @desc：
@@ -13,7 +14,13 @@ import com.fphoenixcorneae.happyjoke.mvi.model.paging.HomepageRecommendSource
  */
 class HomepageViewModel : ViewModel() {
 
+    /** 首页推荐列表 */
     val homepageRecommends = Pager(config = PagingConfig(pageSize = 10)) {
         HomepageRecommendSource()
+    }.flow.cachedIn(viewModelScope)
+
+    /** 划一划页面的推荐列表 */
+    val sweepDouYinVideos = Pager(config = PagingConfig(pageSize = 10)) {
+        SweepDouYinSource()
     }.flow.cachedIn(viewModelScope)
 }
