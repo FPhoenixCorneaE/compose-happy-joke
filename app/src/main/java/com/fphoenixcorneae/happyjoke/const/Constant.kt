@@ -19,7 +19,7 @@ object Constant {
         const val MAIN = "main"
 
         /**
-         * @desc：
+         * @desc：主页
          * @date：2023/03/17 10:45
          */
         object Main {
