@@ -3,15 +3,13 @@ package com.fphoenixcorneae.happyjoke.mvi.ui.page.main.homepage
 import android.graphics.drawable.GradientDrawable
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.*
-import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
-import androidx.compose.material.ExperimentalMaterialApi
-import androidx.compose.material.pullrefresh.PullRefreshIndicator
-import androidx.compose.material.pullrefresh.pullRefresh
-import androidx.compose.material.pullrefresh.rememberPullRefreshState
-import androidx.compose.material3.*
-import androidx.compose.runtime.*
+import androidx.compose.material3.Divider
+import androidx.compose.material3.Icon
+import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.Text
+import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
@@ -39,67 +37,30 @@ import com.fphoenixcorneae.happyjoke.mvi.ui.theme.GreyLine
 import com.fphoenixcorneae.happyjoke.mvi.ui.theme.GreyPlaceholder
 import com.fphoenixcorneae.happyjoke.mvi.ui.widget.NineGridImage
 import com.fphoenixcorneae.happyjoke.mvi.ui.widget.ShortVideoPlayer
+import com.fphoenixcorneae.happyjoke.mvi.ui.widget.SwipeRefresh
 import com.fphoenixcorneae.happyjoke.mvi.viewmodel.HomepageViewModel
 import com.google.accompanist.placeholder.PlaceholderHighlight
 import com.google.accompanist.placeholder.placeholder
 import com.google.accompanist.placeholder.shimmer
-import kotlinx.coroutines.delay
-import kotlinx.coroutines.launch
 
 /**
  * @desc：推荐
  * @date：2023/04/17 10:12
  */
-@OptIn(ExperimentalMaterialApi::class)
 @Preview
 @Composable
 fun RecommendScreen(
     viewModel: HomepageViewModel = viewModel(),
 ) {
-    val coroutineScope = rememberCoroutineScope()
     val homepageRecommends = viewModel.homepageRecommends.collectAsLazyPagingItems()
-    var refreshing by remember { mutableStateOf(false) }
-    val pullRefreshState = rememberPullRefreshState(
-        refreshing = refreshing,
-        onRefresh = {
-            refreshing = true
-            homepageRecommends.refresh()
-            coroutineScope.launch {
-                delay(1000)
-                refreshing = false
-            }
-        },
-    )
-    Box(modifier = Modifier.pullRefresh(state = pullRefreshState)) {
-        LazyColumn(modifier = Modifier.fillMaxSize(), contentPadding = PaddingValues(bottom = 60.dp)) {
-            items(homepageRecommends) { item ->
-                val isLoading = homepageRecommends.loadState.append is LoadState.Loading
-                HomepageRecommendItem(item, isLoading)
-            }
-            // Add a retry button if there was an error loading the data
-            if (homepageRecommends.loadState.append is LoadState.Error) {
-                item {
-                    // 底部的重试按钮
-                    Box(
-                        modifier = Modifier
-                            .fillMaxWidth()
-                            .height(48.dp)
-                    ) {
-                        Button(
-                            modifier = Modifier.align(alignment = Alignment.Center),
-                            onClick = { homepageRecommends.retry() },
-                        ) {
-                            Text(text = "加载失败！请重试")
-                        }
-                    }
-                }
-            }
+    SwipeRefresh(
+        lazyPagingItems = homepageRecommends,
+        contentPadding = PaddingValues(bottom = 60.dp)
+    ) {
+        items(homepageRecommends) { item ->
+            val isLoading = homepageRecommends.loadState.append is LoadState.Loading
+            HomepageRecommendItem(item, isLoading)
         }
-        PullRefreshIndicator(
-            refreshing = refreshing,
-            state = pullRefreshState,
-            modifier = Modifier.align(Alignment.TopCenter),
-        )
     }
 }
 
