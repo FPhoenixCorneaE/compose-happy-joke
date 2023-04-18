@@ -19,4 +19,8 @@
     <string name="fresh">新鲜</string>
     <string name="polite_letters">纯文</string>
     <string name="funny_pictures">趣图</string>
+    <string name="recommend_users">推荐用户</string>
+    <string name="publish">发表</string>
+    <string name="fans">粉丝</string>
+    <string name="add_attention">+关注</string>
 </resources>

@@ -20,14 +20,12 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.compose.ui.zIndex
-import androidx.lifecycle.viewmodel.compose.viewModel
 import coil.compose.AsyncImage
 import com.fphoenixcorneae.happyjoke.R
 import com.fphoenixcorneae.happyjoke.ext.noRippleClickable
 import com.fphoenixcorneae.happyjoke.mvi.ui.page.main.homepage.*
 import com.fphoenixcorneae.happyjoke.mvi.ui.theme.GreyLine
 import com.fphoenixcorneae.happyjoke.mvi.ui.widget.SystemUiScaffold
-import com.fphoenixcorneae.happyjoke.mvi.viewmodel.HomepageViewModel
 import kotlinx.coroutines.launch
 
 /**
@@ -39,7 +37,6 @@ import kotlinx.coroutines.launch
 @Composable
 fun HomepageScreen(
     window: Window? = null,
-    viewModel: HomepageViewModel = viewModel(),
 ) {
     SystemUiScaffold(
         window = window,
