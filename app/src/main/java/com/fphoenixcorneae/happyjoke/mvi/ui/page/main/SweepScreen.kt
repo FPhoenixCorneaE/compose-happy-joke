@@ -1,9 +1,6 @@
 package com.fphoenixcorneae.happyjoke.mvi.ui.page.main
 
-import android.net.Uri
-import android.util.Log
 import android.view.Window
-import android.widget.Toast
 import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
@@ -24,7 +21,6 @@ import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.ColorFilter
 import androidx.compose.ui.layout.ContentScale
-import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.tooling.preview.Preview
@@ -35,16 +31,9 @@ import androidx.paging.compose.collectAsLazyPagingItems
 import coil.compose.AsyncImage
 import com.fphoenixcorneae.happyjoke.R
 import com.fphoenixcorneae.happyjoke.ext.urlAESDecrypt
-import com.fphoenixcorneae.happyjoke.mvi.ui.widget.DouYinVideoPlayer
+import com.fphoenixcorneae.happyjoke.mvi.ui.widget.TikTokVideoPlayer
 import com.fphoenixcorneae.happyjoke.mvi.ui.widget.SystemUiScaffold
 import com.fphoenixcorneae.happyjoke.mvi.viewmodel.HomepageViewModel
-import com.google.android.exoplayer2.*
-import com.google.android.exoplayer2.source.ProgressiveMediaSource
-import com.google.android.exoplayer2.source.dash.DashMediaSource
-import com.google.android.exoplayer2.source.hls.HlsMediaSource
-import com.google.android.exoplayer2.trackselection.DefaultTrackSelector
-import com.google.android.exoplayer2.upstream.DefaultDataSource
-import com.google.android.exoplayer2.util.Util
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 
@@ -59,14 +48,13 @@ fun SweepScreen(
     window: Window? = null,
     viewModel: HomepageViewModel = viewModel(),
 ) {
-    val context = LocalContext.current
     val coroutineScope = rememberCoroutineScope()
     SystemUiScaffold(
         window = window,
         isFitsSystemWindows = false,
         isDarkFont = false,
     ) {
-        val sweepDouYinVideos = viewModel.sweepDouYinVideos.collectAsLazyPagingItems()
+        val sweepTikTokVideos = viewModel.sweepTikTokVideos.collectAsLazyPagingItems()
         val pagerState = rememberPagerState()
         val currentPage by remember { derivedStateOf { pagerState.currentPage } }
         var refreshing by remember { mutableStateOf(false) }
@@ -74,22 +62,13 @@ fun SweepScreen(
             refreshing = refreshing,
             onRefresh = {
                 refreshing = true
-                sweepDouYinVideos.refresh()
+                sweepTikTokVideos.refresh()
                 coroutineScope.launch {
                     delay(1000)
                     refreshing = false
                 }
             },
         )
-        // 播放器
-        val exoPlayer = remember {
-            ExoPlayer.Builder(context).setTrackSelector(DefaultTrackSelector(context).apply {
-                setParameters(
-                    buildUponParameters().setMaxVideoSizeSd()
-                        .setAllowAudioMixedMimeTypeAdaptiveness(true)
-                )
-            }).build()
-        }
         Box(
             modifier = Modifier
                 .fillMaxSize()
@@ -97,12 +76,11 @@ fun SweepScreen(
                 .padding(bottom = 50.dp)
                 .pullRefresh(state = pullRefreshState)
         ) {
-            VerticalPager(pageCount = sweepDouYinVideos.itemCount, state = pagerState) { page ->
-                Log.d("VerticalPager","page: $page, currentPage: $currentPage")
-                val item = sweepDouYinVideos[page]
+            VerticalPager(pageCount = sweepTikTokVideos.itemCount, state = pagerState) { page ->
+                val item = sweepTikTokVideos[page]
                 BoxWithConstraints {
                     if (page == currentPage) {
-                        DouYinVideoPlayer(
+                        TikTokVideoPlayer(
                             modifier = Modifier.fillMaxSize(),
                             videoUrl = item?.joke?.videoUrl.urlAESDecrypt(),
                         )

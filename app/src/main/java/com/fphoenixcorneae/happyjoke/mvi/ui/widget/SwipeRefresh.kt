@@ -31,7 +31,7 @@ import com.fphoenixcorneae.happyjoke.mvi.ui.theme.Grey70
 /**
  * 下拉加载封装
  * implementation "com.google.accompanist:accompanist-swiperefresh:xxx"
- * */
+ */
 @OptIn(ExperimentalMaterialApi::class)
 @Composable
 fun <T : Any> SwipeRefresh(
@@ -105,7 +105,7 @@ fun <T : Any> SwipeRefresh(
 
 /**
  * 底部加载更多失败处理
- * */
+ */
 @Composable
 fun ErrorMoreRetryItem(retry: () -> Unit) {
     Box(modifier = Modifier.fillMaxWidth(), contentAlignment = Alignment.Center) {
@@ -130,7 +130,7 @@ fun ErrorMoreRetryItem(retry: () -> Unit) {
 
 /**
  * 底部加载更多到底了
- * */
+ */
 @Composable
 fun NoMoreDataFindUI() {
     Box(modifier = Modifier.fillMaxWidth(), contentAlignment = Alignment.Center) {
@@ -155,7 +155,7 @@ fun NoMoreDataFindUI() {
 
 /**
  * 页面加载失败处理
- * */
+ */
 @Composable
 fun ErrorContent(retry: () -> Unit) {
     Column(
@@ -190,7 +190,7 @@ fun ErrorContent(retry: () -> Unit) {
 
 /**
  * 底部加载更多正在加载中...
- * */
+ */
 @Composable
 fun LoadingItem() {
     Row(

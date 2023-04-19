@@ -8,6 +8,7 @@ import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.animation.fadeIn
 import androidx.compose.animation.fadeOut
 import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.size
 import androidx.compose.material.Icon
 import androidx.compose.runtime.*
@@ -16,6 +17,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.viewinterop.AndroidView
 import com.fphoenixcorneae.happyjoke.R
@@ -24,6 +26,7 @@ import com.fphoenixcorneae.happyjoke.exoplayer.PlayViewMode
 import com.fphoenixcorneae.happyjoke.exoplayer.PlayerViewManager
 import com.fphoenixcorneae.happyjoke.ext.noRippleClickable
 import com.google.android.exoplayer2.C
+import com.google.android.exoplayer2.ExoPlayer
 import com.google.android.exoplayer2.MediaItem
 import com.google.android.exoplayer2.PlaybackException
 import com.google.android.exoplayer2.Player.Listener
@@ -39,14 +42,12 @@ import com.google.android.exoplayer2.util.Util
  * @date：2023/4/15 12:15
  */
 @Composable
-fun DouYinVideoPlayer(
+fun TikTokVideoPlayer(
     modifier: Modifier,
     videoUrl: String?,
 ) {
     Box(modifier = modifier) {
         val context = LocalContext.current
-        val scope = rememberCoroutineScope()
-        var visiblePlayIcon by remember { mutableStateOf(false) }
         var playerView: StyledPlayerView? = null
         // 获取播放器实例
         val exoPlayer = remember { ExoPlayerHolder.get(context = context) }
@@ -63,19 +64,6 @@ fun DouYinVideoPlayer(
                         .createMediaSource(MediaItem.fromUri(videoUri))
                 }
                 setMediaSource(mediaSource)
-                addListener(object : Listener {
-                    override fun onIsLoadingChanged(isLoading: Boolean) {
-
-                    }
-
-                    override fun onIsPlayingChanged(isPlaying: Boolean) {
-                        visiblePlayIcon = !isPlaying
-                    }
-
-                    override fun onPlayerError(error: PlaybackException) {
-                        Toast.makeText(context, "出了点小问题，请稍后重试", Toast.LENGTH_SHORT).show()
-                    }
-                })
                 // 准备播放
                 prepare()
                 play()
@@ -107,13 +95,40 @@ fun DouYinVideoPlayer(
                 }
             },
             modifier = Modifier.noRippleClickable {
-                if (visiblePlayIcon) {
+                if (!exoPlayer.isPlaying) {
                     exoPlayer.play()
                 } else {
                     exoPlayer.pause()
                 }
             },
         )
+        TikTokPlayerController(videoUrl = videoUrl, exoPlayer = exoPlayer)
+        DisposableEffect(key1 = videoUrl) {
+            onDispose {
+                exoPlayer.stop()
+                playerView?.apply {
+                    (parent as? ViewGroup)?.removeView(this)
+                    PlayerViewManager.release(this)
+                }
+                playerView = null
+            }
+        }
+    }
+}
+
+/**
+ * @desc：
+ * @date：2023/04/19 09:22
+ */
+@Preview
+@Composable
+fun TikTokPlayerController(
+    videoUrl: String? = null,
+    exoPlayer: ExoPlayer? = null,
+) {
+    Box(modifier = Modifier.fillMaxSize()) {
+        val context = LocalContext.current
+        var visiblePlayIcon by remember { mutableStateOf(false) }
         // 播放按钮
         AnimatedVisibility(
             visible = visiblePlayIcon,
@@ -130,13 +145,22 @@ fun DouYinVideoPlayer(
             )
         }
         DisposableEffect(key1 = videoUrl) {
-            onDispose {
-                exoPlayer.stop()
-                playerView?.apply {
-                    (parent as? ViewGroup)?.removeView(this)
-                    PlayerViewManager.release(this)
+            val listener = object : Listener {
+                override fun onIsLoadingChanged(isLoading: Boolean) {
+
                 }
-                playerView = null
+
+                override fun onIsPlayingChanged(isPlaying: Boolean) {
+                    visiblePlayIcon = !isPlaying
+                }
+
+                override fun onPlayerError(error: PlaybackException) {
+                    Toast.makeText(context, "出了点小问题，请稍后重试", Toast.LENGTH_SHORT).show()
+                }
+            }
+            exoPlayer?.addListener(listener)
+            onDispose {
+                exoPlayer?.removeListener(listener)
             }
         }
     }

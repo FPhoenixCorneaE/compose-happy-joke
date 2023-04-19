@@ -11,13 +11,13 @@ import com.google.android.exoplayer2.trackselection.DefaultTrackSelector
  * @date：2023/4/16 20:16
  */
 object ExoPlayerHolder {
-    private var exoplayer: ExoPlayer? = null
+    @Volatile
+    private var exoPlayer: ExoPlayer? = null
 
     fun get(context: Context): ExoPlayer {
-        if (exoplayer == null) {
-            exoplayer = createExoPlayer(context)
+        return exoPlayer ?: synchronized(this) {
+            exoPlayer ?: createExoPlayer(context).also { exoPlayer = it }
         }
-        return exoplayer!!
     }
 
     /**

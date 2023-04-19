@@ -9,7 +9,7 @@ import androidx.annotation.Keep
  * @date：2023/04/14 17:20
  */
 @Keep
-data class SweepDouYinVideo(
+data class SweepTikTokVideo(
     val code: Int = 0, // 200
     val `data`: List<Data>? = null,
     val msg: String? = null // 数据返回成功
