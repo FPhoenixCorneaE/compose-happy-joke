@@ -1,5 +1,6 @@
 package com.fphoenixcorneae.happyjoke.exoplayer
 
+import android.annotation.SuppressLint
 import android.app.Activity
 import android.content.Context
 import android.content.pm.ActivityInfo
@@ -10,6 +11,7 @@ import com.fphoenixcorneae.happyjoke.ext.componentActivity
 import com.google.android.exoplayer2.Player
 import com.google.android.exoplayer2.ui.AspectRatioFrameLayout
 import com.google.android.exoplayer2.ui.StyledPlayerView
+import java.lang.ref.WeakReference
 
 /**
  * @desc：用来管理 PlayerView
@@ -17,19 +19,19 @@ import com.google.android.exoplayer2.ui.StyledPlayerView
  */
 object PlayerViewManager : ExoEventListener {
 
-    var currentPlayerView: StyledPlayerView? = null
+    var currentPlayerView: WeakReference<StyledPlayerView?>? = null
     var playerViewMode = PlayViewMode.HALF_SCREEN
 
     private val playerViewPool = Pools.SimplePool<StyledPlayerView>(2)
-    private var activity: Activity? = null
-    private var frameLayout: FrameLayout? = null
+    private var activity: WeakReference<Activity?>? = null
+    private var frameLayout: WeakReference<FrameLayout?>? = null
 
     fun get(context: Context): StyledPlayerView {
         return playerViewPool.acquire() ?: createPlayerView(context)
     }
 
     fun saveFrameLayout(frameLayout: FrameLayout) {
-        this.frameLayout = frameLayout
+        this.frameLayout = WeakReference(frameLayout)
     }
 
     fun release(player: StyledPlayerView) {
@@ -52,39 +54,36 @@ object PlayerViewManager : ExoEventListener {
 
 
     /****************************************其他业务*******************************************/
+    @SuppressLint("SourceLockedOrientationActivity")
     private fun switchPlayerViewMode() {
-        activity = currentPlayerView?.context?.componentActivity as Activity
-        if (activity?.requestedOrientation == ActivityInfo.SCREEN_ORIENTATION_LANDSCAPE) {
-            //切换竖屏
-            activity?.requestedOrientation = ActivityInfo.SCREEN_ORIENTATION_PORTRAIT
+        activity = WeakReference(currentPlayerView?.get()?.context?.componentActivity as? Activity)
+        if (activity?.get()?.requestedOrientation == ActivityInfo.SCREEN_ORIENTATION_LANDSCAPE) {
+            // 切换竖屏
+            activity?.get()?.requestedOrientation = ActivityInfo.SCREEN_ORIENTATION_PORTRAIT
         } else {
-            //切换横屏
-            activity?.requestedOrientation = ActivityInfo.SCREEN_ORIENTATION_LANDSCAPE
+            // 切换横屏
+            activity?.get()?.requestedOrientation = ActivityInfo.SCREEN_ORIENTATION_LANDSCAPE
         }
     }
 
     fun enterFullScreen() {
-        val contentRootView = activity?.findViewById<ViewGroup>(android.R.id.content)
+        val contentRootView = activity?.get()?.findViewById<ViewGroup>(android.R.id.content)
         val params = ViewGroup.LayoutParams(
             ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT
         )
-        val parent = currentPlayerView?.parent as ViewGroup
-        parent.let {
-            it.removeView(currentPlayerView)
-        }
-        contentRootView?.addView(currentPlayerView, params)
+        val parent = currentPlayerView?.get()?.parent as? ViewGroup
+        parent?.removeView(currentPlayerView?.get())
+        contentRootView?.addView(currentPlayerView?.get(), params)
         playerViewMode = PlayViewMode.FULL_SCREEN
     }
 
     fun exitFullScreen(): Boolean {
         if (isFullScreen()) {
-            val contentRootView = activity?.findViewById<ViewGroup>(android.R.id.content)
-            contentRootView?.let {
-                // 从根View移除PlayerView
-                it.removeView(currentPlayerView)
-            }
+            val contentRootView = activity?.get()?.findViewById<ViewGroup>(android.R.id.content)
+            // 从根View移除PlayerView
+            contentRootView?.removeView(currentPlayerView?.get())
             // 然后加入LazyColumn的ItemView下
-            frameLayout?.addView(currentPlayerView)
+            frameLayout?.get()?.addView(currentPlayerView?.get())
             playerViewMode = PlayViewMode.HALF_SCREEN
             return true
         }
@@ -102,17 +101,17 @@ object PlayerViewManager : ExoEventListener {
         if (isFullScreen()) {
             exitFullScreen()
         } else {
-            activity?.finish()
+            activity?.get()?.finish()
         }
     }
 
     /**
      * 暂停续播
      * */
-    fun playOrPause(isPause: Boolean) {
-        val player = currentPlayerView?.player
+    fun playOrPause() {
+        val player = currentPlayerView?.get()?.player
         player?.let {
-            if (isPause) it.pause() else it.play()
+            if (it.isPlaying) it.pause() else it.play()
         }
     }
 
@@ -123,5 +122,7 @@ object PlayerViewManager : ExoEventListener {
     }
 }
 
-
-enum class PlayViewMode { HALF_SCREEN, FULL_SCREEN }
+enum class PlayViewMode {
+    HALF_SCREEN,
+    FULL_SCREEN
+}

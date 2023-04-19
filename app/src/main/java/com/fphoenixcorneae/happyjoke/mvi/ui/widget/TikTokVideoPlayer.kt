@@ -36,6 +36,7 @@ import com.google.android.exoplayer2.source.hls.HlsMediaSource
 import com.google.android.exoplayer2.ui.StyledPlayerView
 import com.google.android.exoplayer2.upstream.DefaultDataSource
 import com.google.android.exoplayer2.util.Util
+import java.lang.ref.WeakReference
 
 /**
  * @desc：抖音视频播放器
@@ -79,10 +80,10 @@ fun TikTokVideoPlayer(
             update = {
                 if (PlayerViewManager.playerViewMode == PlayViewMode.HALF_SCREEN) {
                     it.removeAllViews()
-                    PlayerViewManager.currentPlayerView?.player = null
+                    PlayerViewManager.currentPlayerView?.get()?.player = null
                     playerView = PlayerViewManager.get(context)
                     playerView?.player = exoPlayer
-                    PlayerViewManager.currentPlayerView = playerView
+                    PlayerViewManager.currentPlayerView = WeakReference(playerView)
                     playerView?.apply {
                         (parent as? ViewGroup)?.removeView(this)
                     }
@@ -95,11 +96,7 @@ fun TikTokVideoPlayer(
                 }
             },
             modifier = Modifier.noRippleClickable {
-                if (!exoPlayer.isPlaying) {
-                    exoPlayer.play()
-                } else {
-                    exoPlayer.pause()
-                }
+                PlayerViewManager.playOrPause()
             },
         )
         TikTokPlayerController(videoUrl = videoUrl, exoPlayer = exoPlayer)
