@@ -14,7 +14,10 @@ import androidx.compose.material.pullrefresh.pullRefresh
 import androidx.compose.material.pullrefresh.rememberPullRefreshState
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
-import androidx.compose.runtime.*
+import androidx.compose.runtime.Composable
+import androidx.compose.runtime.derivedStateOf
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
@@ -27,15 +30,14 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.lifecycle.viewmodel.compose.viewModel
+import androidx.paging.LoadState
 import androidx.paging.compose.collectAsLazyPagingItems
 import coil.compose.AsyncImage
 import com.fphoenixcorneae.happyjoke.R
 import com.fphoenixcorneae.happyjoke.ext.urlAESDecrypt
-import com.fphoenixcorneae.happyjoke.mvi.ui.widget.TikTokVideoPlayer
 import com.fphoenixcorneae.happyjoke.mvi.ui.widget.SystemUiScaffold
+import com.fphoenixcorneae.happyjoke.mvi.ui.widget.TikTokVideoPlayer
 import com.fphoenixcorneae.happyjoke.mvi.viewmodel.HomepageViewModel
-import kotlinx.coroutines.delay
-import kotlinx.coroutines.launch
 
 /**
  * @desc：划一划仿抖音视频
@@ -48,7 +50,6 @@ fun SweepScreen(
     window: Window? = null,
     viewModel: HomepageViewModel = viewModel(),
 ) {
-    val coroutineScope = rememberCoroutineScope()
     SystemUiScaffold(
         window = window,
         isFitsSystemWindows = false,
@@ -57,17 +58,9 @@ fun SweepScreen(
         val sweepTikTokVideos = viewModel.sweepTikTokVideos.collectAsLazyPagingItems()
         val pagerState = rememberPagerState()
         val currentPage by remember { derivedStateOf { pagerState.currentPage } }
-        var refreshing by remember { mutableStateOf(false) }
         val pullRefreshState = rememberPullRefreshState(
-            refreshing = refreshing,
-            onRefresh = {
-                refreshing = true
-                sweepTikTokVideos.refresh()
-                coroutineScope.launch {
-                    delay(1000)
-                    refreshing = false
-                }
-            },
+            refreshing = sweepTikTokVideos.loadState.refresh is LoadState.Loading,
+            onRefresh = { sweepTikTokVideos.refresh() },
         )
         Box(
             modifier = Modifier
@@ -78,7 +71,7 @@ fun SweepScreen(
         ) {
             VerticalPager(pageCount = sweepTikTokVideos.itemCount, state = pagerState) { page ->
                 val item = sweepTikTokVideos[page]
-                BoxWithConstraints {
+                BoxWithConstraints(modifier = Modifier.fillMaxSize()) {
                     if (page == currentPage) {
                         TikTokVideoPlayer(
                             modifier = Modifier.fillMaxSize(),
@@ -197,7 +190,7 @@ fun SweepScreen(
                 }
             }
             PullRefreshIndicator(
-                refreshing = refreshing,
+                refreshing = sweepTikTokVideos.loadState.refresh is LoadState.Loading,
                 state = pullRefreshState,
                 modifier = Modifier.align(Alignment.TopCenter),
             )

@@ -5,15 +5,19 @@ import android.view.ViewGroup
 import android.widget.FrameLayout
 import android.widget.Toast
 import androidx.compose.animation.AnimatedVisibility
+import androidx.compose.animation.core.*
 import androidx.compose.animation.fadeIn
 import androidx.compose.animation.fadeOut
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.size
+import androidx.compose.material.Divider
 import androidx.compose.material.Icon
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.alpha
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
@@ -141,10 +145,38 @@ fun TikTokPlayerController(
                 tint = Color.White.copy(alpha = 0.4f),
             )
         }
+        var visibleBottomDivider by remember { mutableStateOf(true) }
+        // 底部加载中分割线
+        AnimatedVisibility(
+            visible = visibleBottomDivider,
+            enter = fadeIn(),
+            exit = fadeOut(),
+            modifier = Modifier.align(alignment = Alignment.BottomCenter)
+        ) {
+            val infiniteTransition = rememberInfiniteTransition()
+            val fraction by infiniteTransition.animateFloat(
+                initialValue = 0f,
+                targetValue = 1f,
+                animationSpec = infiniteRepeatable(
+                    animation = tween(
+                        durationMillis = 1500,
+                        easing = CubicBezierEasing(0.2f, 0.0f, 0.4f, 1.0f)
+                    ),
+                    repeatMode = RepeatMode.Restart
+                )
+            )
+            Divider(
+                modifier = Modifier
+                    .fillMaxWidth(fraction = fraction)
+                    .alpha(alpha = 1 - fraction),
+                color = Color.White,
+                thickness = 2.dp
+            )
+        }
         DisposableEffect(key1 = videoUrl) {
             val listener = object : Listener {
                 override fun onIsLoadingChanged(isLoading: Boolean) {
-
+                    visibleBottomDivider = isLoading
                 }
 
                 override fun onIsPlayingChanged(isPlaying: Boolean) {
