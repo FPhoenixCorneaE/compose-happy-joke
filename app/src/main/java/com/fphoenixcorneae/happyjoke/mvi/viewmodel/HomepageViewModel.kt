@@ -56,13 +56,17 @@ class HomepageViewModel : ViewModel() {
                 apiService.homepageAttentionRecommend()
             }.doOnSuccess { result ->
                 _attentionUiState.update {
-                    it.copy().apply { attentionRecommend = result?.data }
+                    it.copy(attentionRecommend = result?.data)
                 }
             }
         }
     }
 }
 
+/**
+ * @desc：定义页面状态的时候，每个属性值都是不可变的，如果需要结合多个状态判断做页面展示，这种判断可直接在UiState扩展。
+ * @date：2023/04/20 17:45
+ */
 data class AttentionUiState(
-    var attentionRecommend: List<AttentionRecommend.Data>? = null,
+    val attentionRecommend: List<AttentionRecommend.Data>? = null,
 )
