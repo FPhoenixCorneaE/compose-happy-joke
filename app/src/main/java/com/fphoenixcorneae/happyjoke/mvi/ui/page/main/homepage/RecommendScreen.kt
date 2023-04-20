@@ -188,23 +188,25 @@ fun HomepageRecommendItem(
                         isLoading = isLoading,
                     )
                 }
-                (homepageRecommend?.joke?.type ?: 0) == 3 -> {
+                (homepageRecommend?.joke?.type ?: 0) >= 3 -> {
                     // 视频
                     ShortVideoPlayer(
                         modifier = Modifier
+                            .padding(start = 16.dp, top = 8.dp, end = 16.dp)
                             .width(density.run {
                                 (homepageRecommend?.joke?.videoSize
                                     ?.split(",")
                                     ?.getOrNull(0)
                                     ?.toIntOrNull() ?: 0).toDp()
                             })
-                            .height(density.run {
-                                (homepageRecommend?.joke?.videoSize
+                            .aspectRatio(
+                                homepageRecommend?.joke?.videoSize
                                     ?.split(",")
-                                    ?.getOrNull(1)
-                                    ?.toIntOrNull() ?: 0).toDp()
-                            })
-                            .padding(start = 16.dp, top = 8.dp, end = 16.dp)
+                                    ?.run {
+                                        (getOrNull(0)?.toIntOrNull() ?: 1) /
+                                                (getOrNull(1)?.toIntOrNull() ?: 1).toFloat()
+                                    } ?: 1f
+                            )
                             .clip(shape = RoundedCornerShape(8.dp))
                             .placeholder(
                                 visible = isLoading,

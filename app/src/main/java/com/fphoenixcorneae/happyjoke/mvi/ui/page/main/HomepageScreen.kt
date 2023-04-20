@@ -46,7 +46,7 @@ fun HomepageScreen(
         val labels = listOf(
             stringResource(R.string.attention),
             stringResource(R.string.recommend),
-            stringResource(R.string.fresh),
+            stringResource(R.string.latest),
             stringResource(R.string.polite_letters),
             stringResource(R.string.funny_pictures)
         )
@@ -107,7 +107,7 @@ fun HomepageScreen(
                 when (page) {
                     0 -> AttentionScreen()
                     1 -> RecommendScreen()
-                    2 -> FreshScreen()
+                    2 -> LatestScreen()
                     3 -> PoliteLettersScreen()
                     else -> FunnyPicturesScreen()
                 }

@@ -83,7 +83,8 @@ fun ShortVideoPlayer(
                 }
         }
         DisposableEffect(
-            Box(modifier = Modifier.fillMaxSize()) {
+            Box(modifier = Modifier.fillMaxSize()
+        ) {
                 var visibleController by remember { mutableStateOf(true) }
                 AndroidView(
                     factory = {

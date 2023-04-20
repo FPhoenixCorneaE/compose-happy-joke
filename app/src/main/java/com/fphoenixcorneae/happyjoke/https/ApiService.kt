@@ -29,6 +29,12 @@ interface ApiService {
     suspend fun homepageAttentionRecommend(): AttentionRecommend?
 
     /**
+     * 获取首页的最新列表数据
+     */
+    @POST("/jokes/home/latest")
+    suspend fun homepageLatest(): HomepageRecommend?
+
+    /**
      * 获取划一划页面的推荐列表数据
      */
     @POST("/jokes/douyin/list")
