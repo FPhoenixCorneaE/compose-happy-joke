@@ -6,10 +6,10 @@ import com.fphoenixcorneae.happyjoke.https.apiService
 import com.fphoenixcorneae.happyjoke.mvi.model.HomepageRecommend
 
 /**
- * @desc：首页最新列表数据源
- * @date：2023/04/20 14:27
+ * @desc：首页纯文列表数据源
+ * @date：2023/04/20 14:28
  */
-class HomepageLatestSource : PagingSource<Int, HomepageRecommend.Data>() {
+class HomepagePoliteLettersSource : PagingSource<Int, HomepageRecommend.Data>() {
     override fun getRefreshKey(state: PagingState<Int, HomepageRecommend.Data>): Int? {
         return null
     }
@@ -18,7 +18,7 @@ class HomepageLatestSource : PagingSource<Int, HomepageRecommend.Data>() {
         return runCatching {
             val nextPage = params.key ?: 1
             LoadResult.Page(
-                data = apiService.homepageLatest()?.data ?: mutableListOf(),
+                data = apiService.homepagePoliteLetters()?.data ?: mutableListOf(),
                 prevKey = if (nextPage == 1) null else nextPage - 1,
                 nextKey = nextPage + 1
             )
