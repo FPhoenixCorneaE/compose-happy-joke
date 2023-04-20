@@ -65,6 +65,8 @@ dependencies {
     // paging
     implementation "androidx.paging:paging-runtime-ktx:3.1.1"
     implementation "androidx.paging:paging-compose:1.0.0-alpha18"
+    // startup
+    implementation "androidx.startup:startup-runtime:1.1.1"
     // accompanist: https://google.github.io/accompanist/
     def accompanist = "0.28.0"
     implementation "com.google.accompanist:accompanist-insets:$accompanist"
@@ -88,7 +90,7 @@ dependencies {
     implementation("com.google.android.exoplayer:exoplayer-dash:2.18.5")
     implementation("com.google.android.exoplayer:exoplayer-ui:2.18.5")
     // 视频缓存
-//    implementation("com.danikula:videocache:2.7.0")
+    implementation("com.github.FPhoenixCorneaE:AndroidVideoCache:2.7.2")
 
     // retrofit
     implementation 'com.squareup.retrofit2:retrofit:2.9.0'

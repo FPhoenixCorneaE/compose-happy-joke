@@ -24,6 +24,7 @@ import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.ColorFilter
 import androidx.compose.ui.layout.ContentScale
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.tooling.preview.Preview
@@ -34,6 +35,7 @@ import androidx.paging.LoadState
 import androidx.paging.compose.collectAsLazyPagingItems
 import coil.compose.AsyncImage
 import com.fphoenixcorneae.happyjoke.R
+import com.fphoenixcorneae.happyjoke.exoplayer.HttpProxyCacheManager
 import com.fphoenixcorneae.happyjoke.ext.urlAESDecrypt
 import com.fphoenixcorneae.happyjoke.mvi.ui.widget.SystemUiScaffold
 import com.fphoenixcorneae.happyjoke.mvi.ui.widget.TikTokVideoPlayer
@@ -55,6 +57,7 @@ fun SweepScreen(
         isFitsSystemWindows = false,
         isDarkFont = false,
     ) {
+        val context = LocalContext.current
         val sweepTikTokVideos = viewModel.sweepTikTokVideos.collectAsLazyPagingItems()
         val pagerState = rememberPagerState()
         val currentPage by remember { derivedStateOf { pagerState.currentPage } }
@@ -75,7 +78,10 @@ fun SweepScreen(
                     if (page == currentPage) {
                         TikTokVideoPlayer(
                             modifier = Modifier.fillMaxSize(),
-                            videoUrl = item?.joke?.videoUrl.urlAESDecrypt(),
+                            videoUrl = HttpProxyCacheManager.getProxyUrl(
+                                context = context,
+                                url = item?.joke?.videoUrl.urlAESDecrypt(),
+                            ),
                         )
                     }
                     Column(

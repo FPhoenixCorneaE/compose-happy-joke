@@ -58,7 +58,11 @@ fun AttentionRecommend(
 ) {
     val context = LocalContext.current
     val attentionUiState by viewModel.attentionUiState.collectAsState()
-    Column {
+    Column(
+        modifier = Modifier
+            .fillMaxWidth()
+            .wrapContentHeight()
+    ) {
         Text(
             text = stringResource(R.string.recommend_users),
             color = Color.DarkGray,

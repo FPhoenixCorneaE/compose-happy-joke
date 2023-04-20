@@ -104,7 +104,11 @@ fun ShortVideoPlayer(
                 )
                 // 视频封面
                 var visibleThumb by remember { mutableStateOf(true) }
-                AnimatedVisibility(visible = visibleThumb) {
+                AnimatedVisibility(
+                    visible = visibleThumb,
+                    enter = fadeIn(),
+                    exit = fadeOut(),
+                ) {
                     AsyncImage(
                         model = ImageRequest.Builder(context)
                             .data(thumbUrl)

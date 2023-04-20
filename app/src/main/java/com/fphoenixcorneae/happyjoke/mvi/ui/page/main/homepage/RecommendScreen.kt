@@ -31,6 +31,7 @@ import coil.compose.AsyncImage
 import coil.request.ImageRequest
 import coil.transform.CircleCropTransformation
 import com.fphoenixcorneae.happyjoke.R
+import com.fphoenixcorneae.happyjoke.exoplayer.HttpProxyCacheManager
 import com.fphoenixcorneae.happyjoke.ext.urlAESDecrypt
 import com.fphoenixcorneae.happyjoke.mvi.model.HomepageRecommend
 import com.fphoenixcorneae.happyjoke.mvi.ui.theme.GreyLine
@@ -211,7 +212,10 @@ fun HomepageRecommendItem(
                                 shape = RoundedCornerShape(4.dp),
                                 highlight = PlaceholderHighlight.shimmer(highlightColor = Color.White),
                             ),
-                        videoUrl = homepageRecommend?.joke?.videoUrl.urlAESDecrypt(),
+                        videoUrl = HttpProxyCacheManager.getProxyUrl(
+                            context = context,
+                            url = homepageRecommend?.joke?.videoUrl.urlAESDecrypt(),
+                        ),
                         thumbUrl = homepageRecommend?.joke?.thumbUrl?.urlAESDecrypt()
                     )
                 }
