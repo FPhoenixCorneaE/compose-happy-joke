@@ -41,6 +41,12 @@ interface ApiService {
     suspend fun homepagePoliteLetters(): HomepageRecommend?
 
     /**
+     * 获取首页的纯图片列表数据
+     */
+    @POST("/jokes/home/pic")
+    suspend fun homepageFunnyPictures(): HomepageRecommend?
+
+    /**
      * 获取划一划页面的推荐列表数据
      */
     @POST("/jokes/douyin/list")

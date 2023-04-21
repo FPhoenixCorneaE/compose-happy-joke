@@ -10,10 +10,7 @@ import com.fphoenixcorneae.happyjoke.https.apiService
 import com.fphoenixcorneae.happyjoke.https.doOnSuccess
 import com.fphoenixcorneae.happyjoke.https.sendHttpRequest
 import com.fphoenixcorneae.happyjoke.mvi.model.AttentionRecommend
-import com.fphoenixcorneae.happyjoke.mvi.model.paging.HomepageLatestSource
-import com.fphoenixcorneae.happyjoke.mvi.model.paging.HomepagePoliteLettersSource
-import com.fphoenixcorneae.happyjoke.mvi.model.paging.HomepageRecommendSource
-import com.fphoenixcorneae.happyjoke.mvi.model.paging.SweepTikTokSource
+import com.fphoenixcorneae.happyjoke.mvi.model.paging.*
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.update
@@ -37,6 +34,11 @@ class HomepageViewModel : ViewModel() {
     /** 首页纯文列表 */
     val homepagePoliteLetters = Pager(config = PagingConfig(pageSize = 10)) {
         HomepagePoliteLettersSource()
+    }.flow.cachedIn(viewModelScope)
+
+    /** 首页纯图片列表 */
+    val homepageFunnyPictures = Pager(config = PagingConfig(pageSize = 10)) {
+        HomepageFunnyPicturesSource()
     }.flow.cachedIn(viewModelScope)
 
     /** 划一划页面的推荐列表 */
