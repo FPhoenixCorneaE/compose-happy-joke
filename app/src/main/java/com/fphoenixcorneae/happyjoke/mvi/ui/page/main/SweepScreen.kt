@@ -22,7 +22,6 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.graphics.ColorFilter
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.text.TextStyle
@@ -36,6 +35,7 @@ import androidx.paging.compose.collectAsLazyPagingItems
 import coil.compose.AsyncImage
 import com.fphoenixcorneae.happyjoke.R
 import com.fphoenixcorneae.happyjoke.exoplayer.HttpProxyCacheManager
+import com.fphoenixcorneae.happyjoke.ext.noRippleClickable
 import com.fphoenixcorneae.happyjoke.ext.urlAESDecrypt
 import com.fphoenixcorneae.happyjoke.mvi.ui.widget.SystemUiScaffold
 import com.fphoenixcorneae.happyjoke.mvi.ui.widget.TikTokVideoPlayer
@@ -87,7 +87,7 @@ fun SweepScreen(
                     Column(
                         modifier = Modifier
                             .align(Alignment.TopEnd)
-                            .padding(top = maxHeight * 0.3f, end = 16.dp),
+                            .padding(top = maxHeight * 0.4f, end = 16.dp),
                         horizontalAlignment = Alignment.CenterHorizontally,
                     ) {
                         // 头像
@@ -114,18 +114,14 @@ fun SweepScreen(
                         }
                         // 点赞
                         AsyncImage(
-                            model = R.mipmap.ic_video_like,
+                            model = if (item?.info?.isLike == true) R.mipmap.ic_video_like else R.mipmap.ic_video_unlike,
                             contentDescription = null,
                             modifier = Modifier
                                 .padding(top = 20.dp)
-                                .size(36.dp),
-                            colorFilter = ColorFilter.tint(
-                                if (item?.info?.isLike == true) {
-                                    Color.Red
-                                } else {
-                                    Color.White
-                                }
-                            )
+                                .size(36.dp)
+                                .noRippleClickable {
+
+                                },
                         )
                         Text(
                             text = item?.info?.likeNum.toString(),

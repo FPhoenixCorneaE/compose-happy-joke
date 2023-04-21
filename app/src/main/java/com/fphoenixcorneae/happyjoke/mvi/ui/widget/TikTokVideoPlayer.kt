@@ -137,12 +137,12 @@ fun TikTokPlayerController(
             exit = fadeOut(),
             modifier = Modifier
                 .align(Alignment.Center)
-                .size(48.dp),
+                .size(80.dp),
         ) {
             Icon(
                 painter = painterResource(id = R.mipmap.ic_video_play),
                 contentDescription = null,
-                tint = Color.White.copy(alpha = 0.4f),
+                tint = Color.White.copy(alpha = 0.5f),
             )
         }
         var visibleBottomDivider by remember { mutableStateOf(true) }
