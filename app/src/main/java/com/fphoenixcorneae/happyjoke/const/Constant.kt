@@ -18,6 +18,7 @@ object Constant {
         const val SPLASH = "splash"
         const val MAIN = "main"
         const val JOKE_POST = "joke_post"
+        const val LOGIN = "login"
 
         /**
          * @desc：主页

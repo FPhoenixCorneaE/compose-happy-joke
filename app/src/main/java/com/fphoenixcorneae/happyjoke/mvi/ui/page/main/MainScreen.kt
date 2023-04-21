@@ -81,7 +81,13 @@ fun MainScreen(
                 when (it) {
                     0 -> animatedNavController.navigate(Constant.NavRoute.Main.HOMEPAGE)
                     1 -> animatedNavController.navigate(Constant.NavRoute.Main.SWEEP)
-                    2 -> animatedNavController.navigate(Constant.NavRoute.Main.MESSAGE)
+                    3 -> {
+                        if (true) {
+                            navController.navigate(Constant.NavRoute.LOGIN)
+                        } else {
+                            animatedNavController.navigate(Constant.NavRoute.Main.MESSAGE)
+                        }
+                    }
                     else -> animatedNavController.navigate(Constant.NavRoute.Main.MINE)
                 }
             }
