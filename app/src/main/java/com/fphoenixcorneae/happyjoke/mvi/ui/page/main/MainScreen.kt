@@ -10,6 +10,7 @@ import androidx.compose.material3.MaterialTheme
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.navigation.NavHostController
 import com.fphoenixcorneae.happyjoke.const.Constant
 import com.fphoenixcorneae.happyjoke.mvi.ui.page.dialog.AppUpdateDialog
 import com.fphoenixcorneae.happyjoke.mvi.ui.widget.BottomNavigationBar
@@ -25,6 +26,7 @@ import com.google.accompanist.navigation.animation.rememberAnimatedNavController
 @Composable
 fun MainScreen(
     window: Window? = null,
+    navController: NavHostController = rememberAnimatedNavController(),
 ) {
     Column(
         modifier = Modifier
@@ -35,9 +37,9 @@ fun MainScreen(
             modifier = Modifier
                 .fillMaxSize()
         ) {
-            val navController = rememberAnimatedNavController()
+            val animatedNavController = rememberAnimatedNavController()
             AnimatedNavHost(
-                navController = navController,
+                navController = animatedNavController,
                 startDestination = Constant.NavRoute.Main.HOMEPAGE,
                 modifier = Modifier.fillMaxSize()
             ) {
@@ -73,14 +75,14 @@ fun MainScreen(
             BottomNavigationBar(
                 modifier = Modifier.align(alignment = Alignment.BottomCenter),
                 onCenterIconClick = {
-
+                    navController.navigate(Constant.NavRoute.JOKE_POST)
                 }
             ) {
                 when (it) {
-                    0 -> navController.navigate(Constant.NavRoute.Main.HOMEPAGE)
-                    1 -> navController.navigate(Constant.NavRoute.Main.SWEEP)
-                    2 -> navController.navigate(Constant.NavRoute.Main.MESSAGE)
-                    else -> navController.navigate(Constant.NavRoute.Main.MINE)
+                    0 -> animatedNavController.navigate(Constant.NavRoute.Main.HOMEPAGE)
+                    1 -> animatedNavController.navigate(Constant.NavRoute.Main.SWEEP)
+                    2 -> animatedNavController.navigate(Constant.NavRoute.Main.MESSAGE)
+                    else -> animatedNavController.navigate(Constant.NavRoute.Main.MINE)
                 }
             }
         }
