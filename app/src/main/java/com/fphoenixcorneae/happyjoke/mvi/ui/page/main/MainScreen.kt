@@ -65,11 +65,11 @@ fun MainScreen(
                     MessageScreen()
                 }
                 composable(
-                    route = Constant.NavRoute.Main.MINE,
+                    route = Constant.NavRoute.Main.ME,
                     enterTransition = { fadeIn() },
                     exitTransition = { fadeOut() },
                 ) {
-                    MineScreen()
+                    MeScreen()
                 }
             }
             BottomNavigationBar(
@@ -88,7 +88,7 @@ fun MainScreen(
                             animatedNavController.navigate(Constant.NavRoute.Main.MESSAGE)
                         }
                     }
-                    else -> animatedNavController.navigate(Constant.NavRoute.Main.MINE)
+                    else -> animatedNavController.navigate(Constant.NavRoute.Main.ME)
                 }
             }
         }

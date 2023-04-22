@@ -28,7 +28,7 @@ object Constant {
             const val HOMEPAGE = "main_homepage"
             const val SWEEP = "main_sweep"
             const val MESSAGE = "main_message"
-            const val MINE = "main_mine"
+            const val ME = "main_me"
         }
     }
 

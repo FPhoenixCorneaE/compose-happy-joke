@@ -77,9 +77,9 @@ fun BottomNavigationBar(
             selectedColor = Yellow40,
         ),
         NaviItem(
-            name = stringResource(R.string.mine),
-            icon = R.mipmap.ic_homepage_mine_gray,
-            selectedIcon = R.mipmap.ic_homepage_mine_selected,
+            name = stringResource(R.string.me),
+            icon = R.mipmap.ic_homepage_me_gray,
+            selectedIcon = R.mipmap.ic_homepage_me_selected,
             selectedColor = Yellow40,
         ),
     )

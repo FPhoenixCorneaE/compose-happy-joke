@@ -3,7 +3,7 @@
     <string name="homepage">首页</string>
     <string name="sweep">划一划</string>
     <string name="message">消息</string>
-    <string name="mine">我的</string>
+    <string name="me">我的</string>
     <string name="update_now">立即更新</string>
     <string name="privacy_policy">隐私政策</string>
     <string name="privacy_policy_prompt">尊敬的用户您好，段子乐根据最新的法律法规及监管政策要求，向您推送本提示。为了更好的通知您新的消息，我们需要您为本应用授权通知权限。为了发布图片和视频内容，需要您授权相机权限。为了更精准的推荐内容，需要您同意设备信息收集授权。以及为了更加稳定的提供服务，需要收集一些日志信息。</string>
