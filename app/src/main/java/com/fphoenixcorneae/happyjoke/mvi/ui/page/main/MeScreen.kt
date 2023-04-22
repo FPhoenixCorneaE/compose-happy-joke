@@ -7,10 +7,7 @@ import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.verticalScroll
-import androidx.compose.material3.Card
-import androidx.compose.material3.CardDefaults
-import androidx.compose.material3.MaterialTheme
-import androidx.compose.material3.Text
+import androidx.compose.material3.*
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -168,6 +165,85 @@ fun MeScreen(
                     .height(120.dp)
                     .clip(RoundedCornerShape(12.dp))
             )
+            Column(
+                modifier = Modifier
+                    .padding(start = 20.dp, top = 16.dp, end = 20.dp)
+                    .fillMaxWidth()
+                    .background(
+                        color = MaterialTheme.colorScheme.background,
+                        shape = RoundedCornerShape(8.dp),
+                    )
+            ) {
+                MeItem(iconResId = R.mipmap.ic_me_kefu, content = "我的客服")
+            }
+            Column(
+                modifier = Modifier
+                    .padding(start = 20.dp, top = 16.dp, end = 20.dp)
+                    .fillMaxWidth()
+                    .background(
+                        color = MaterialTheme.colorScheme.background,
+                        shape = RoundedCornerShape(8.dp),
+                    )
+            ) {
+                MeItem(iconResId = R.mipmap.ic_me_auditing, content = "审核中")
+                MeItem(iconResId = R.mipmap.ic_me_audit_failure, content = "审核失败")
+                MeItem(iconResId = R.mipmap.ic_me_audit_pending, content = "待审核")
+            }
+            Column(
+                modifier = Modifier
+                    .padding(start = 20.dp, top = 16.dp, end = 20.dp)
+                    .fillMaxWidth()
+                    .background(
+                        color = MaterialTheme.colorScheme.background,
+                        shape = RoundedCornerShape(8.dp),
+                    )
+            ) {
+                MeItem(iconResId = R.mipmap.ic_me_share, content = "分享给朋友")
+                MeItem(iconResId = R.mipmap.ic_me_feedback, content = "意见反馈")
+                MeItem(iconResId = R.mipmap.ic_me_praise, content = "赏个好评")
+                MeItem(iconResId = R.mipmap.ic_me_setting, content = "设置")
+            }
+            Spacer(modifier = Modifier.height(80.dp))
         }
+    }
+}
+
+@Composable
+private fun MeItem(
+    iconResId: Int,
+    content: String,
+    onItemClick: () -> Unit = {},
+) {
+    Box(
+        modifier = Modifier
+            .fillMaxWidth()
+            .padding(12.dp)
+            .noRippleClickable {
+
+            },
+    ) {
+        Icon(
+            painter = painterResource(id = iconResId),
+            contentDescription = null,
+            modifier = Modifier
+                .size(20.dp)
+                .align(Alignment.CenterStart),
+        )
+        Text(
+            text = content,
+            color = Black30,
+            fontSize = 12.sp,
+            modifier = Modifier
+                .padding(start = 28.dp)
+                .align(Alignment.CenterStart),
+        )
+        Icon(
+            painter = painterResource(id = R.mipmap.ic_me_arrow_right),
+            contentDescription = null,
+            modifier = Modifier
+                .size(16.dp)
+                .align(Alignment.CenterEnd),
+            tint = Grey40,
+        )
     }
 }
