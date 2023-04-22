@@ -72,7 +72,7 @@ fun JokePostScreen(
                     model = R.mipmap.ic_pic,
                     contentDescription = null,
                     modifier = Modifier
-                        .size(48.dp)
+                        .size(36.dp)
                         .constrainAs(pic) {
                             start.linkTo(parent.start, margin = 20.dp)
                             top.linkTo(parent.top)
@@ -86,9 +86,9 @@ fun JokePostScreen(
                     model = R.mipmap.ic_video,
                     contentDescription = null,
                     modifier = Modifier
-                        .size(48.dp)
+                        .size(36.dp)
                         .constrainAs(video) {
-                            start.linkTo(pic.end, margin = 20.dp)
+                            start.linkTo(pic.end, margin = 36.dp)
                             top.linkTo(parent.top)
                             bottom.linkTo(parent.bottom)
                         }

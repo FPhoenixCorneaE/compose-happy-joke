@@ -27,7 +27,8 @@ import androidx.compose.ui.text.input.VisualTransformation
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import com.fphoenixcorneae.happyjoke.ext.noRippleClickable
-import com.fphoenixcorneae.happyjoke.mvi.ui.theme.Grey20
+import com.fphoenixcorneae.happyjoke.mvi.ui.theme.Grey10
+import com.fphoenixcorneae.happyjoke.mvi.ui.theme.Grey40
 
 /**
  * @param hint: 空字符时的提示
@@ -40,7 +41,7 @@ fun AccountEditText(
     text: String,
     onValueChange: (String) -> Unit,
     hint: String = "",
-    hintColor: Color = Color.LightGray,
+    hintColor: Color = Grey40,
     @DrawableRes startIcon: Int = -1,
     @DrawableRes startCheckedIcon: Int = -1,
     iconSpacing: Dp = 4.dp,
@@ -58,8 +59,7 @@ fun AccountEditText(
     var hasFocus by rememberSaveable { mutableStateOf(false) }
 
     Box(modifier = modifier) {
-        BasicTextField(
-            value = text,
+        BasicTextField(value = text,
             onValueChange = onValueChange,
             modifier = Modifier
                 .fillMaxSize()
@@ -76,7 +76,7 @@ fun AccountEditText(
                 Row(
                     modifier = Modifier
                         .fillMaxSize()
-                        .background(color = Grey20, RoundedCornerShape(30.dp)),
+                        .background(color = Grey10, RoundedCornerShape(30.dp)),
                     verticalAlignment = Alignment.CenterVertically
                 ) {
                     // -1 不显示 左侧Icon
@@ -117,11 +117,10 @@ fun AccountEditText(
                             modifier = Modifier
                                 .size(12.dp)
                                 .padding(2.dp)
-                                .noRippleClickable { onEndIconClick() }
+                                .noRippleClickable { onEndIconClick() },
                         )
                     }
                 }
-            }
-        )
+            })
     }
 }

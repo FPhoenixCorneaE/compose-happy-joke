@@ -22,12 +22,16 @@ import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.SolidColor
 import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.input.VisualTransformation
+import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
-import com.fphoenixcorneae.happyjoke.mvi.ui.theme.Grey20
-import com.fphoenixcorneae.happyjoke.mvi.ui.theme.GreyLine
+import androidx.compose.ui.unit.sp
+import com.fphoenixcorneae.happyjoke.R
+import com.fphoenixcorneae.happyjoke.ext.noRippleClickable
+import com.fphoenixcorneae.happyjoke.mvi.ui.theme.*
 
 /**
  * @param hint: 空字符时的提示
@@ -40,7 +44,7 @@ fun AuthCodeEditText(
     text: String,
     onValueChange: (String) -> Unit,
     hint: String = "",
-    hintColor: Color = Color.LightGray,
+    hintColor: Color = Grey40,
     @DrawableRes startIcon: Int = -1,
     @DrawableRes startCheckedIcon: Int = -1,
     iconSpacing: Dp = 4.dp,
@@ -57,8 +61,7 @@ fun AuthCodeEditText(
     var hasFocus by rememberSaveable { mutableStateOf(false) }
 
     Box(modifier = modifier) {
-        BasicTextField(
-            value = text,
+        BasicTextField(value = text,
             onValueChange = onValueChange,
             modifier = Modifier
                 .fillMaxSize()
@@ -75,7 +78,7 @@ fun AuthCodeEditText(
                 Row(
                     modifier = Modifier
                         .fillMaxSize()
-                        .background(color = Grey20, RoundedCornerShape(30.dp)),
+                        .background(color = Grey10, RoundedCornerShape(30.dp)),
                     verticalAlignment = Alignment.CenterVertically
                 ) {
                     // -1 不显示 左侧Icon
@@ -108,11 +111,25 @@ fun AuthCodeEditText(
                         innerTextField()
                     }
 
-                    VerticalDivider(color = GreyLine, thickness = 5.dp)
+                    VerticalDivider(
+                        modifier = Modifier.height(12.dp),
+                        color = Grey40,
+                        thickness = 1.dp,
+                    )
 
-                    Text(text = "获取验证码", color = hintColor, style = textStyle, modifier = Modifier.width(60.dp))
+                    Text(
+                        text = stringResource(R.string.get_auth_code),
+                        color = Grey30,
+                        fontSize = 13.sp,
+                        style = textStyle,
+                        textAlign = TextAlign.Center,
+                        modifier = Modifier
+                            .width(120.dp)
+                            .noRippleClickable {
+                                onRightTextClick()
+                            },
+                    )
                 }
-            }
-        )
+            })
     }
 }
