@@ -7,14 +7,13 @@ import androidx.compose.animation.ExperimentalAnimationApi
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.text.ClickableText
 import androidx.compose.foundation.text.KeyboardOptions
-import androidx.compose.material3.Text
 import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
-import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.Text
 import androidx.compose.runtime.*
-import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.alpha
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
@@ -25,11 +24,11 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.text.style.TextAlign
-import androidx.compose.ui.text.style.TextIndent
 import androidx.compose.ui.text.withStyle
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavHostController
 import coil.compose.AsyncImage
 import com.fphoenixcorneae.happyjoke.R
@@ -40,6 +39,8 @@ import com.fphoenixcorneae.happyjoke.mvi.ui.theme.Yellow30
 import com.fphoenixcorneae.happyjoke.mvi.ui.widget.AccountEditText
 import com.fphoenixcorneae.happyjoke.mvi.ui.widget.AuthCodeEditText
 import com.fphoenixcorneae.happyjoke.mvi.ui.widget.SystemUiScaffold
+import com.fphoenixcorneae.happyjoke.mvi.viewmodel.LoginAction
+import com.fphoenixcorneae.happyjoke.mvi.viewmodel.LoginViewModel
 import com.google.accompanist.navigation.animation.rememberAnimatedNavController
 
 /**
@@ -52,8 +53,10 @@ import com.google.accompanist.navigation.animation.rememberAnimatedNavController
 fun LoginScreen(
     window: Window? = null,
     navController: NavHostController = rememberAnimatedNavController(),
+    viewModel: LoginViewModel = viewModel(),
 ) {
     val context = LocalContext.current
+    val loginUiState by viewModel.loginUiState.collectAsState()
     SystemUiScaffold(window = window) {
         Column(
             modifier = Modifier
@@ -69,19 +72,16 @@ fun LoginScreen(
                         navController.navigateUp()
                     },
             )
-            var isAuthCodeLogin by remember { mutableStateOf(true) }
             Text(
-                text = stringResource(if (isAuthCodeLogin) R.string.auth_code_login else R.string.password_login),
+                text = stringResource(if (loginUiState.isAuthCodeLogin) R.string.auth_code_login else R.string.password_login),
                 color = Color.Black,
                 fontSize = 20.sp,
                 fontWeight = FontWeight.Bold,
                 modifier = Modifier.padding(top = 20.dp),
             )
-            var account by rememberSaveable { mutableStateOf("") }
-            var password by rememberSaveable { mutableStateOf("") }
             AccountEditText(
-                onValueChange = { account = it },
-                text = account,
+                onValueChange = { viewModel.accountChanged(it) },
+                text = loginUiState.account,
                 textStyle = TextStyle(fontSize = 14.sp, fontWeight = FontWeight.SemiBold),
                 hint = "请输入手机号",
                 modifier = Modifier
@@ -92,25 +92,28 @@ fun LoginScreen(
                     keyboardType = KeyboardType.Number, imeAction = ImeAction.Next
                 ),
             )
-            var authCode by rememberSaveable { mutableStateOf("") }
-            if (isAuthCodeLogin) {
+            if (loginUiState.isAuthCodeLogin) {
                 AuthCodeEditText(
-                    onValueChange = { authCode = it },
-                    text = authCode,
+                    onValueChange = { viewModel.authCodeChanged(it) },
+                    text = loginUiState.authCode,
                     textStyle = TextStyle(fontSize = 14.sp, fontWeight = FontWeight.SemiBold),
                     hint = "请输入验证码",
                     modifier = Modifier
                         .padding(top = 12.dp)
                         .fillMaxWidth()
                         .height(40.dp),
+                    rightTextEnabled = loginUiState.isMobilePhone(),
+                    onRightTextClick = {
+                        viewModel.dispatchIntent(LoginAction.GetCode)
+                    },
                     keyboardOptions = KeyboardOptions(
                         keyboardType = KeyboardType.Number, imeAction = ImeAction.Done
                     ),
                 )
             } else {
                 AccountEditText(
-                    onValueChange = { password = it },
-                    text = password,
+                    onValueChange = { viewModel.passwordChanged(it) },
+                    text = loginUiState.password,
                     textStyle = TextStyle(fontSize = 14.sp, fontWeight = FontWeight.SemiBold),
                     hint = "请输入密码",
                     modifier = Modifier
@@ -124,11 +127,15 @@ fun LoginScreen(
             }
             // 登录
             Button(
-                onClick = { },
+                onClick = {
+                    viewModel.dispatchIntent(LoginAction.Login)
+                },
                 modifier = Modifier
                     .padding(top = 32.dp)
                     .fillMaxWidth()
-                    .height(40.dp),
+                    .height(40.dp)
+                    .alpha(if (loginUiState.loginEnabled()) 1f else 0.6f),
+                enabled = loginUiState.loginEnabled(),
                 colors = ButtonDefaults.buttonColors(
                     containerColor = Yellow30,
                     contentColor = Color.White,
@@ -146,13 +153,13 @@ fun LoginScreen(
                     .fillMaxWidth()
             ) {
                 Text(
-                    text = stringResource(if (isAuthCodeLogin) R.string.password_login else R.string.auth_code_login),
+                    text = stringResource(if (loginUiState.isAuthCodeLogin) R.string.password_login else R.string.auth_code_login),
                     color = Yellow30,
                     fontSize = 14.sp,
                     modifier = Modifier
                         .align(Alignment.CenterStart)
                         .noRippleClickable {
-                            isAuthCodeLogin = !isAuthCodeLogin
+                            viewModel.toggleLoginMode()
                         },
                 )
                 Text(

@@ -18,6 +18,7 @@ import androidx.compose.ui.graphics.toArgb
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
@@ -32,10 +33,12 @@ import coil.request.ImageRequest
 import coil.transform.CircleCropTransformation
 import com.fphoenixcorneae.happyjoke.R
 import com.fphoenixcorneae.happyjoke.exoplayer.HttpProxyCacheManager
+import com.fphoenixcorneae.happyjoke.ext.noRippleClickable
 import com.fphoenixcorneae.happyjoke.ext.urlAESDecrypt
 import com.fphoenixcorneae.happyjoke.mvi.model.HomepageRecommend
 import com.fphoenixcorneae.happyjoke.mvi.ui.theme.GreyLine
 import com.fphoenixcorneae.happyjoke.mvi.ui.theme.GreyPlaceholder
+import com.fphoenixcorneae.happyjoke.mvi.ui.theme.Yellow30
 import com.fphoenixcorneae.happyjoke.mvi.ui.widget.NineGridImage
 import com.fphoenixcorneae.happyjoke.mvi.ui.widget.ShortVideoPlayer
 import com.fphoenixcorneae.happyjoke.mvi.ui.widget.SwipeRefresh
@@ -88,7 +91,7 @@ fun HomepageRecommendItem(
                     .fillMaxWidth()
                     .height(60.dp)
             ) {
-                val (avatar, name, desc, more) = createRefs()
+                val (avatar, name, desc, attention, more) = createRefs()
                 // 用户头像
                 AsyncImage(
                     model = ImageRequest.Builder(context)
@@ -147,6 +150,26 @@ fun HomepageRecommendItem(
                             highlight = PlaceholderHighlight.shimmer(highlightColor = Color.White),
                         ),
                 )
+                // +关注
+                Text(
+                    text = stringResource(id = R.string.add_attention),
+                    style = TextStyle(color = Yellow30, fontSize = 14.sp),
+                    modifier = Modifier
+                        .constrainAs(attention) {
+                            top.linkTo(parent.top)
+                            bottom.linkTo(parent.bottom)
+                            end.linkTo(more.start, margin = 12.dp)
+                        }
+                        .placeholder(
+                            visible = isLoading,
+                            color = GreyPlaceholder,
+                            shape = RoundedCornerShape(4.dp),
+                            highlight = PlaceholderHighlight.shimmer(highlightColor = Color.White),
+                        )
+                        .noRippleClickable {
+
+                        },
+                )
                 // 更多
                 Icon(
                     painter = painterResource(id = R.mipmap.ic_more),
@@ -157,6 +180,9 @@ fun HomepageRecommendItem(
                             top.linkTo(parent.top)
                             bottom.linkTo(parent.bottom)
                             end.linkTo(parent.end, margin = 16.dp)
+                        }
+                        .noRippleClickable {
+
                         },
                 )
             }

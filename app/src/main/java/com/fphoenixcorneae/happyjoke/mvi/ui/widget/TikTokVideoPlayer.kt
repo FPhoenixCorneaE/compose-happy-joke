@@ -3,7 +3,6 @@ package com.fphoenixcorneae.happyjoke.mvi.ui.widget
 import android.net.Uri
 import android.view.ViewGroup
 import android.widget.FrameLayout
-import android.widget.Toast
 import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.animation.core.*
 import androidx.compose.animation.fadeIn
@@ -29,6 +28,7 @@ import com.fphoenixcorneae.happyjoke.exoplayer.ExoPlayerHolder
 import com.fphoenixcorneae.happyjoke.exoplayer.PlayViewMode
 import com.fphoenixcorneae.happyjoke.exoplayer.PlayerViewManager
 import com.fphoenixcorneae.happyjoke.ext.noRippleClickable
+import com.fphoenixcorneae.happyjoke.ext.toast
 import com.google.android.exoplayer2.C
 import com.google.android.exoplayer2.ExoPlayer
 import com.google.android.exoplayer2.MediaItem
@@ -128,7 +128,6 @@ fun TikTokPlayerController(
     exoPlayer: ExoPlayer? = null,
 ) {
     Box(modifier = Modifier.fillMaxSize()) {
-        val context = LocalContext.current
         var visiblePlayIcon by remember { mutableStateOf(false) }
         // 播放按钮
         AnimatedVisibility(
@@ -184,7 +183,7 @@ fun TikTokPlayerController(
                 }
 
                 override fun onPlayerError(error: PlaybackException) {
-                    Toast.makeText(context, "出了点小问题，请稍后重试", Toast.LENGTH_SHORT).show()
+                    "出了点小问题，请稍后重试".toast()
                 }
             }
             exoPlayer?.addListener(listener)

@@ -31,7 +31,10 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.fphoenixcorneae.happyjoke.R
 import com.fphoenixcorneae.happyjoke.ext.noRippleClickable
-import com.fphoenixcorneae.happyjoke.mvi.ui.theme.*
+import com.fphoenixcorneae.happyjoke.mvi.ui.theme.Grey10
+import com.fphoenixcorneae.happyjoke.mvi.ui.theme.Grey30
+import com.fphoenixcorneae.happyjoke.mvi.ui.theme.Grey40
+import com.fphoenixcorneae.happyjoke.mvi.ui.theme.Yellow30
 
 /**
  * @param hint: 空字符时的提示
@@ -48,6 +51,7 @@ fun AuthCodeEditText(
     @DrawableRes startIcon: Int = -1,
     @DrawableRes startCheckedIcon: Int = -1,
     iconSpacing: Dp = 4.dp,
+    rightTextEnabled: Boolean = false,
     onRightTextClick: () -> Unit = {},
     enabled: Boolean = true,
     readOnly: Boolean = false,
@@ -119,14 +123,16 @@ fun AuthCodeEditText(
 
                     Text(
                         text = stringResource(R.string.get_auth_code),
-                        color = Grey30,
+                        color = if (rightTextEnabled) Yellow30 else Grey30,
                         fontSize = 13.sp,
                         style = textStyle,
                         textAlign = TextAlign.Center,
                         modifier = Modifier
                             .width(120.dp)
                             .noRippleClickable {
-                                onRightTextClick()
+                                if (rightTextEnabled) {
+                                    onRightTextClick()
+                                }
                             },
                     )
                 }
