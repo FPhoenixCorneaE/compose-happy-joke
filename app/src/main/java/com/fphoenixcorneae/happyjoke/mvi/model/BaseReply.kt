@@ -11,4 +11,8 @@ data class BaseReply<T>(
     val code: Int = 0, // 0
     val `data`: T? = null,
     val msg: String? = null,
-)
+) {
+    companion object {
+        const val OK = 200
+    }
+}

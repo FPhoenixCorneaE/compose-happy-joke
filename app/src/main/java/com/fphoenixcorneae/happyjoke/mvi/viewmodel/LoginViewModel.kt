@@ -9,6 +9,7 @@ import com.fphoenixcorneae.happyjoke.https.apiService
 import com.fphoenixcorneae.happyjoke.https.doOnError
 import com.fphoenixcorneae.happyjoke.https.doOnSuccess
 import com.fphoenixcorneae.happyjoke.https.sendHttpRequest
+import com.fphoenixcorneae.happyjoke.mvi.model.BaseReply
 import kotlinx.coroutines.channels.Channel
 import kotlinx.coroutines.flow.*
 
@@ -69,6 +70,14 @@ class LoginViewModel : ViewModel() {
                             loginUiState.first().let {
                                 apiService.getCode(it.account)
                             }
+                        }.doOnSuccess { reply ->
+                            if (reply?.code == 0) {
+                                reply.msg?.toast()
+                            } else if (reply?.code == BaseReply.OK) {
+                                "验证码发送成功".toast()
+                            }
+                        }.doOnError {
+                            it.message?.toast()
                         }
                     }
                     LoginAction.Login -> launchIo {
@@ -83,9 +92,11 @@ class LoginViewModel : ViewModel() {
                         }.doOnSuccess { reply ->
                             if (reply?.code == 0) {
                                 reply.msg?.toast()
+                            } else if (reply?.code == BaseReply.OK) {
+
                             }
-                        }.doOnError { t ->
-                            t.message?.toast()
+                        }.doOnError {
+                            it.message?.toast()
                         }
                     }
                 }
@@ -106,7 +117,11 @@ data class LoginUiState(
 ) {
     fun isMobilePhone() = account.isMobilePhone()
 
-    fun loginEnabled() = isMobilePhone() && authCode.length >= 6
+    fun loginEnabled() = if (isAuthCodeLogin) {
+        isMobilePhone() && authCode.length >= 6
+    } else {
+        isMobilePhone() && password.length >= 6
+    }
 }
 
 /**
