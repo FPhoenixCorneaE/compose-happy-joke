@@ -1,9 +1,7 @@
 package com.fphoenixcorneae.happyjoke.https
 
 import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.flow.Flow
-import kotlinx.coroutines.flow.flow
-import kotlinx.coroutines.flow.onStart
+import kotlinx.coroutines.flow.*
 import kotlinx.coroutines.withContext
 
 /**
@@ -19,7 +17,7 @@ sealed class HttpResult<out T> {
 /**
  * 发送 Http 请求
  */
-suspend inline fun <reified T> sendHttpRequest(
+suspend inline fun <reified T> httpRequest(
     loadingMsg: CharSequence? = null,
     crossinline block: suspend () -> T,
 ): Flow<HttpResult<T>> = flow {
@@ -34,10 +32,14 @@ suspend inline fun <reified T> sendHttpRequest(
     emit(HttpResult.Loading(loadingMsg))
 }
 
+suspend inline fun <reified T> Flow<HttpResult<T>>.send() = apply {
+    collect()
+}
+
 suspend inline fun <reified T> Flow<HttpResult<T>>.doOnLoading(
     crossinline block: (CharSequence?) -> Unit,
 ) = apply {
-    collect {
+    onEach {
         if (it is HttpResult.Loading) {
             withContext(Dispatchers.Main) {
                 block(it.msg)
@@ -49,7 +51,7 @@ suspend inline fun <reified T> Flow<HttpResult<T>>.doOnLoading(
 suspend inline fun <reified T> Flow<HttpResult<T>>.doOnSuccess(
     crossinline block: (T) -> Unit,
 ) = apply {
-    collect {
+    onEach {
         if (it is HttpResult.Success) {
             withContext(Dispatchers.Main) {
                 block(it.data)
@@ -61,7 +63,7 @@ suspend inline fun <reified T> Flow<HttpResult<T>>.doOnSuccess(
 suspend inline fun <reified T> Flow<HttpResult<T>>.doOnError(
     crossinline block: (Throwable) -> Unit,
 ) = apply {
-    collect {
+    onEach {
         if (it is HttpResult.Error) {
             withContext(Dispatchers.Main) {
                 block(it.t)

@@ -5,11 +5,9 @@ import com.fphoenixcorneae.happyjoke.ext.isMobilePhone
 import com.fphoenixcorneae.happyjoke.ext.launchDefault
 import com.fphoenixcorneae.happyjoke.ext.launchIo
 import com.fphoenixcorneae.happyjoke.ext.toast
-import com.fphoenixcorneae.happyjoke.https.apiService
-import com.fphoenixcorneae.happyjoke.https.doOnError
-import com.fphoenixcorneae.happyjoke.https.doOnSuccess
-import com.fphoenixcorneae.happyjoke.https.sendHttpRequest
+import com.fphoenixcorneae.happyjoke.https.*
 import com.fphoenixcorneae.happyjoke.mvi.model.BaseReply
+import com.fphoenixcorneae.happyjoke.tool.UserManager
 import kotlinx.coroutines.channels.Channel
 import kotlinx.coroutines.flow.*
 
@@ -66,10 +64,8 @@ class LoginViewModel : ViewModel() {
             loginAction.receiveAsFlow().collect {
                 when (it) {
                     LoginAction.GetCode -> launchIo {
-                        sendHttpRequest {
-                            loginUiState.first().let {
-                                apiService.getCode(it.account)
-                            }
+                        httpRequest {
+                            apiService.getCode(loginUiState.first().account)
                         }.doOnSuccess { reply ->
                             if (reply?.code == 0) {
                                 reply.msg?.toast()
@@ -78,10 +74,10 @@ class LoginViewModel : ViewModel() {
                             }
                         }.doOnError {
                             it.message?.toast()
-                        }
+                        }.send()
                     }
                     LoginAction.Login -> launchIo {
-                        sendHttpRequest {
+                        httpRequest {
                             loginUiState.first().let {
                                 if (it.isAuthCodeLogin) {
                                     apiService.loginByCode(it.account, it.authCode)
@@ -93,11 +89,12 @@ class LoginViewModel : ViewModel() {
                             if (reply?.code == 0) {
                                 reply.msg?.toast()
                             } else if (reply?.code == BaseReply.OK) {
-
+                                UserManager.saveToken(reply.data?.token)
+                                    .saveUserInfo(reply.data?.userInfo)
                             }
                         }.doOnError {
                             it.message?.toast()
-                        }
+                        }.send()
                     }
                 }
             }

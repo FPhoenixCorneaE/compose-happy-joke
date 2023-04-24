@@ -11,6 +11,15 @@ object Constant {
     const val WEB_PROTO = "http://jokes-avatar.cretinzp.com/static/web/jokes-protocol.html"
 
     /**
+     * @desc：用户
+     * @date：2023/04/24 15:32
+     */
+    object User {
+        const val TOKEN = "user_token"
+        const val USER_INFO = "user_info"
+    }
+
+    /**
      * @desc：导航路由
      * @date：2023/03/17 09:40
      */
