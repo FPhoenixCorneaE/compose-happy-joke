@@ -1,4 +1,4 @@
-package com.fphoenixcorneae.happyjoke.mvi.ui.page.main
+package com.fphoenixcorneae.happyjoke.mvi.ui.page.home
 
 import android.view.Window
 import androidx.compose.animation.animateColorAsState
@@ -22,8 +22,8 @@ import androidx.compose.ui.unit.sp
 import androidx.compose.ui.zIndex
 import coil.compose.AsyncImage
 import com.fphoenixcorneae.happyjoke.R
-import com.fphoenixcorneae.happyjoke.ext.noRippleClickable
-import com.fphoenixcorneae.happyjoke.mvi.ui.page.main.homepage.*
+import com.fphoenixcorneae.happyjoke.ext.clickableNoRipple
+import com.fphoenixcorneae.happyjoke.mvi.ui.page.home.homepage.*
 import com.fphoenixcorneae.happyjoke.mvi.ui.theme.GreyLine
 import com.fphoenixcorneae.happyjoke.mvi.ui.widget.SystemUiScaffold
 import kotlinx.coroutines.launch
@@ -79,7 +79,7 @@ fun HomepageScreen(
                             textAlign = TextAlign.End,
                             modifier = Modifier
                                 .widthIn(min = 50.dp)
-                                .noRippleClickable {
+                                .clickableNoRipple {
                                     if (selectedPosition != index) {
                                         coroutineScope.launch {
                                             pagerState.animateScrollToPage(index)
@@ -97,7 +97,7 @@ fun HomepageScreen(
                         .padding(end = 20.dp)
                         .size(size = 24.dp)
                         .align(alignment = Alignment.CenterEnd)
-                        .noRippleClickable {
+                        .clickableNoRipple {
 
                         },
                 )

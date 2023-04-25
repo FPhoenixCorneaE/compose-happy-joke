@@ -30,7 +30,7 @@ import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.fphoenixcorneae.happyjoke.R
-import com.fphoenixcorneae.happyjoke.ext.noRippleClickable
+import com.fphoenixcorneae.happyjoke.ext.clickableNoRipple
 import com.fphoenixcorneae.happyjoke.mvi.ui.theme.Grey10
 import com.fphoenixcorneae.happyjoke.mvi.ui.theme.Grey30
 import com.fphoenixcorneae.happyjoke.mvi.ui.theme.Grey40
@@ -129,7 +129,7 @@ fun AuthCodeEditText(
                         textAlign = TextAlign.Center,
                         modifier = Modifier
                             .width(120.dp)
-                            .noRippleClickable {
+                            .clickableNoRipple {
                                 if (rightTextEnabled) {
                                     onRightTextClick()
                                 }

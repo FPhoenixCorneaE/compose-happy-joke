@@ -32,7 +32,7 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import coil.compose.AsyncImage
 import com.fphoenixcorneae.happyjoke.R
-import com.fphoenixcorneae.happyjoke.ext.noRippleClickable
+import com.fphoenixcorneae.happyjoke.ext.clickableNoRipple
 import com.fphoenixcorneae.happyjoke.mvi.ui.theme.Yellow40
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
@@ -183,7 +183,7 @@ fun BottomNavigationBar(
                             .width(0.dp)
                             .weight(1f)
                             .wrapContentHeight()
-                            .noRippleClickable {
+                            .clickableNoRipple {
                                 if (selectedPosition != index) {
                                     selectedPosition = index
                                     isDarkMode = index == 1
@@ -229,7 +229,7 @@ fun BottomNavigationBar(
             modifier = Modifier
                 .size(centerIconSize)
                 .align(alignment = Alignment.Center)
-                .noRippleClickable {
+                .clickableNoRipple {
                     onCenterIconClick()
                 },
             colorFilter = if (isDarkMode) ColorFilter.tint(color = Color.White) else null,

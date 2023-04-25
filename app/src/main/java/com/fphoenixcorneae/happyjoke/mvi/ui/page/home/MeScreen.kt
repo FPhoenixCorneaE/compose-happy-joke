@@ -1,4 +1,4 @@
-package com.fphoenixcorneae.happyjoke.mvi.ui.page.main
+package com.fphoenixcorneae.happyjoke.mvi.ui.page.home
 
 import android.view.Window
 import androidx.compose.foundation.Image
@@ -27,7 +27,7 @@ import coil.request.ImageRequest
 import coil.transform.CircleCropTransformation
 import com.fphoenixcorneae.happyjoke.R
 import com.fphoenixcorneae.happyjoke.ext.LifecycleObserver
-import com.fphoenixcorneae.happyjoke.ext.noRippleClickable
+import com.fphoenixcorneae.happyjoke.ext.clickableNoRipple
 import com.fphoenixcorneae.happyjoke.ext.urlAESDecrypt
 import com.fphoenixcorneae.happyjoke.mvi.ui.theme.*
 import com.fphoenixcorneae.happyjoke.mvi.ui.widget.SystemUiScaffold
@@ -155,7 +155,7 @@ fun MeScreen(
                 ) {
                     Column(verticalArrangement = Arrangement.spacedBy(6.dp),
                         horizontalAlignment = Alignment.CenterHorizontally,
-                        modifier = Modifier.noRippleClickable { }) {
+                        modifier = Modifier.clickableNoRipple { }) {
                         Image(
                             painter = painterResource(id = R.mipmap.ic_me_post),
                             contentDescription = null,
@@ -165,7 +165,7 @@ fun MeScreen(
                     }
                     Column(verticalArrangement = Arrangement.spacedBy(6.dp),
                         horizontalAlignment = Alignment.CenterHorizontally,
-                        modifier = Modifier.noRippleClickable { }) {
+                        modifier = Modifier.clickableNoRipple { }) {
                         Image(
                             painter = painterResource(id = R.mipmap.ic_me_comment),
                             contentDescription = null,
@@ -175,7 +175,7 @@ fun MeScreen(
                     }
                     Column(verticalArrangement = Arrangement.spacedBy(6.dp),
                         horizontalAlignment = Alignment.CenterHorizontally,
-                        modifier = Modifier.noRippleClickable { }) {
+                        modifier = Modifier.clickableNoRipple { }) {
                         Image(
                             painter = painterResource(id = R.mipmap.ic_me_like),
                             contentDescription = null,
@@ -185,7 +185,7 @@ fun MeScreen(
                     }
                     Column(verticalArrangement = Arrangement.spacedBy(6.dp),
                         horizontalAlignment = Alignment.CenterHorizontally,
-                        modifier = Modifier.noRippleClickable { }) {
+                        modifier = Modifier.clickableNoRipple { }) {
                         Image(
                             painter = painterResource(id = R.mipmap.ic_me_collect),
                             contentDescription = null,
@@ -262,7 +262,7 @@ private fun MeItem(
         modifier = Modifier
             .fillMaxWidth()
             .padding(12.dp)
-            .noRippleClickable {
+            .clickableNoRipple {
 
             },
     ) {

@@ -1,4 +1,4 @@
-package com.fphoenixcorneae.happyjoke.mvi.ui.page.login
+package com.fphoenixcorneae.happyjoke.mvi.ui.page.user
 
 import android.content.Intent
 import android.net.Uri
@@ -33,7 +33,7 @@ import androidx.navigation.NavHostController
 import coil.compose.AsyncImage
 import com.fphoenixcorneae.happyjoke.R
 import com.fphoenixcorneae.happyjoke.const.Constant
-import com.fphoenixcorneae.happyjoke.ext.noRippleClickable
+import com.fphoenixcorneae.happyjoke.ext.clickableNoRipple
 import com.fphoenixcorneae.happyjoke.mvi.ui.theme.Grey70
 import com.fphoenixcorneae.happyjoke.mvi.ui.theme.Yellow30
 import com.fphoenixcorneae.happyjoke.mvi.ui.widget.AccountEditText
@@ -44,13 +44,13 @@ import com.fphoenixcorneae.happyjoke.mvi.viewmodel.LoginViewModel
 import com.google.accompanist.navigation.animation.rememberAnimatedNavController
 
 /**
- * @desc：登录
- * @date：2023/04/21 15:56
+ * @desc：重置密码
+ * @date：2023/04/25 14:40
  */
 @OptIn(ExperimentalAnimationApi::class)
 @Preview(showSystemUi = true, showBackground = true, backgroundColor = 0xFFFFFFFF)
 @Composable
-fun LoginScreen(
+fun PasswordResetScreen(
     window: Window? = null,
     navController: NavHostController = rememberAnimatedNavController(),
     viewModel: LoginViewModel = viewModel(),
@@ -68,7 +68,7 @@ fun LoginScreen(
                 contentDescription = null,
                 modifier = Modifier
                     .size(20.dp)
-                    .noRippleClickable {
+                    .clickableNoRipple {
                         navController.navigateUp()
                     },
             )
@@ -158,7 +158,7 @@ fun LoginScreen(
                     fontSize = 14.sp,
                     modifier = Modifier
                         .align(Alignment.CenterStart)
-                        .noRippleClickable {
+                        .clickableNoRipple {
                             viewModel.toggleLoginMode()
                         },
                 )
@@ -168,7 +168,7 @@ fun LoginScreen(
                     fontSize = 14.sp,
                     modifier = Modifier
                         .align(Alignment.CenterEnd)
-                        .noRippleClickable {
+                        .clickableNoRipple {
 
                         },
                 )
@@ -195,7 +195,7 @@ fun LoginScreen(
                         contentDescription = null,
                         modifier = Modifier
                             .size(36.dp)
-                            .noRippleClickable {
+                            .clickableNoRipple {
 
                             },
                     )
@@ -204,7 +204,7 @@ fun LoginScreen(
                         contentDescription = null,
                         modifier = Modifier
                             .size(36.dp)
-                            .noRippleClickable {
+                            .clickableNoRipple {
 
                             },
                     )
@@ -213,7 +213,7 @@ fun LoginScreen(
                         contentDescription = null,
                         modifier = Modifier
                             .size(36.dp)
-                            .noRippleClickable {
+                            .clickableNoRipple {
 
                             },
                     )

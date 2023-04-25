@@ -24,7 +24,7 @@ import androidx.compose.ui.viewinterop.AndroidView
 import coil.compose.AsyncImage
 import coil.request.ImageRequest
 import com.fphoenixcorneae.happyjoke.R
-import com.fphoenixcorneae.happyjoke.ext.noRippleClickable
+import com.fphoenixcorneae.happyjoke.ext.clickableNoRipple
 import com.google.android.exoplayer2.C
 import com.google.android.exoplayer2.ExoPlayer
 import com.google.android.exoplayer2.MediaItem
@@ -99,7 +99,7 @@ fun ShortVideoPlayer(
                             )
                         }
                     },
-                    modifier = Modifier.noRippleClickable {
+                    modifier = Modifier.clickableNoRipple {
                         visibleController = !visibleController
                     }
                 )
@@ -130,7 +130,7 @@ fun ShortVideoPlayer(
                     modifier = Modifier
                         .align(Alignment.Center)
                         .size(48.dp)
-                        .noRippleClickable {
+                        .clickableNoRipple {
                             scope.launch {
                                 delay(500)
                                 isPlaying = if (isPlaying) {

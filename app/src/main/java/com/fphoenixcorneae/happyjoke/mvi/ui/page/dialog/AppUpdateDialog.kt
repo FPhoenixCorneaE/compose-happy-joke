@@ -17,7 +17,7 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import coil.compose.AsyncImage
 import com.fphoenixcorneae.happyjoke.R
-import com.fphoenixcorneae.happyjoke.ext.noRippleClickable
+import com.fphoenixcorneae.happyjoke.ext.clickableNoRipple
 
 /**
  * @desc：App更新弹窗
@@ -80,7 +80,7 @@ fun AppUpdateDialog(onDismiss: () -> Unit = {}) {
                 modifier = Modifier
                     .padding(top = 28.dp)
                     .size(36.dp)
-                    .noRippleClickable {
+                    .clickableNoRipple {
                         onDismiss()
                     },
             )

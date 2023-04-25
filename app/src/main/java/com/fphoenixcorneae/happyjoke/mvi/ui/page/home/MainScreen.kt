@@ -1,4 +1,4 @@
-package com.fphoenixcorneae.happyjoke.mvi.ui.page.main
+package com.fphoenixcorneae.happyjoke.mvi.ui.page.home
 
 import android.view.Window
 import androidx.compose.animation.ExperimentalAnimationApi

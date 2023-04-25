@@ -9,7 +9,7 @@ import androidx.compose.ui.composed
 /**
  * 无涟漪效果的点击事件
  */
-inline fun Modifier.noRippleClickable(
+inline fun Modifier.clickableNoRipple(
     crossinline onClick: () -> Unit,
 ): Modifier = composed {
     clickable(

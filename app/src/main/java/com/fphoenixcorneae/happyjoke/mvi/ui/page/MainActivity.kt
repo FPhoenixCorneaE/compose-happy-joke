@@ -10,8 +10,8 @@ import androidx.compose.material3.Surface
 import androidx.compose.ui.Modifier
 import com.fphoenixcorneae.happyjoke.const.Constant
 import com.fphoenixcorneae.happyjoke.mvi.ui.page.joke.JokePostScreen
-import com.fphoenixcorneae.happyjoke.mvi.ui.page.login.LoginScreen
-import com.fphoenixcorneae.happyjoke.mvi.ui.page.main.MainScreen
+import com.fphoenixcorneae.happyjoke.mvi.ui.page.user.LoginScreen
+import com.fphoenixcorneae.happyjoke.mvi.ui.page.home.MainScreen
 import com.fphoenixcorneae.happyjoke.mvi.ui.page.splash.SplashScreen
 import com.fphoenixcorneae.happyjoke.mvi.ui.theme.ComposeHappyJokeTheme
 import com.google.accompanist.navigation.animation.AnimatedNavHost

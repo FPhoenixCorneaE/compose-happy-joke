@@ -1,4 +1,4 @@
-package com.fphoenixcorneae.happyjoke.mvi.ui.page.main.homepage
+package com.fphoenixcorneae.happyjoke.mvi.ui.page.home.homepage
 
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.runtime.Composable

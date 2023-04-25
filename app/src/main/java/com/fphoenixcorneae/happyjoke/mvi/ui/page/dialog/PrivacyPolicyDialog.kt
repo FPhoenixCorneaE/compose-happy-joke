@@ -28,7 +28,7 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.fphoenixcorneae.happyjoke.R
 import com.fphoenixcorneae.happyjoke.const.Constant
-import com.fphoenixcorneae.happyjoke.ext.noRippleClickable
+import com.fphoenixcorneae.happyjoke.ext.clickableNoRipple
 import com.fphoenixcorneae.happyjoke.ext.saveDS
 import kotlinx.coroutines.launch
 import kotlin.system.exitProcess
@@ -132,7 +132,7 @@ fun PrivacyPolicyDialog() {
                         .fillMaxHeight()
                         .width(0.dp)
                         .weight(weight = 1f)
-                        .noRippleClickable {
+                        .clickableNoRipple {
                             // 退出app
                             exitProcess(0)
                         }
@@ -160,7 +160,7 @@ fun PrivacyPolicyDialog() {
                         .fillMaxHeight()
                         .width(0.dp)
                         .weight(weight = 1f)
-                        .noRippleClickable {
+                        .clickableNoRipple {
                             coroutineScope.launch {
                                 context.saveDS(Constant.Preferences.AGREE_PRIVACY_POLICY, true)
                             }

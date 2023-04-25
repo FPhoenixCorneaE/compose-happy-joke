@@ -1,4 +1,4 @@
-package com.fphoenixcorneae.happyjoke.mvi.ui.page.main.homepage
+package com.fphoenixcorneae.happyjoke.mvi.ui.page.home.homepage
 
 import android.graphics.drawable.GradientDrawable
 import androidx.compose.foundation.background

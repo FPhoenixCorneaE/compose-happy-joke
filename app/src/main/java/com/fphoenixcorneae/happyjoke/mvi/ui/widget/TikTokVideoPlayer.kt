@@ -27,7 +27,7 @@ import com.fphoenixcorneae.happyjoke.R
 import com.fphoenixcorneae.happyjoke.exoplayer.ExoPlayerHolder
 import com.fphoenixcorneae.happyjoke.exoplayer.PlayViewMode
 import com.fphoenixcorneae.happyjoke.exoplayer.PlayerViewManager
-import com.fphoenixcorneae.happyjoke.ext.noRippleClickable
+import com.fphoenixcorneae.happyjoke.ext.clickableNoRipple
 import com.fphoenixcorneae.happyjoke.ext.toast
 import com.google.android.exoplayer2.C
 import com.google.android.exoplayer2.ExoPlayer
@@ -99,7 +99,7 @@ fun TikTokVideoPlayer(
                     PlayerViewManager.saveFrameLayout(it)
                 }
             },
-            modifier = Modifier.noRippleClickable {
+            modifier = Modifier.clickableNoRipple {
                 PlayerViewManager.playOrPause()
             },
         )

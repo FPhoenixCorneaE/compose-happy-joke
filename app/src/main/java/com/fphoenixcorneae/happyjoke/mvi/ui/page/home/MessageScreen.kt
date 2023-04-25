@@ -1,4 +1,4 @@
-package com.fphoenixcorneae.happyjoke.mvi.ui.page.main
+package com.fphoenixcorneae.happyjoke.mvi.ui.page.home
 
 import androidx.compose.foundation.layout.Box
 import androidx.compose.runtime.Composable

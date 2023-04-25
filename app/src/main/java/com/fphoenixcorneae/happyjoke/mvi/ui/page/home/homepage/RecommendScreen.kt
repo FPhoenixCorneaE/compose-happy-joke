@@ -1,4 +1,4 @@
-package com.fphoenixcorneae.happyjoke.mvi.ui.page.main.homepage
+package com.fphoenixcorneae.happyjoke.mvi.ui.page.home.homepage
 
 import android.graphics.drawable.GradientDrawable
 import androidx.compose.foundation.background
@@ -33,7 +33,7 @@ import coil.request.ImageRequest
 import coil.transform.CircleCropTransformation
 import com.fphoenixcorneae.happyjoke.R
 import com.fphoenixcorneae.happyjoke.exoplayer.HttpProxyCacheManager
-import com.fphoenixcorneae.happyjoke.ext.noRippleClickable
+import com.fphoenixcorneae.happyjoke.ext.clickableNoRipple
 import com.fphoenixcorneae.happyjoke.ext.urlAESDecrypt
 import com.fphoenixcorneae.happyjoke.mvi.model.HomepageRecommend
 import com.fphoenixcorneae.happyjoke.mvi.ui.theme.GreyLine
@@ -166,7 +166,7 @@ fun HomepageRecommendItem(
                             shape = RoundedCornerShape(4.dp),
                             highlight = PlaceholderHighlight.shimmer(highlightColor = Color.White),
                         )
-                        .noRippleClickable {
+                        .clickableNoRipple {
 
                         },
                 )
@@ -181,7 +181,7 @@ fun HomepageRecommendItem(
                             bottom.linkTo(parent.bottom)
                             end.linkTo(parent.end, margin = 16.dp)
                         }
-                        .noRippleClickable {
+                        .clickableNoRipple {
 
                         },
                 )

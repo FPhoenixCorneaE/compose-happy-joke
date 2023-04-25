@@ -15,7 +15,7 @@ import androidx.compose.ui.unit.sp
 import androidx.navigation.NavHostController
 import coil.compose.AsyncImage
 import com.fphoenixcorneae.happyjoke.R
-import com.fphoenixcorneae.happyjoke.ext.noRippleClickable
+import com.fphoenixcorneae.happyjoke.ext.clickableNoRipple
 import com.fphoenixcorneae.happyjoke.mvi.ui.theme.GreyLine
 import com.google.accompanist.navigation.animation.rememberAnimatedNavController
 
@@ -45,7 +45,7 @@ fun Toolbar(
                 .padding(start = 20.dp)
                 .size(24.dp)
                 .align(Alignment.CenterStart)
-                .noRippleClickable {
+                .clickableNoRipple {
                     navController.navigateUp()
                 },
         )
@@ -66,7 +66,7 @@ fun Toolbar(
                 modifier = Modifier
                     .padding(end = 20.dp)
                     .align(Alignment.CenterEnd)
-                    .noRippleClickable {
+                    .clickableNoRipple {
                         onRightTextClick()
                     },
             )
@@ -79,7 +79,7 @@ fun Toolbar(
                     .padding(end = 20.dp)
                     .size(24.dp)
                     .align(Alignment.CenterEnd)
-                    .noRippleClickable {
+                    .clickableNoRipple {
                         onRightIconClick()
                     },
             )

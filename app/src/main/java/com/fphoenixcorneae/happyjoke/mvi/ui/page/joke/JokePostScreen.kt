@@ -21,7 +21,7 @@ import androidx.constraintlayout.compose.ConstraintLayout
 import androidx.navigation.NavHostController
 import coil.compose.AsyncImage
 import com.fphoenixcorneae.happyjoke.R
-import com.fphoenixcorneae.happyjoke.ext.noRippleClickable
+import com.fphoenixcorneae.happyjoke.ext.clickableNoRipple
 import com.fphoenixcorneae.happyjoke.mvi.ui.theme.Grey60
 import com.fphoenixcorneae.happyjoke.mvi.ui.widget.SystemUiScaffold
 import com.fphoenixcorneae.happyjoke.mvi.ui.widget.Toolbar
@@ -78,7 +78,7 @@ fun JokePostScreen(
                             top.linkTo(parent.top)
                             bottom.linkTo(parent.bottom)
                         }
-                        .noRippleClickable {
+                        .clickableNoRipple {
 
                         },
                 )
@@ -92,7 +92,7 @@ fun JokePostScreen(
                             top.linkTo(parent.top)
                             bottom.linkTo(parent.bottom)
                         }
-                        .noRippleClickable {
+                        .clickableNoRipple {
 
                         },
                 )

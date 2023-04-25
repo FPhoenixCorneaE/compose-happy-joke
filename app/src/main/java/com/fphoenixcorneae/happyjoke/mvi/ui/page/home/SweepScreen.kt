@@ -1,4 +1,4 @@
-package com.fphoenixcorneae.happyjoke.mvi.ui.page.main
+package com.fphoenixcorneae.happyjoke.mvi.ui.page.home
 
 import android.view.Window
 import androidx.compose.foundation.ExperimentalFoundationApi
@@ -35,7 +35,7 @@ import androidx.paging.compose.collectAsLazyPagingItems
 import coil.compose.AsyncImage
 import com.fphoenixcorneae.happyjoke.R
 import com.fphoenixcorneae.happyjoke.exoplayer.HttpProxyCacheManager
-import com.fphoenixcorneae.happyjoke.ext.noRippleClickable
+import com.fphoenixcorneae.happyjoke.ext.clickableNoRipple
 import com.fphoenixcorneae.happyjoke.ext.urlAESDecrypt
 import com.fphoenixcorneae.happyjoke.mvi.ui.widget.SystemUiScaffold
 import com.fphoenixcorneae.happyjoke.mvi.ui.widget.TikTokVideoPlayer
@@ -119,7 +119,7 @@ fun SweepScreen(
                             modifier = Modifier
                                 .padding(top = 20.dp)
                                 .size(36.dp)
-                                .noRippleClickable {
+                                .clickableNoRipple {
 
                                 },
                         )

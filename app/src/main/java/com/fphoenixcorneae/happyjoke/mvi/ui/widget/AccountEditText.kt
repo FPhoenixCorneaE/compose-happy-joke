@@ -26,7 +26,7 @@ import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.input.VisualTransformation
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
-import com.fphoenixcorneae.happyjoke.ext.noRippleClickable
+import com.fphoenixcorneae.happyjoke.ext.clickableNoRipple
 import com.fphoenixcorneae.happyjoke.mvi.ui.theme.Grey10
 import com.fphoenixcorneae.happyjoke.mvi.ui.theme.Grey40
 
@@ -117,7 +117,7 @@ fun AccountEditText(
                             modifier = Modifier
                                 .size(12.dp)
                                 .padding(2.dp)
-                                .noRippleClickable { onEndIconClick() },
+                                .clickableNoRipple { onEndIconClick() },
                         )
                     }
                 }

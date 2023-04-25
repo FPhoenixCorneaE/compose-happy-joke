@@ -5,7 +5,10 @@ import com.fphoenixcorneae.happyjoke.ext.isMobilePhone
 import com.fphoenixcorneae.happyjoke.ext.launchDefault
 import com.fphoenixcorneae.happyjoke.ext.launchIo
 import com.fphoenixcorneae.happyjoke.ext.toast
-import com.fphoenixcorneae.happyjoke.https.*
+import com.fphoenixcorneae.happyjoke.https.doOnError
+import com.fphoenixcorneae.happyjoke.https.doOnSuccess
+import com.fphoenixcorneae.happyjoke.https.httpRequest
+import com.fphoenixcorneae.happyjoke.https.userService
 import com.fphoenixcorneae.happyjoke.mvi.model.BaseReply
 import com.fphoenixcorneae.happyjoke.tool.UserManager
 import kotlinx.coroutines.channels.Channel
@@ -96,6 +99,11 @@ class LoginViewModel : ViewModel() {
                             it.message?.toast()
                         }
                     }
+                    LoginAction.ToggleEncounterProblemDialog -> launchDefault {
+                        _loginUiState.update {
+                            it.copy(showEncounterProblemDialog = !it.showEncounterProblemDialog)
+                        }
+                    }
                 }
             }
         }
@@ -111,6 +119,7 @@ data class LoginUiState(
     val authCode: String = "",
     val password: String = "",
     val isAuthCodeLogin: Boolean = true,
+    val showEncounterProblemDialog: Boolean = false,
 ) {
     fun isMobilePhone() = account.isMobilePhone()
 
@@ -131,4 +140,7 @@ sealed class LoginAction {
 
     /** 登录 */
     object Login : LoginAction()
+
+    /** 显示或隐藏遇到问题弹窗 */
+    object ToggleEncounterProblemDialog : LoginAction()
 }

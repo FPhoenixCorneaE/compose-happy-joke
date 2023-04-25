@@ -1,4 +1,4 @@
-package com.fphoenixcorneae.happyjoke.mvi.ui.page.main.homepage
+package com.fphoenixcorneae.happyjoke.mvi.ui.page.home.homepage
 
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.runtime.Composable
@@ -12,21 +12,21 @@ import com.fphoenixcorneae.happyjoke.mvi.ui.widget.SwipeRefresh
 import com.fphoenixcorneae.happyjoke.mvi.viewmodel.HomepageViewModel
 
 /**
- * @desc：纯文
+ * @desc：趣图
  * @date：2023/04/17 10:50
  */
 @Preview
 @Composable
-fun PoliteLettersScreen(
+fun FunnyPicturesScreen(
     viewModel: HomepageViewModel = viewModel(),
 ) {
-    val homepagePoliteLetters = viewModel.homepagePoliteLetters.collectAsLazyPagingItems()
+    val homepageFunnyPictures = viewModel.homepageFunnyPictures.collectAsLazyPagingItems()
     SwipeRefresh(
-        lazyPagingItems = homepagePoliteLetters,
+        lazyPagingItems = homepageFunnyPictures,
         contentPadding = PaddingValues(bottom = 60.dp)
     ) {
-        items(homepagePoliteLetters) { item ->
-            val isLoading = homepagePoliteLetters.loadState.append is LoadState.Loading
+        items(homepageFunnyPictures) { item ->
+            val isLoading = homepageFunnyPictures.loadState.append is LoadState.Loading
             HomepageRecommendItem(item, isLoading)
         }
     }
