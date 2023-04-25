@@ -26,10 +26,12 @@ import coil.compose.AsyncImage
 import coil.request.ImageRequest
 import coil.transform.CircleCropTransformation
 import com.fphoenixcorneae.happyjoke.R
+import com.fphoenixcorneae.happyjoke.ext.LifecycleObserver
 import com.fphoenixcorneae.happyjoke.ext.noRippleClickable
 import com.fphoenixcorneae.happyjoke.ext.urlAESDecrypt
 import com.fphoenixcorneae.happyjoke.mvi.ui.theme.*
 import com.fphoenixcorneae.happyjoke.mvi.ui.widget.SystemUiScaffold
+import com.fphoenixcorneae.happyjoke.mvi.viewmodel.MeAction
 import com.fphoenixcorneae.happyjoke.mvi.viewmodel.MeViewModel
 
 /**
@@ -59,7 +61,7 @@ fun MeScreen(
             ) {
                 AsyncImage(
                     model = ImageRequest.Builder(context)
-                        .data(meUiState.userInfo?.avatar.urlAESDecrypt())
+                        .data(meUiState.userInfo?.user?.avatar.urlAESDecrypt())
                         .error(R.mipmap.ic_avatar_default)
                         .crossfade(true)
                         .transformations(CircleCropTransformation())
@@ -76,13 +78,17 @@ fun MeScreen(
                     verticalArrangement = Arrangement.spacedBy(8.dp)
                 ) {
                     Text(
-                        text = if (meUiState.isLoggedIn) meUiState.userInfo?.nickname.orEmpty() else stringResource(R.string.login_or_register),
+                        text = if (meUiState.isLoggedIn) meUiState.userInfo?.user?.nickname.orEmpty() else stringResource(
+                            R.string.login_or_register
+                        ),
                         color = Black30,
                         fontSize = 20.sp,
                         fontWeight = FontWeight.SemiBold,
                     )
                     Text(
-                        text = if (meUiState.isLoggedIn) meUiState.userInfo?.signature.orEmpty() else stringResource(R.string.user_signature_hint),
+                        text = if (meUiState.isLoggedIn) meUiState.userInfo?.user?.signature.orEmpty() else stringResource(
+                            R.string.user_signature_hint
+                        ),
                         color = Grey85,
                         fontSize = 14.sp,
                     )
@@ -103,22 +109,34 @@ fun MeScreen(
                     verticalArrangement = Arrangement.spacedBy(6.dp),
                     horizontalAlignment = Alignment.CenterHorizontally
                 ) {
-                    Text(text = "59", color = Black30, fontSize = 14.sp)
-                    Text(text = "关注", color = Grey60, fontSize = 12.sp)
+                    Text(
+                        text = if (meUiState.isLoggedIn) meUiState.userInfo?.info?.attentionNum.toString() else "-",
+                        color = Black30,
+                        fontSize = 14.sp,
+                    )
+                    Text(text = stringResource(id = R.string.attention), color = Grey60, fontSize = 12.sp)
                 }
                 Column(
                     verticalArrangement = Arrangement.spacedBy(6.dp),
                     horizontalAlignment = Alignment.CenterHorizontally
                 ) {
-                    Text(text = "319", color = Black30, fontSize = 14.sp)
-                    Text(text = "粉丝", color = Grey60, fontSize = 12.sp)
+                    Text(
+                        text = if (meUiState.isLoggedIn) meUiState.userInfo?.info?.fansNum.toString() else "-",
+                        color = Black30,
+                        fontSize = 14.sp,
+                    )
+                    Text(text = stringResource(id = R.string.fans), color = Grey60, fontSize = 12.sp)
                 }
                 Column(
                     verticalArrangement = Arrangement.spacedBy(6.dp),
                     horizontalAlignment = Alignment.CenterHorizontally
                 ) {
-                    Text(text = "4165", color = Black30, fontSize = 14.sp)
-                    Text(text = "乐豆", color = Grey60, fontSize = 12.sp)
+                    Text(
+                        text = if (meUiState.isLoggedIn) meUiState.userInfo?.info?.experienceNum.toString() else "-",
+                        color = Black30,
+                        fontSize = 14.sp,
+                    )
+                    Text(text = stringResource(R.string.le_dou), color = Grey60, fontSize = 12.sp)
                 }
             }
             Card(
@@ -227,6 +245,11 @@ fun MeScreen(
             Spacer(modifier = Modifier.height(80.dp))
         }
     }
+    LifecycleObserver(
+        onCreate = {
+            viewModel.dispatchIntent(MeAction.GetUserInfo)
+        }
+    )
 }
 
 @Composable

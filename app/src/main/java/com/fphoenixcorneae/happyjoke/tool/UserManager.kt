@@ -2,7 +2,7 @@ package com.fphoenixcorneae.happyjoke.tool
 
 import com.fphoenixcorneae.happyjoke.const.Constant
 import com.fphoenixcorneae.happyjoke.ext.*
-import com.fphoenixcorneae.happyjoke.mvi.model.LoginReply
+import com.fphoenixcorneae.happyjoke.mvi.model.UserInfoReply
 import com.fphoenixcorneae.happyjoke.startup.applicationContext
 import kotlinx.coroutines.launch
 
@@ -28,12 +28,12 @@ object UserManager {
 
     fun getToken() = applicationContext.getSyncDS(Constant.User.TOKEN, "")
 
-    fun saveUserInfo(userInfo: LoginReply.Data.UserInfo?) = apply {
+    fun saveUserInfo(userInfo: UserInfoReply.Data?) = apply {
         globalScope.launch {
             applicationContext.saveDS(Constant.User.USER_INFO, userInfo.toJson())
         }
     }
 
     fun getUserInfo() = applicationContext.getSyncDS(Constant.User.USER_INFO, "")
-        .toObject(LoginReply.Data.UserInfo::class.java)
+        .toObject(UserInfoReply.Data::class.java)
 }

@@ -34,6 +34,10 @@ suspend inline fun <reified T> ViewModel.httpRequest(
     emit(HttpResult.Loading(loadingMsg))
 }.shareIn(viewModelScope, SharingStarted.Lazily)
 
+suspend inline fun <reified T> Flow<HttpResult<T>>.send() = apply {
+    collect()
+}
+
 suspend inline fun <reified T> Flow<HttpResult<T>>.doOnLoading(
     crossinline block: (CharSequence?) -> Unit,
 ) = apply {

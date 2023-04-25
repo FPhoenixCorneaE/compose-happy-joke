@@ -5,10 +5,7 @@ import com.fphoenixcorneae.happyjoke.ext.isMobilePhone
 import com.fphoenixcorneae.happyjoke.ext.launchDefault
 import com.fphoenixcorneae.happyjoke.ext.launchIo
 import com.fphoenixcorneae.happyjoke.ext.toast
-import com.fphoenixcorneae.happyjoke.https.apiService
-import com.fphoenixcorneae.happyjoke.https.doOnError
-import com.fphoenixcorneae.happyjoke.https.doOnSuccess
-import com.fphoenixcorneae.happyjoke.https.httpRequest
+import com.fphoenixcorneae.happyjoke.https.*
 import com.fphoenixcorneae.happyjoke.mvi.model.BaseReply
 import com.fphoenixcorneae.happyjoke.tool.UserManager
 import kotlinx.coroutines.channels.Channel
@@ -68,7 +65,7 @@ class LoginViewModel : ViewModel() {
                 when (it) {
                     LoginAction.GetCode -> launchIo {
                         httpRequest {
-                            apiService.getCode(loginUiState.first().account)
+                            userService.getCode(loginUiState.first().account)
                         }.doOnSuccess { reply ->
                             if (reply?.code == 0) {
                                 reply.msg?.toast()
@@ -83,9 +80,9 @@ class LoginViewModel : ViewModel() {
                         httpRequest {
                             loginUiState.first().let {
                                 if (it.isAuthCodeLogin) {
-                                    apiService.loginByCode(it.account, it.authCode)
+                                    userService.loginByCode(it.account, it.authCode)
                                 } else {
-                                    apiService.loginByPsw(it.account, it.password)
+                                    userService.loginByPsw(it.account, it.password)
                                 }
                             }
                         }.doOnSuccess { reply ->
@@ -93,7 +90,6 @@ class LoginViewModel : ViewModel() {
                                 reply.msg?.toast()
                             } else if (reply?.code == BaseReply.OK) {
                                 UserManager.saveToken(reply.data?.token)
-                                    .saveUserInfo(reply.data?.userInfo)
                                     .loginState(true)
                             }
                         }.doOnError {

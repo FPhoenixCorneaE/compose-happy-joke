@@ -1,14 +1,7 @@
-package com.fphoenixcorneae.happyjoke.https
+package com.fphoenixcorneae.happyjoke.https.service
 
 import com.fphoenixcorneae.happyjoke.mvi.model.*
-import retrofit2.http.Field
-import retrofit2.http.FormUrlEncoded
 import retrofit2.http.POST
-
-// 双重校验锁式-单例 封装 ApiService 方便直接快速调用简单的接口
-val apiService: ApiService by lazy {
-    RetrofitFactory.Builder().build().create(ApiService::class.java)
-}
 
 /**
  * @desc：接口地址：http://tools.cretinzp.com/jokes/doc.html
@@ -51,38 +44,4 @@ interface ApiService {
      */
     @POST("/jokes/douyin/list")
     suspend fun sweepTikTokVideo(): SweepTikTokVideo?
-
-    /**
-     * 获取登录验证码
-     * @param phone 手机号
-     */
-    @FormUrlEncoded
-    @POST("/jokes/user/login/get_code")
-    suspend fun getCode(
-        @Field("phone") phone: String,
-    ): BaseReply<Any>?
-
-    /**
-     * 验证码登录
-     * @param phone 手机号
-     * @param code  验证码
-     */
-    @FormUrlEncoded
-    @POST("/jokes/user/login/code")
-    suspend fun loginByCode(
-        @Field("phone") phone: String,
-        @Field("code") code: String,
-    ): LoginReply?
-
-    /**
-     * 账号密码登录
-     * @param phone 手机号
-     * @param psw   密码 无需加密，后台加密
-     */
-    @FormUrlEncoded
-    @POST("/jokes/user/login/psw")
-    suspend fun loginByPsw(
-        @Field("phone") phone: String,
-        @Field("psw") psw: String,
-    ): LoginReply?
 }
