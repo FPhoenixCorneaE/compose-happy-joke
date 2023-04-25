@@ -5,7 +5,10 @@ import com.fphoenixcorneae.happyjoke.ext.isMobilePhone
 import com.fphoenixcorneae.happyjoke.ext.launchDefault
 import com.fphoenixcorneae.happyjoke.ext.launchIo
 import com.fphoenixcorneae.happyjoke.ext.toast
-import com.fphoenixcorneae.happyjoke.https.*
+import com.fphoenixcorneae.happyjoke.https.apiService
+import com.fphoenixcorneae.happyjoke.https.doOnError
+import com.fphoenixcorneae.happyjoke.https.doOnSuccess
+import com.fphoenixcorneae.happyjoke.https.httpRequest
 import com.fphoenixcorneae.happyjoke.mvi.model.BaseReply
 import com.fphoenixcorneae.happyjoke.tool.UserManager
 import kotlinx.coroutines.channels.Channel
@@ -74,7 +77,7 @@ class LoginViewModel : ViewModel() {
                             }
                         }.doOnError {
                             it.message?.toast()
-                        }.send()
+                        }
                     }
                     LoginAction.Login -> launchIo {
                         httpRequest {
@@ -91,10 +94,11 @@ class LoginViewModel : ViewModel() {
                             } else if (reply?.code == BaseReply.OK) {
                                 UserManager.saveToken(reply.data?.token)
                                     .saveUserInfo(reply.data?.userInfo)
+                                    .loginState(true)
                             }
                         }.doOnError {
                             it.message?.toast()
-                        }.send()
+                        }
                     }
                 }
             }

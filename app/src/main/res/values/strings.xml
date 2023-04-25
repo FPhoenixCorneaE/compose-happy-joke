@@ -31,4 +31,6 @@
     <string name="get_auth_code">获取验证码</string>
     <string name="login">登录</string>
     <string name="user_service_protocol">《用户服务协议》</string>
+    <string name="login_or_register">登录/注册</string>
+    <string name="user_signature_hint">快来开始你的创作吧~</string>
 </resources>

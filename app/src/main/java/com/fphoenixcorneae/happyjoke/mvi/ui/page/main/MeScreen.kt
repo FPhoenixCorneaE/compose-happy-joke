@@ -9,19 +9,28 @@ import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material3.*
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.collectAsState
+import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.lifecycle.viewmodel.compose.viewModel
 import coil.compose.AsyncImage
+import coil.request.ImageRequest
+import coil.transform.CircleCropTransformation
 import com.fphoenixcorneae.happyjoke.R
 import com.fphoenixcorneae.happyjoke.ext.noRippleClickable
+import com.fphoenixcorneae.happyjoke.ext.urlAESDecrypt
 import com.fphoenixcorneae.happyjoke.mvi.ui.theme.*
 import com.fphoenixcorneae.happyjoke.mvi.ui.widget.SystemUiScaffold
+import com.fphoenixcorneae.happyjoke.mvi.viewmodel.MeViewModel
 
 /**
  * @desc：我的
@@ -30,9 +39,12 @@ import com.fphoenixcorneae.happyjoke.mvi.ui.widget.SystemUiScaffold
 @Preview(showBackground = true, backgroundColor = 0xFFFFFFFF)
 @Composable
 fun MeScreen(
-    window: Window? = null
+    window: Window? = null,
+    viewModel: MeViewModel = viewModel(),
 ) {
     SystemUiScaffold(window = window) {
+        val context = LocalContext.current
+        val meUiState by viewModel.meUiState.collectAsState()
         Column(
             modifier = Modifier
                 .fillMaxSize()
@@ -46,7 +58,12 @@ fun MeScreen(
                     .wrapContentHeight()
             ) {
                 AsyncImage(
-                    model = R.mipmap.ic_avatar_default,
+                    model = ImageRequest.Builder(context)
+                        .data(meUiState.userInfo?.avatar.urlAESDecrypt())
+                        .error(R.mipmap.ic_avatar_default)
+                        .crossfade(true)
+                        .transformations(CircleCropTransformation())
+                        .build(),
                     contentDescription = null,
                     modifier = Modifier
                         .size(60.dp)
@@ -59,12 +76,16 @@ fun MeScreen(
                     verticalArrangement = Arrangement.spacedBy(8.dp)
                 ) {
                     Text(
-                        text = "登录/注册",
+                        text = if (meUiState.isLoggedIn) meUiState.userInfo?.nickname.orEmpty() else stringResource(R.string.login_or_register),
                         color = Black30,
                         fontSize = 20.sp,
                         fontWeight = FontWeight.SemiBold,
                     )
-                    Text(text = "快来开始你的创作吧~", color = Grey85, fontSize = 14.sp)
+                    Text(
+                        text = if (meUiState.isLoggedIn) meUiState.userInfo?.signature.orEmpty() else stringResource(R.string.user_signature_hint),
+                        color = Grey85,
+                        fontSize = 14.sp,
+                    )
                 }
                 AsyncImage(
                     model = R.mipmap.ic_arraw_right_grey,

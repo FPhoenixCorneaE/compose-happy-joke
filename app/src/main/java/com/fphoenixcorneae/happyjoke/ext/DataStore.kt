@@ -59,7 +59,7 @@ suspend fun Context.getAsyncDS(key: String, defaultValue: Set<String>): Set<Stri
  */
 inline fun <reified T> Context.getSyncDS(key: String, defaultValue: T): T = run {
     runBlocking {
-        getDSFlow<T>(key = key, defaultValue).first()
+        getDSFlow(key = key, defaultValue).first()
     }
 }
 

@@ -9,7 +9,6 @@ import com.fphoenixcorneae.happyjoke.ext.launchIo
 import com.fphoenixcorneae.happyjoke.https.apiService
 import com.fphoenixcorneae.happyjoke.https.doOnSuccess
 import com.fphoenixcorneae.happyjoke.https.httpRequest
-import com.fphoenixcorneae.happyjoke.https.send
 import com.fphoenixcorneae.happyjoke.mvi.model.AttentionRecommend
 import com.fphoenixcorneae.happyjoke.mvi.model.paging.*
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -61,7 +60,7 @@ class HomepageViewModel : ViewModel() {
                 _attentionUiState.update {
                     it.copy(attentionRecommend = result?.data)
                 }
-            }.send()
+            }
         }
     }
 }

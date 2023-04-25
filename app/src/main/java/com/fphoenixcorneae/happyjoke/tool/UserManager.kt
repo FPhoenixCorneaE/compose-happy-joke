@@ -12,6 +12,14 @@ import kotlinx.coroutines.launch
  */
 object UserManager {
 
+    fun loginState(success: Boolean) = apply {
+        globalScope.launch {
+            applicationContext.saveDS(Constant.User.IS_LOGGED_IN, success)
+        }
+    }
+
+    fun isLoggedIn() = applicationContext.getSyncDS(Constant.User.IS_LOGGED_IN, false)
+
     fun saveToken(token: String?) = apply {
         globalScope.launch {
             applicationContext.saveDS(Constant.User.TOKEN, token)

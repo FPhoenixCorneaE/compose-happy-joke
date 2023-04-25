@@ -15,6 +15,7 @@ object Constant {
      * @date：2023/04/24 15:32
      */
     object User {
+        const val IS_LOGGED_IN = "user_is_logged_in"
         const val TOKEN = "user_token"
         const val USER_INFO = "user_info"
     }
