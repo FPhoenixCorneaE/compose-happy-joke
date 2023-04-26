@@ -23,6 +23,7 @@ import androidx.compose.ui.text.buildAnnotatedString
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.text.input.KeyboardType
+import androidx.compose.ui.text.input.PasswordVisualTransformation
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.text.withStyle
 import androidx.compose.ui.tooling.preview.Preview
@@ -84,13 +85,13 @@ fun LoginScreen(
                 onValueChange = { viewModel.accountChanged(it) },
                 text = loginUiState.account,
                 textStyle = TextStyle(fontSize = 14.sp, fontWeight = FontWeight.SemiBold),
-                hint = "请输入手机号",
+                hint = stringResource(id = R.string.account_hint),
                 modifier = Modifier
                     .padding(top = 40.dp)
                     .fillMaxWidth()
                     .height(40.dp),
                 keyboardOptions = KeyboardOptions(
-                    keyboardType = KeyboardType.Number, imeAction = ImeAction.Next
+                    keyboardType = KeyboardType.Phone, imeAction = ImeAction.Next
                 ),
             )
             if (loginUiState.isAuthCodeLogin) {
@@ -98,7 +99,7 @@ fun LoginScreen(
                     onValueChange = { viewModel.authCodeChanged(it) },
                     text = loginUiState.authCode,
                     textStyle = TextStyle(fontSize = 14.sp, fontWeight = FontWeight.SemiBold),
-                    hint = "请输入验证码",
+                    hint = stringResource(id = R.string.auth_code_hint),
                     modifier = Modifier
                         .padding(top = 12.dp)
                         .fillMaxWidth()
@@ -116,14 +117,15 @@ fun LoginScreen(
                     onValueChange = { viewModel.passwordChanged(it) },
                     text = loginUiState.password,
                     textStyle = TextStyle(fontSize = 14.sp, fontWeight = FontWeight.SemiBold),
-                    hint = "请输入密码",
+                    hint = stringResource(R.string.password_hint),
                     modifier = Modifier
                         .padding(top = 12.dp)
                         .fillMaxWidth()
                         .height(40.dp),
                     keyboardOptions = KeyboardOptions(
-                        keyboardType = KeyboardType.Number, imeAction = ImeAction.Next
+                        keyboardType = KeyboardType.Password, imeAction = ImeAction.Done
                     ),
+                    visualTransformation = PasswordVisualTransformation(),
                 )
             }
             // 登录
@@ -164,7 +166,7 @@ fun LoginScreen(
                         },
                 )
                 Text(
-                    text = "遇到问题？",
+                    text = stringResource(id = R.string.encounter_problem),
                     color = Yellow30,
                     fontSize = 14.sp,
                     modifier = Modifier
@@ -183,7 +185,7 @@ fun LoginScreen(
                 verticalArrangement = Arrangement.Bottom
             ) {
                 Text(
-                    text = "其他登录方式",
+                    text = stringResource(R.string.other_login_modes),
                     color = Grey70,
                     fontSize = 11.sp,
                 )
@@ -221,7 +223,7 @@ fun LoginScreen(
                 }
                 ClickableText(
                     text = buildAnnotatedString {
-                        append("登录/注册代表您同意段子乐")
+                        append(stringResource(id = R.string.login_or_register_prompt_1))
                         withStyle(
                             SpanStyle(color = Yellow30)
                         ) {
@@ -260,6 +262,7 @@ fun LoginScreen(
         EncounterProblemDialog(
             show = loginUiState.showEncounterProblemDialog,
             onForgetPassword = {
+                navController.navigate(Constant.NavRoute.PASSWORD_RESET)
             },
             onContactCustomerService = {
             },

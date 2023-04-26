@@ -23,6 +23,7 @@ import androidx.compose.ui.text.buildAnnotatedString
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.text.input.KeyboardType
+import androidx.compose.ui.text.input.PasswordVisualTransformation
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.text.withStyle
 import androidx.compose.ui.tooling.preview.Preview
@@ -34,13 +35,14 @@ import coil.compose.AsyncImage
 import com.fphoenixcorneae.happyjoke.R
 import com.fphoenixcorneae.happyjoke.const.Constant
 import com.fphoenixcorneae.happyjoke.ext.clickableNoRipple
+import com.fphoenixcorneae.happyjoke.mvi.ui.page.dialog.EncounterProblemDialog
 import com.fphoenixcorneae.happyjoke.mvi.ui.theme.Grey70
 import com.fphoenixcorneae.happyjoke.mvi.ui.theme.Yellow30
 import com.fphoenixcorneae.happyjoke.mvi.ui.widget.AccountEditText
 import com.fphoenixcorneae.happyjoke.mvi.ui.widget.AuthCodeEditText
 import com.fphoenixcorneae.happyjoke.mvi.ui.widget.SystemUiScaffold
-import com.fphoenixcorneae.happyjoke.mvi.viewmodel.LoginAction
-import com.fphoenixcorneae.happyjoke.mvi.viewmodel.LoginViewModel
+import com.fphoenixcorneae.happyjoke.mvi.viewmodel.PasswordAction
+import com.fphoenixcorneae.happyjoke.mvi.viewmodel.PasswordViewModel
 import com.google.accompanist.navigation.animation.rememberAnimatedNavController
 
 /**
@@ -53,10 +55,10 @@ import com.google.accompanist.navigation.animation.rememberAnimatedNavController
 fun PasswordResetScreen(
     window: Window? = null,
     navController: NavHostController = rememberAnimatedNavController(),
-    viewModel: LoginViewModel = viewModel(),
+    viewModel: PasswordViewModel = viewModel(),
 ) {
     val context = LocalContext.current
-    val loginUiState by viewModel.loginUiState.collectAsState()
+    val passwordUiState by viewModel.passwordUiState.collectAsState()
     SystemUiScaffold(window = window) {
         Column(
             modifier = Modifier
@@ -73,7 +75,7 @@ fun PasswordResetScreen(
                     },
             )
             Text(
-                text = stringResource(if (loginUiState.isAuthCodeLogin) R.string.auth_code_login else R.string.password_login),
+                text = stringResource(R.string.password_reset),
                 color = Color.Black,
                 fontSize = 20.sp,
                 fontWeight = FontWeight.Bold,
@@ -81,68 +83,66 @@ fun PasswordResetScreen(
             )
             AccountEditText(
                 onValueChange = { viewModel.accountChanged(it) },
-                text = loginUiState.account,
+                text = passwordUiState.account,
                 textStyle = TextStyle(fontSize = 14.sp, fontWeight = FontWeight.SemiBold),
-                hint = "请输入手机号",
+                hint = stringResource(R.string.account_hint),
                 modifier = Modifier
                     .padding(top = 40.dp)
                     .fillMaxWidth()
                     .height(40.dp),
                 keyboardOptions = KeyboardOptions(
+                    keyboardType = KeyboardType.Phone, imeAction = ImeAction.Next
+                ),
+            )
+            AuthCodeEditText(
+                onValueChange = { viewModel.authCodeChanged(it) },
+                text = passwordUiState.authCode,
+                textStyle = TextStyle(fontSize = 14.sp, fontWeight = FontWeight.SemiBold),
+                hint = stringResource(R.string.auth_code_hint),
+                modifier = Modifier
+                    .padding(top = 12.dp)
+                    .fillMaxWidth()
+                    .height(40.dp),
+                rightTextEnabled = passwordUiState.isMobilePhone(),
+                onRightTextClick = {
+                    viewModel.dispatchIntent(PasswordAction.GetCode)
+                },
+                keyboardOptions = KeyboardOptions(
                     keyboardType = KeyboardType.Number, imeAction = ImeAction.Next
                 ),
             )
-            if (loginUiState.isAuthCodeLogin) {
-                AuthCodeEditText(
-                    onValueChange = { viewModel.authCodeChanged(it) },
-                    text = loginUiState.authCode,
-                    textStyle = TextStyle(fontSize = 14.sp, fontWeight = FontWeight.SemiBold),
-                    hint = "请输入验证码",
-                    modifier = Modifier
-                        .padding(top = 12.dp)
-                        .fillMaxWidth()
-                        .height(40.dp),
-                    rightTextEnabled = loginUiState.isMobilePhone(),
-                    onRightTextClick = {
-                        viewModel.dispatchIntent(LoginAction.GetCode)
-                    },
-                    keyboardOptions = KeyboardOptions(
-                        keyboardType = KeyboardType.Number, imeAction = ImeAction.Done
-                    ),
-                )
-            } else {
-                AccountEditText(
-                    onValueChange = { viewModel.passwordChanged(it) },
-                    text = loginUiState.password,
-                    textStyle = TextStyle(fontSize = 14.sp, fontWeight = FontWeight.SemiBold),
-                    hint = "请输入密码",
-                    modifier = Modifier
-                        .padding(top = 12.dp)
-                        .fillMaxWidth()
-                        .height(40.dp),
-                    keyboardOptions = KeyboardOptions(
-                        keyboardType = KeyboardType.Number, imeAction = ImeAction.Next
-                    ),
-                )
-            }
-            // 登录
+            AccountEditText(
+                onValueChange = { viewModel.passwordChanged(it) },
+                text = passwordUiState.password,
+                textStyle = TextStyle(fontSize = 14.sp, fontWeight = FontWeight.SemiBold),
+                hint = stringResource(R.string.new_password_hint),
+                modifier = Modifier
+                    .padding(top = 12.dp)
+                    .fillMaxWidth()
+                    .height(40.dp),
+                keyboardOptions = KeyboardOptions(
+                    keyboardType = KeyboardType.Password, imeAction = ImeAction.Done
+                ),
+                visualTransformation = PasswordVisualTransformation(),
+            )
+            // 重置
             Button(
                 onClick = {
-                    viewModel.dispatchIntent(LoginAction.Login)
+                    viewModel.dispatchIntent(PasswordAction.Reset)
                 },
                 modifier = Modifier
                     .padding(top = 32.dp)
                     .fillMaxWidth()
                     .height(40.dp)
-                    .alpha(if (loginUiState.loginEnabled()) 1f else 0.6f),
-                enabled = loginUiState.loginEnabled(),
+                    .alpha(if (passwordUiState.resetEnabled()) 1f else 0.6f),
+                enabled = passwordUiState.resetEnabled(),
                 colors = ButtonDefaults.buttonColors(
                     containerColor = Yellow30,
                     contentColor = Color.White,
                 ),
             ) {
                 Text(
-                    text = stringResource(R.string.login),
+                    text = stringResource(R.string.reset),
                     fontSize = 16.sp,
                     fontWeight = FontWeight.Bold,
                 )
@@ -153,23 +153,13 @@ fun PasswordResetScreen(
                     .fillMaxWidth()
             ) {
                 Text(
-                    text = stringResource(if (loginUiState.isAuthCodeLogin) R.string.password_login else R.string.auth_code_login),
-                    color = Yellow30,
-                    fontSize = 14.sp,
-                    modifier = Modifier
-                        .align(Alignment.CenterStart)
-                        .clickableNoRipple {
-                            viewModel.toggleLoginMode()
-                        },
-                )
-                Text(
-                    text = "遇到问题？",
+                    text = stringResource(R.string.encounter_problem),
                     color = Yellow30,
                     fontSize = 14.sp,
                     modifier = Modifier
                         .align(Alignment.CenterEnd)
                         .clickableNoRipple {
-
+                            viewModel.dispatchIntent(PasswordAction.ToggleEncounterProblemDialog)
                         },
                 )
             }
@@ -181,46 +171,9 @@ fun PasswordResetScreen(
                 horizontalAlignment = Alignment.CenterHorizontally,
                 verticalArrangement = Arrangement.Bottom
             ) {
-                Text(
-                    text = "其他登录方式",
-                    color = Grey70,
-                    fontSize = 11.sp,
-                )
-                Row(
-                    modifier = Modifier.padding(top = 30.dp),
-                    horizontalArrangement = Arrangement.spacedBy(40.dp)
-                ) {
-                    AsyncImage(
-                        model = R.mipmap.ic_share_mode_qq,
-                        contentDescription = null,
-                        modifier = Modifier
-                            .size(36.dp)
-                            .clickableNoRipple {
-
-                            },
-                    )
-                    AsyncImage(
-                        model = R.mipmap.ic_share_mode_sina,
-                        contentDescription = null,
-                        modifier = Modifier
-                            .size(36.dp)
-                            .clickableNoRipple {
-
-                            },
-                    )
-                    AsyncImage(
-                        model = R.mipmap.ic_login_shortcut,
-                        contentDescription = null,
-                        modifier = Modifier
-                            .size(36.dp)
-                            .clickableNoRipple {
-
-                            },
-                    )
-                }
                 ClickableText(
                     text = buildAnnotatedString {
-                        append("登录/注册代表您同意段子乐")
+                        append(stringResource(R.string.login_or_register_prompt_1))
                         withStyle(
                             SpanStyle(color = Yellow30)
                         ) {
@@ -256,5 +209,19 @@ fun PasswordResetScreen(
                 }
             }
         }
+        EncounterProblemDialog(
+            show = passwordUiState.showEncounterProblemDialog,
+            type = 1,
+            onForgetPassword = {
+                navController.navigate(Constant.NavRoute.PASSWORD_RESET)
+            },
+            onContactCustomerService = {
+            },
+            onFeedback = {
+            },
+            onDismiss = {
+                viewModel.dispatchIntent(PasswordAction.ToggleEncounterProblemDialog)
+            },
+        )
     }
 }

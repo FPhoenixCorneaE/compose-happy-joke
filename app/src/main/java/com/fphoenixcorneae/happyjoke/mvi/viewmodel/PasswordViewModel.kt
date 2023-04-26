@@ -10,31 +10,22 @@ import com.fphoenixcorneae.happyjoke.https.doOnSuccess
 import com.fphoenixcorneae.happyjoke.https.httpRequest
 import com.fphoenixcorneae.happyjoke.https.userService
 import com.fphoenixcorneae.happyjoke.mvi.model.BaseReply
-import com.fphoenixcorneae.happyjoke.tool.UserManager
 import kotlinx.coroutines.channels.Channel
 import kotlinx.coroutines.flow.*
 
 /**
  * @desc：
- * @date：2023/04/23 13:48
+ * @date：2023/04/26 09:42
  */
-class LoginViewModel : ViewModel() {
+class PasswordViewModel : ViewModel() {
 
-    private val _loginUiState = MutableStateFlow(LoginUiState())
-    val loginUiState = _loginUiState.asStateFlow()
-    private val loginAction = Channel<LoginAction>()
-
-    fun toggleLoginMode() {
-        launchDefault {
-            _loginUiState.update {
-                it.copy(isAuthCodeLogin = !it.isAuthCodeLogin)
-            }
-        }
-    }
+    private val _passwordUiState = MutableStateFlow(PasswordUiState())
+    val passwordUiState = _passwordUiState.asStateFlow()
+    private val passwordAction = Channel<PasswordAction>()
 
     fun accountChanged(value: String) {
         launchDefault {
-            _loginUiState.update {
+            _passwordUiState.update {
                 it.copy(account = value)
             }
         }
@@ -42,7 +33,7 @@ class LoginViewModel : ViewModel() {
 
     fun authCodeChanged(value: String) {
         launchDefault {
-            _loginUiState.update {
+            _passwordUiState.update {
                 it.copy(authCode = value)
             }
         }
@@ -50,25 +41,25 @@ class LoginViewModel : ViewModel() {
 
     fun passwordChanged(value: String) {
         launchDefault {
-            _loginUiState.update {
+            _passwordUiState.update {
                 it.copy(password = value)
             }
         }
     }
 
-    fun dispatchIntent(action: LoginAction) {
+    fun dispatchIntent(action: PasswordAction) {
         launchDefault {
-            loginAction.send(action)
+            passwordAction.send(action)
         }
     }
 
     init {
         launchDefault {
-            loginAction.receiveAsFlow().collect {
+            passwordAction.receiveAsFlow().collect {
                 when (it) {
-                    LoginAction.GetCode -> launchIo {
+                    PasswordAction.GetCode -> launchIo {
                         httpRequest {
-                            userService.getCode(loginUiState.first().account)
+                            userService.passwordResetGetCode(passwordUiState.first().account)
                         }.doOnSuccess { reply ->
                             if (reply?.code == 0) {
                                 reply.msg?.toast()
@@ -79,29 +70,26 @@ class LoginViewModel : ViewModel() {
                             it.message?.toast()
                         }
                     }
-                    LoginAction.Login -> launchIo {
+                    PasswordAction.Reset -> launchIo {
                         httpRequest {
-                            loginUiState.first().let {
-                                if (it.isAuthCodeLogin) {
-                                    userService.loginByCode(it.account, it.authCode)
-                                } else {
-                                    userService.loginByPsw(it.account, it.password)
-                                }
+                            passwordUiState.first().let {
+                                userService.passwordReset(it.account, it.authCode, it.password)
                             }
                         }.doOnSuccess { reply ->
                             if (reply?.code == 0) {
                                 reply.msg?.toast()
                             } else if (reply?.code == BaseReply.OK) {
-                                "登录成功".toast()
-                                UserManager.saveToken(reply.data?.token)
-                                    .loginState(true)
+                                "重置密码成功".toast()
+                                _passwordUiState.update {
+                                    it.copy(pswResetSuccess = true)
+                                }
                             }
                         }.doOnError {
                             it.message?.toast()
                         }
                     }
-                    LoginAction.ToggleEncounterProblemDialog -> launchDefault {
-                        _loginUiState.update {
+                    PasswordAction.ToggleEncounterProblemDialog -> launchDefault {
+                        _passwordUiState.update {
                             it.copy(showEncounterProblemDialog = !it.showEncounterProblemDialog)
                         }
                     }
@@ -113,35 +101,31 @@ class LoginViewModel : ViewModel() {
 
 /**
  * @desc：
- * @date：2023/04/23 13:51
+ * @date：2023/04/26 09:42
  */
-data class LoginUiState(
+data class PasswordUiState(
     val account: String = "",
     val authCode: String = "",
     val password: String = "",
-    val isAuthCodeLogin: Boolean = true,
     val showEncounterProblemDialog: Boolean = false,
+    val pswResetSuccess: Boolean = false,
 ) {
     fun isMobilePhone() = account.isMobilePhone()
 
-    fun loginEnabled() = if (isAuthCodeLogin) {
-        isMobilePhone() && authCode.length >= 6
-    } else {
-        isMobilePhone() && password.length >= 6
-    }
+    fun resetEnabled() = isMobilePhone() && authCode.length >= 6 && password.length in 6..18
 }
 
 /**
  * @desc：
- * @date：2023/04/23 13:55
+ * @date：2023/04/26 09:42
  */
-sealed class LoginAction {
+sealed class PasswordAction {
     /** 获取验证码 */
-    object GetCode : LoginAction()
+    object GetCode : PasswordAction()
 
-    /** 登录 */
-    object Login : LoginAction()
+    /** 重置 */
+    object Reset : PasswordAction()
 
     /** 显示或隐藏遇到问题弹窗 */
-    object ToggleEncounterProblemDialog : LoginAction()
+    object ToggleEncounterProblemDialog : PasswordAction()
 }

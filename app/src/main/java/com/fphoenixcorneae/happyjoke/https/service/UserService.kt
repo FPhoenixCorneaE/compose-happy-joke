@@ -45,6 +45,30 @@ interface UserService {
     ): LoginReply?
 
     /**
+     * 重置密码获取验证码
+     * @param phone    手机号
+     */
+    @FormUrlEncoded
+    @POST("/jokes/user/psw/reset/get_code")
+    suspend fun passwordResetGetCode(
+        @Field("phone") phone: String,
+    ): BaseReply<Any>?
+
+    /**
+     * 重置密码
+     * @param phone    手机号
+     * @param code     验证码
+     * @param password 密码 无需加密，后台加密
+     */
+    @FormUrlEncoded
+    @POST("/jokes/user/psw/reset")
+    suspend fun passwordReset(
+        @Field("phone") phone: String,
+        @Field("code") code: String,
+        @Field("password") password: String,
+    ): BaseReply<Any>?
+
+    /**
      * 获取用户信息
      */
     @POST("/jokes/user/info")
