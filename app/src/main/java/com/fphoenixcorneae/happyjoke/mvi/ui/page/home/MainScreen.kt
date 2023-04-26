@@ -14,6 +14,7 @@ import androidx.navigation.NavHostController
 import com.fphoenixcorneae.happyjoke.const.Constant
 import com.fphoenixcorneae.happyjoke.mvi.ui.page.dialog.AppUpdateDialog
 import com.fphoenixcorneae.happyjoke.mvi.ui.widget.BottomNavigationBar
+import com.fphoenixcorneae.happyjoke.tool.UserManager
 import com.google.accompanist.navigation.animation.AnimatedNavHost
 import com.google.accompanist.navigation.animation.composable
 import com.google.accompanist.navigation.animation.rememberAnimatedNavController
@@ -82,7 +83,7 @@ fun MainScreen(
                     0 -> animatedNavController.navigate(Constant.NavRoute.Main.HOMEPAGE)
                     1 -> animatedNavController.navigate(Constant.NavRoute.Main.SWEEP)
                     3 -> {
-                        if (true) {
+                        if (!UserManager.isLoggedIn()) {
                             navController.navigate(Constant.NavRoute.LOGIN)
                         } else {
                             animatedNavController.navigate(Constant.NavRoute.Main.MESSAGE)
