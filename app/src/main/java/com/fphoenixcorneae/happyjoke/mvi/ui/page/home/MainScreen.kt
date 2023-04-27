@@ -69,7 +69,7 @@ fun MainScreen(
                     enterTransition = { fadeIn() },
                     exitTransition = { fadeOut() },
                 ) {
-                    MeScreen()
+                    MeScreen(navHostController = navController)
                 }
             }
             var currentPosition by rememberSaveable { mutableStateOf(0) }

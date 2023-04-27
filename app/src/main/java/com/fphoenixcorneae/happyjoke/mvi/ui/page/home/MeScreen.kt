@@ -1,5 +1,6 @@
 package com.fphoenixcorneae.happyjoke.mvi.ui.page.home
 
+import androidx.compose.animation.ExperimentalAnimationApi
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.*
@@ -8,6 +9,7 @@ import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material3.*
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
@@ -21,30 +23,41 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.lifecycle.viewmodel.compose.viewModel
+import androidx.navigation.NavHostController
 import coil.compose.AsyncImage
 import coil.request.ImageRequest
 import coil.transform.CircleCropTransformation
 import com.fphoenixcorneae.happyjoke.R
-import com.fphoenixcorneae.happyjoke.ext.LifecycleObserver
+import com.fphoenixcorneae.happyjoke.const.Constant
 import com.fphoenixcorneae.happyjoke.ext.clickableNoRipple
 import com.fphoenixcorneae.happyjoke.ext.urlAESDecrypt
 import com.fphoenixcorneae.happyjoke.mvi.ui.theme.*
 import com.fphoenixcorneae.happyjoke.mvi.ui.widget.SystemUiScaffold
 import com.fphoenixcorneae.happyjoke.mvi.viewmodel.MeAction
 import com.fphoenixcorneae.happyjoke.mvi.viewmodel.MeViewModel
+import com.fphoenixcorneae.happyjoke.tool.UserManager
+import com.google.accompanist.navigation.animation.rememberAnimatedNavController
 
 /**
  * @desc：我的
  * @date：2023/03/17 10:48
  */
+@OptIn(ExperimentalAnimationApi::class)
 @Preview(showBackground = true, backgroundColor = 0xFFFFFFFF)
 @Composable
 fun MeScreen(
+    navHostController: NavHostController = rememberAnimatedNavController(),
     viewModel: MeViewModel = viewModel(),
 ) {
-    SystemUiScaffold {
-        val context = LocalContext.current
-        val meUiState by viewModel.meUiState.collectAsState()
+    val context = LocalContext.current
+    val meUiState by viewModel.meUiState.collectAsState()
+    val isLoggedIn by meUiState.loginStateFlow.collectAsState(initial = false)
+    LaunchedEffect(key1 = isLoggedIn) {
+        if (isLoggedIn) {
+            viewModel.dispatchIntent(MeAction.GetUserInfo)
+        }
+    }
+    SystemUiScaffold(statusBarColor = Grey15) {
         Column(
             modifier = Modifier
                 .fillMaxSize()
@@ -56,14 +69,19 @@ fun MeScreen(
                     .padding(all = 20.dp)
                     .fillMaxWidth()
                     .wrapContentHeight()
+                    .clickableNoRipple {
+                        if (UserManager.isLoggedIn()) {
+
+                        } else {
+                            navHostController.navigate(Constant.NavRoute.LOGIN)
+                        }
+                    },
             ) {
                 AsyncImage(
                     model = ImageRequest.Builder(context)
                         .data(meUiState.userInfo?.user?.avatar.urlAESDecrypt())
-                        .error(R.mipmap.ic_avatar_default)
-                        .crossfade(true)
-                        .transformations(CircleCropTransformation())
-                        .build(),
+                        .error(R.mipmap.ic_avatar_default).crossfade(true)
+                        .transformations(CircleCropTransformation()).build(),
                     contentDescription = null,
                     modifier = Modifier
                         .size(60.dp)
@@ -76,7 +94,7 @@ fun MeScreen(
                     verticalArrangement = Arrangement.spacedBy(8.dp)
                 ) {
                     Text(
-                        text = if (meUiState.isLoggedIn) meUiState.userInfo?.user?.nickname.orEmpty() else stringResource(
+                        text = if (isLoggedIn) meUiState.userInfo?.user?.nickname.orEmpty() else stringResource(
                             R.string.login_or_register
                         ),
                         color = Black30,
@@ -84,7 +102,7 @@ fun MeScreen(
                         fontWeight = FontWeight.SemiBold,
                     )
                     Text(
-                        text = if (meUiState.isLoggedIn) meUiState.userInfo?.user?.signature.orEmpty() else stringResource(
+                        text = if (isLoggedIn) meUiState.userInfo?.user?.signature.orEmpty() else stringResource(
                             R.string.user_signature_hint
                         ),
                         color = Grey85,
@@ -108,29 +126,35 @@ fun MeScreen(
                     horizontalAlignment = Alignment.CenterHorizontally
                 ) {
                     Text(
-                        text = if (meUiState.isLoggedIn) meUiState.userInfo?.info?.attentionNum.toString() else "-",
+                        text = if (isLoggedIn) meUiState.userInfo?.info?.attentionNum.toString() else "-",
                         color = Black30,
                         fontSize = 14.sp,
                     )
-                    Text(text = stringResource(id = R.string.attention), color = Grey60, fontSize = 12.sp)
+                    Text(
+                        text = stringResource(id = R.string.attention),
+                        color = Grey60,
+                        fontSize = 12.sp
+                    )
                 }
                 Column(
                     verticalArrangement = Arrangement.spacedBy(6.dp),
                     horizontalAlignment = Alignment.CenterHorizontally
                 ) {
                     Text(
-                        text = if (meUiState.isLoggedIn) meUiState.userInfo?.info?.fansNum.toString() else "-",
+                        text = if (isLoggedIn) meUiState.userInfo?.info?.fansNum.toString() else "-",
                         color = Black30,
                         fontSize = 14.sp,
                     )
-                    Text(text = stringResource(id = R.string.fans), color = Grey60, fontSize = 12.sp)
+                    Text(
+                        text = stringResource(id = R.string.fans), color = Grey60, fontSize = 12.sp
+                    )
                 }
                 Column(
                     verticalArrangement = Arrangement.spacedBy(6.dp),
                     horizontalAlignment = Alignment.CenterHorizontally
                 ) {
                     Text(
-                        text = if (meUiState.isLoggedIn) meUiState.userInfo?.info?.experienceNum.toString() else "-",
+                        text = if (isLoggedIn) meUiState.userInfo?.info?.experienceNum.toString() else "-",
                         color = Black30,
                         fontSize = 14.sp,
                     )
@@ -243,11 +267,6 @@ fun MeScreen(
             Spacer(modifier = Modifier.height(80.dp))
         }
     }
-    LifecycleObserver(
-        onCreate = {
-            viewModel.dispatchIntent(MeAction.GetUserInfo)
-        }
-    )
 }
 
 @Composable

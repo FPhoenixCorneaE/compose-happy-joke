@@ -40,7 +40,7 @@ fun Context.getStringSetDSFlow(key: String, defaultValue: Set<String>): Flow<Set
  * @param key 键值对-key
  */
 suspend inline fun <reified T> Context.getAsyncDS(key: String, defaultValue: T): T = run {
-    getDSFlow<T>(key = key, defaultValue).first()
+    getDSFlow(key = key, defaultValue).first()
 }
 
 /**

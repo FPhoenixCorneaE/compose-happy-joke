@@ -20,6 +20,8 @@ object UserManager {
 
     fun isLoggedIn() = applicationContext.getSyncDS(Constant.User.IS_LOGGED_IN, false)
 
+    fun loginStateFlow() = applicationContext.getDSFlow(Constant.User.IS_LOGGED_IN, false)
+
     fun saveToken(token: String?) = apply {
         globalScope.launch {
             applicationContext.saveDS(Constant.User.TOKEN, token)
