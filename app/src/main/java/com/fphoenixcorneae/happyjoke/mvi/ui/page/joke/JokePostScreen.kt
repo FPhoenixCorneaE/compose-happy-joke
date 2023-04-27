@@ -36,7 +36,7 @@ import com.google.accompanist.navigation.animation.rememberAnimatedNavController
 fun JokePostScreen(
     navController: NavHostController = rememberAnimatedNavController(),
 ) {
-    SystemUiScaffold() {
+    SystemUiScaffold {
         Column(Modifier.fillMaxWidth()) {
             Toolbar(
                 navController = navController,

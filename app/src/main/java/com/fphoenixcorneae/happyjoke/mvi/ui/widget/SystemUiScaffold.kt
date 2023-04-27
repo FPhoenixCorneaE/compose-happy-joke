@@ -2,10 +2,7 @@ package com.fphoenixcorneae.happyjoke.mvi.ui.widget
 
 import android.app.Activity
 import androidx.compose.foundation.isSystemInDarkTheme
-import androidx.compose.foundation.layout.Box
-import androidx.compose.foundation.layout.fillMaxSize
-import androidx.compose.foundation.layout.imePadding
-import androidx.compose.foundation.layout.navigationBarsPadding
+import androidx.compose.foundation.layout.*
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.SideEffect
 import androidx.compose.ui.Modifier
@@ -17,11 +14,19 @@ import com.google.accompanist.systemuicontroller.rememberSystemUiController
 /**
  * @desc：适配状态栏、底部导航栏
  * @date：2023/03/17 11:40
+ * @param isFitsSystemWindows   默认false，沉浸式状态栏
+ * @param statusBarsPadding     是否给状态栏预留高度，以免遮盖UI
+ * @param navigationBarsPadding 是否给底部状态栏预留高度，以免遮盖UI
+ * @param statusBarColor        设置顶部状态栏的颜色
+ * @param navigationBarColor    设置底部状态栏的颜色
+ * @param isDarkFont            状态栏内容是否为黑色
  */
 @Composable
 inline fun SystemUiScaffold(
     modifier: Modifier = Modifier,
-    isFitsSystemWindows: Boolean = true,
+    isFitsSystemWindows: Boolean = false,
+    statusBarsPadding: Boolean = true,
+    navigationBarsPadding: Boolean = true,
     statusBarColor: Color = Color.Transparent,
     navigationBarColor: Color = Color.Transparent,
     isDarkFont: Boolean = !isSystemInDarkTheme(),
@@ -52,8 +57,11 @@ inline fun SystemUiScaffold(
         // 如果是沉浸式需要设置 padding来占位
         modifierNew = modifierNew.then(Modifier.imePadding())
     }
-
-    if (systemUiController.isNavigationBarVisible) {
+    if (!isFitsSystemWindows && statusBarsPadding && systemUiController.isStatusBarVisible) {
+        // 给状态栏预留高度，以免遮盖UI
+        modifierNew = modifierNew.then(Modifier.statusBarsPadding())
+    }
+    if (navigationBarsPadding && systemUiController.isNavigationBarVisible) {
         // 给底部状态栏预留高度，以免遮盖UI
         modifierNew = modifierNew.then(Modifier.navigationBarsPadding())
     }

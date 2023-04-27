@@ -42,7 +42,7 @@ import com.fphoenixcorneae.happyjoke.mvi.viewmodel.MeViewModel
 fun MeScreen(
     viewModel: MeViewModel = viewModel(),
 ) {
-    SystemUiScaffold() {
+    SystemUiScaffold {
         val context = LocalContext.current
         val meUiState by viewModel.meUiState.collectAsState()
         Column(

@@ -50,10 +50,7 @@ import com.fphoenixcorneae.happyjoke.mvi.viewmodel.HomepageViewModel
 fun SweepScreen(
     viewModel: HomepageViewModel = viewModel(),
 ) {
-    SystemUiScaffold(
-        isFitsSystemWindows = false,
-        isDarkFont = false,
-    ) {
+    SystemUiScaffold(isFitsSystemWindows = false, statusBarsPadding = false, isDarkFont = false) {
         val context = LocalContext.current
         val sweepTikTokVideos = viewModel.sweepTikTokVideos.collectAsLazyPagingItems()
         val pagerState = rememberPagerState()

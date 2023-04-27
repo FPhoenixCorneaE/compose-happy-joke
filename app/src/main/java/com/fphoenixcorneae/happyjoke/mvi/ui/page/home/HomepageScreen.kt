@@ -35,10 +35,7 @@ import kotlinx.coroutines.launch
 @Preview
 @Composable
 fun HomepageScreen() {
-    SystemUiScaffold(
-        isFitsSystemWindows = true,
-        statusBarColor = MaterialTheme.colorScheme.background,
-    ) {
+    SystemUiScaffold {
         val labels = listOf(
             stringResource(R.string.attention),
             stringResource(R.string.recommend),

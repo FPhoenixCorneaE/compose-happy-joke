@@ -27,17 +27,16 @@ import com.fphoenixcorneae.happyjoke.mvi.ui.widget.SystemUiScaffold
 @Preview
 @Composable
 fun MessageScreen() {
-    SystemUiScaffold(isFitsSystemWindows = false) {
+    SystemUiScaffold {
         Column(
             modifier = Modifier
-                .statusBarsPadding()
                 .padding(bottom = 60.dp)
                 .fillMaxSize(),
         ) {
             Box(
                 modifier = Modifier
                     .fillMaxWidth()
-                    .height(40.dp),
+                    .height(60.dp),
             ) {
                 Text(
                     text = "消息",
