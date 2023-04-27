@@ -47,6 +47,7 @@ import kotlin.math.sin
 @Composable
 fun BottomNavigationBar(
     modifier: Modifier = Modifier,
+    currentPosition: Int = 0,
     naviBarHeight: Dp = 60.dp,
     naviItemHeight: Dp = 50.dp,
     centerIconSize: Dp = 44.dp,
@@ -155,7 +156,7 @@ fun BottomNavigationBar(
             verticalAlignment = Alignment.CenterVertically,
         ) {
             val coroutineScope = rememberCoroutineScope()
-            var selectedPosition by remember { mutableStateOf(0) }
+            var selectedPosition by remember { mutableStateOf(currentPosition) }
             // 创建当前动画状态
             var animState by remember { mutableStateOf(AnimState.Static) }
             // 创建Transition，管理状态

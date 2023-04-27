@@ -7,6 +7,7 @@ import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.*
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.runtime.*
+import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.navigation.NavHostController
@@ -71,18 +72,23 @@ fun MainScreen(
                     MeScreen()
                 }
             }
+            var currentPosition by rememberSaveable { mutableStateOf(0) }
             BottomNavigationBar(
                 modifier = Modifier.align(alignment = Alignment.BottomCenter),
+                currentPosition = currentPosition,
                 onCenterIconClick = {
                     navController.navigate(Constant.NavRoute.JOKE_POST)
                 }
             ) {
+                currentPosition = it
                 when (it) {
                     0 -> animatedNavController.navigate(Constant.NavRoute.Main.HOMEPAGE)
                     1 -> animatedNavController.navigate(Constant.NavRoute.Main.SWEEP)
                     3 -> {
                         if (!UserManager.isLoggedIn()) {
                             navController.navigate(Constant.NavRoute.LOGIN)
+                            currentPosition = 0
+                            animatedNavController.navigate(Constant.NavRoute.Main.HOMEPAGE)
                         } else {
                             animatedNavController.navigate(Constant.NavRoute.Main.MESSAGE)
                         }
