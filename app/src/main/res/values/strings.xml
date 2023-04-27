@@ -48,4 +48,7 @@
     <string name="contact_customer_service">联系客服</string>
     <string name="i_want_feedback">我要反馈</string>
     <string name="cancel">取消</string>
+    <string name="send_code_success">验证码发送成功</string>
+    <string name="password_reset_success">重置密码成功</string>
+    <string name="login_success">登录成功</string>
 </resources>

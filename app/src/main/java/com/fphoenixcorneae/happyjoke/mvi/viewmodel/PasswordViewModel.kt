@@ -64,7 +64,9 @@ class PasswordViewModel : ViewModel() {
                             if (reply?.code == 0) {
                                 reply.msg?.toast()
                             } else if (reply?.code == BaseReply.OK) {
-                                "验证码发送成功".toast()
+                                _passwordUiState.update {
+                                    it.copy(sendCodeTime = System.currentTimeMillis().toString())
+                                }
                             }
                         }.doOnError {
                             it.message?.toast()
@@ -79,7 +81,6 @@ class PasswordViewModel : ViewModel() {
                             if (reply?.code == 0) {
                                 reply.msg?.toast()
                             } else if (reply?.code == BaseReply.OK) {
-                                "重置密码成功".toast()
                                 _passwordUiState.update {
                                     it.copy(pswResetSuccess = true)
                                 }
@@ -108,6 +109,7 @@ data class PasswordUiState(
     val authCode: String = "",
     val password: String = "",
     val showEncounterProblemDialog: Boolean = false,
+    val sendCodeTime: String? = null,
     val pswResetSuccess: Boolean = false,
 ) {
     fun isMobilePhone() = account.isMobilePhone()

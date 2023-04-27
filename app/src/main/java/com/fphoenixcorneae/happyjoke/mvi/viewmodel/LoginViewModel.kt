@@ -73,7 +73,9 @@ class LoginViewModel : ViewModel() {
                             if (reply?.code == 0) {
                                 reply.msg?.toast()
                             } else if (reply?.code == BaseReply.OK) {
-                                "验证码发送成功".toast()
+                                _loginUiState.update {
+                                    it.copy(sendCodeTime = System.currentTimeMillis().toString())
+                                }
                             }
                         }.doOnError {
                             it.message?.toast()
@@ -92,9 +94,11 @@ class LoginViewModel : ViewModel() {
                             if (reply?.code == 0) {
                                 reply.msg?.toast()
                             } else if (reply?.code == BaseReply.OK) {
-                                "登录成功".toast()
                                 UserManager.saveToken(reply.data?.token)
                                     .loginState(true)
+                                _loginUiState.update {
+                                    it.copy(loginSuccess = true)
+                                }
                             }
                         }.doOnError {
                             it.message?.toast()
@@ -121,6 +125,8 @@ data class LoginUiState(
     val password: String = "",
     val isAuthCodeLogin: Boolean = true,
     val showEncounterProblemDialog: Boolean = false,
+    val sendCodeTime: String? = null,
+    val loginSuccess: Boolean = false,
 ) {
     fun isMobilePhone() = account.isMobilePhone()
 

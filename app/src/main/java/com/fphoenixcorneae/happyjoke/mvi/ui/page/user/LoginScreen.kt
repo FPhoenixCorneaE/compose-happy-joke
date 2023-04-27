@@ -2,7 +2,6 @@ package com.fphoenixcorneae.happyjoke.mvi.ui.page.user
 
 import android.content.Intent
 import android.net.Uri
-import android.view.Window
 import androidx.compose.animation.ExperimentalAnimationApi
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.text.ClickableText
@@ -35,6 +34,7 @@ import coil.compose.AsyncImage
 import com.fphoenixcorneae.happyjoke.R
 import com.fphoenixcorneae.happyjoke.const.Constant
 import com.fphoenixcorneae.happyjoke.ext.clickableNoRipple
+import com.fphoenixcorneae.happyjoke.ext.toast
 import com.fphoenixcorneae.happyjoke.mvi.ui.page.dialog.EncounterProblemDialog
 import com.fphoenixcorneae.happyjoke.mvi.ui.theme.Grey70
 import com.fphoenixcorneae.happyjoke.mvi.ui.theme.Yellow30
@@ -53,13 +53,24 @@ import com.google.accompanist.navigation.animation.rememberAnimatedNavController
 @Preview(showSystemUi = true, showBackground = true, backgroundColor = 0xFFFFFFFF)
 @Composable
 fun LoginScreen(
-    window: Window? = null,
     navController: NavHostController = rememberAnimatedNavController(),
     viewModel: LoginViewModel = viewModel(),
 ) {
     val context = LocalContext.current
     val loginUiState by viewModel.loginUiState.collectAsState()
-    SystemUiScaffold(window = window) {
+    LaunchedEffect(key1 = loginUiState.sendCodeTime) {
+        if (!loginUiState.sendCodeTime.isNullOrEmpty()) {
+            context.getString(R.string.send_code_success).toast()
+        }
+    }
+    LaunchedEffect(key1 = loginUiState.loginSuccess) {
+        if (loginUiState.loginSuccess) {
+            context.getString(R.string.login_success).toast()
+            // 返回上一个页面
+            navController.navigateUp()
+        }
+    }
+    SystemUiScaffold {
         Column(
             modifier = Modifier
                 .fillMaxSize()
