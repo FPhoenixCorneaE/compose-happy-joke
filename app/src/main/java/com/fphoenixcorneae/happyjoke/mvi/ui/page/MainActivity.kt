@@ -41,7 +41,7 @@ class MainActivity : ComponentActivity() {
                             enterTransition = { fadeIn() },
                             exitTransition = { fadeOut() },
                         ) {
-                            SplashScreen(window = window, navController)
+                            SplashScreen(navController = navController)
                         }
                         composable(
                             Constant.NavRoute.MAIN,
@@ -50,7 +50,7 @@ class MainActivity : ComponentActivity() {
                             popEnterTransition = { fadeIn() },
                             popExitTransition = { fadeOut() },
                         ) {
-                            MainScreen(window = window, navController)
+                            MainScreen(navController = navController)
                         }
                         composable(
                             Constant.NavRoute.JOKE_POST,
@@ -59,7 +59,7 @@ class MainActivity : ComponentActivity() {
                             popEnterTransition = { slideInVertically(initialOffsetY = { it }) + fadeIn() },
                             popExitTransition = { slideOutVertically(targetOffsetY = { it }) + fadeOut() },
                         ) {
-                            JokePostScreen(window = window, navController)
+                            JokePostScreen(navController = navController)
                         }
                         composable(
                             Constant.NavRoute.LOGIN,
@@ -68,7 +68,7 @@ class MainActivity : ComponentActivity() {
                             popEnterTransition = { slideInVertically(initialOffsetY = { it }) + fadeIn() },
                             popExitTransition = { slideOutVertically(targetOffsetY = { it }) + fadeOut() },
                         ) {
-                            LoginScreen(window = window, navController)
+                            LoginScreen(navController = navController)
                         }
                         composable(
                             Constant.NavRoute.PASSWORD_RESET,
@@ -77,7 +77,7 @@ class MainActivity : ComponentActivity() {
                             popEnterTransition = { slideInVertically(initialOffsetY = { it }) + fadeIn() },
                             popExitTransition = { slideOutVertically(targetOffsetY = { it }) + fadeOut() },
                         ) {
-                            PasswordResetScreen(window = window, navController)
+                            PasswordResetScreen(navController = navController)
                         }
                     }
                 }

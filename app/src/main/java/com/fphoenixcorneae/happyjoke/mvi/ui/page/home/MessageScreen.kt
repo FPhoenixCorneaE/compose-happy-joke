@@ -1,12 +1,10 @@
 package com.fphoenixcorneae.happyjoke.mvi.ui.page.home
 
-import android.view.Window
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.shape.RoundedCornerShape
-import androidx.compose.material3.Icon
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
@@ -28,12 +26,11 @@ import com.fphoenixcorneae.happyjoke.mvi.ui.widget.SystemUiScaffold
  */
 @Preview
 @Composable
-fun MessageScreen(
-    window: Window? = null,
-) {
-    SystemUiScaffold(window = window) {
+fun MessageScreen() {
+    SystemUiScaffold(isFitsSystemWindows = false) {
         Column(
             modifier = Modifier
+                .statusBarsPadding()
                 .padding(bottom = 60.dp)
                 .fillMaxSize(),
         ) {
@@ -46,7 +43,7 @@ fun MessageScreen(
                     text = "消息",
                     color = Color.Black,
                     fontSize = 20.sp,
-                    fontWeight = FontWeight.Bold,
+                    fontWeight = FontWeight.ExtraBold,
                     modifier = Modifier
                         .padding(start = 20.dp)
                         .align(Alignment.CenterStart),
@@ -85,11 +82,11 @@ private fun IconCountTextItem(
 ) {
     ConstraintLayout {
         val (icon, count, text) = createRefs()
-        Icon(
+        Image(
             painter = painterResource(id = iconRes),
             contentDescription = null,
             modifier = Modifier
-                .size(36.dp)
+                .size(48.dp)
                 .constrainAs(icon) {
                     top.linkTo(parent.top)
                     start.linkTo(parent.start)
@@ -102,16 +99,19 @@ private fun IconCountTextItem(
             fontSize = 14.sp,
             modifier = Modifier
                 .constrainAs(count) {
-                    top.linkTo(icon.top, margin = 7.dp)
+                    top.linkTo(icon.top)
+                    bottom.linkTo(icon.top)
+                    start.linkTo(icon.end)
                     end.linkTo(icon.end)
                 }
-                .background(color = Color.Red, RoundedCornerShape(8.dp))
-                .border(width = 2.dp, color = Color.White, RoundedCornerShape(8.dp)),
+                .border(width = 2.dp, color = Color.White, RoundedCornerShape(16.dp))
+                .background(color = Color.Red, RoundedCornerShape(16.dp))
+                .padding(horizontal = 4.dp, vertical = 2.dp),
         )
         Text(
             text = content,
             color = Black30,
-            fontSize = 14.sp,
+            fontSize = 16.sp,
             fontWeight = FontWeight.Bold,
             modifier = Modifier
                 .constrainAs(text) {

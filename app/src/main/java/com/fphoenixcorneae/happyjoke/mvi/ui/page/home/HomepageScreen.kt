@@ -1,6 +1,5 @@
 package com.fphoenixcorneae.happyjoke.mvi.ui.page.home
 
-import android.view.Window
 import androidx.compose.animation.animateColorAsState
 import androidx.compose.animation.core.animateFloatAsState
 import androidx.compose.foundation.ExperimentalFoundationApi
@@ -35,11 +34,8 @@ import kotlinx.coroutines.launch
 @OptIn(ExperimentalFoundationApi::class)
 @Preview
 @Composable
-fun HomepageScreen(
-    window: Window? = null,
-) {
+fun HomepageScreen() {
     SystemUiScaffold(
-        window = window,
         isFitsSystemWindows = true,
         statusBarColor = MaterialTheme.colorScheme.background,
     ) {

@@ -1,6 +1,5 @@
 package com.fphoenixcorneae.happyjoke.mvi.ui.page.home
 
-import android.view.Window
 import androidx.compose.animation.ExperimentalAnimationApi
 import androidx.compose.animation.fadeIn
 import androidx.compose.animation.fadeOut
@@ -26,7 +25,6 @@ import com.google.accompanist.navigation.animation.rememberAnimatedNavController
 @OptIn(ExperimentalAnimationApi::class)
 @Composable
 fun MainScreen(
-    window: Window? = null,
     navController: NavHostController = rememberAnimatedNavController(),
 ) {
     Column(
@@ -49,14 +47,14 @@ fun MainScreen(
                     enterTransition = { fadeIn() },
                     exitTransition = { fadeOut() },
                 ) {
-                    HomepageScreen(window = window)
+                    HomepageScreen()
                 }
                 composable(
                     route = Constant.NavRoute.Main.SWEEP,
                     enterTransition = { fadeIn() },
                     exitTransition = { fadeOut() },
                 ) {
-                    SweepScreen(window = window)
+                    SweepScreen()
                 }
                 composable(
                     route = Constant.NavRoute.Main.MESSAGE,

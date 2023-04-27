@@ -1,6 +1,5 @@
 package com.fphoenixcorneae.happyjoke.mvi.ui.page.home
 
-import android.view.Window
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.*
@@ -41,10 +40,9 @@ import com.fphoenixcorneae.happyjoke.mvi.viewmodel.MeViewModel
 @Preview(showBackground = true, backgroundColor = 0xFFFFFFFF)
 @Composable
 fun MeScreen(
-    window: Window? = null,
     viewModel: MeViewModel = viewModel(),
 ) {
-    SystemUiScaffold(window = window) {
+    SystemUiScaffold() {
         val context = LocalContext.current
         val meUiState by viewModel.meUiState.collectAsState()
         Column(
@@ -263,7 +261,7 @@ private fun MeItem(
             .fillMaxWidth()
             .padding(12.dp)
             .clickableNoRipple {
-
+                onItemClick()
             },
     ) {
         Icon(

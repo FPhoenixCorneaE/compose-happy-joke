@@ -4,7 +4,6 @@ package com.fphoenixcorneae.happyjoke.mvi.ui.page.splash
 
 import android.Manifest
 import android.annotation.SuppressLint
-import android.view.Window
 import androidx.compose.animation.ExperimentalAnimationApi
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.layout.Box
@@ -36,10 +35,9 @@ import com.google.accompanist.permissions.rememberMultiplePermissionsState
 @Preview
 @Composable
 fun SplashScreen(
-    window: Window? = null,
     navController: NavHostController = rememberAnimatedNavController(),
 ) {
-    SystemUiScaffold(window = window, isFitsSystemWindows = false, isDarkFont = false) {
+    SystemUiScaffold(isFitsSystemWindows = false, isDarkFont = false) {
         // 基于 LocalContext 获取 Context
         val context = LocalContext.current
         Box(modifier = Modifier.fillMaxSize()) {

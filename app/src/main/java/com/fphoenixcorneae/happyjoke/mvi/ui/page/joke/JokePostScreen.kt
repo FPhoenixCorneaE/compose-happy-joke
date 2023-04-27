@@ -1,6 +1,5 @@
 package com.fphoenixcorneae.happyjoke.mvi.ui.page.joke
 
-import android.view.Window
 import androidx.compose.animation.ExperimentalAnimationApi
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.text.BasicTextField
@@ -35,10 +34,9 @@ import com.google.accompanist.navigation.animation.rememberAnimatedNavController
 @Preview
 @Composable
 fun JokePostScreen(
-    window: Window? = null,
     navController: NavHostController = rememberAnimatedNavController(),
 ) {
-    SystemUiScaffold(window = window) {
+    SystemUiScaffold() {
         Column(Modifier.fillMaxWidth()) {
             Toolbar(
                 navController = navController,

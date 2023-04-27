@@ -1,6 +1,5 @@
 package com.fphoenixcorneae.happyjoke.mvi.ui.page.home
 
-import android.view.Window
 import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
@@ -49,11 +48,9 @@ import com.fphoenixcorneae.happyjoke.mvi.viewmodel.HomepageViewModel
 @Preview
 @Composable
 fun SweepScreen(
-    window: Window? = null,
     viewModel: HomepageViewModel = viewModel(),
 ) {
     SystemUiScaffold(
-        window = window,
         isFitsSystemWindows = false,
         isDarkFont = false,
     ) {

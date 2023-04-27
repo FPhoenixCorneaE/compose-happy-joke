@@ -1,12 +1,16 @@
 package com.fphoenixcorneae.happyjoke.mvi.ui.widget
 
-import android.view.Window
+import android.app.Activity
 import androidx.compose.foundation.isSystemInDarkTheme
-import androidx.compose.foundation.layout.*
+import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.imePadding
+import androidx.compose.foundation.layout.navigationBarsPadding
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.SideEffect
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.platform.LocalContext
 import androidx.core.view.WindowCompat
 import com.google.accompanist.systemuicontroller.rememberSystemUiController
 
@@ -16,7 +20,6 @@ import com.google.accompanist.systemuicontroller.rememberSystemUiController
  */
 @Composable
 inline fun SystemUiScaffold(
-    window: Window?,
     modifier: Modifier = Modifier,
     isFitsSystemWindows: Boolean = true,
     statusBarColor: Color = Color.Transparent,
@@ -24,7 +27,8 @@ inline fun SystemUiScaffold(
     isDarkFont: Boolean = !isSystemInDarkTheme(),
     crossinline content: @Composable () -> Unit,
 ) {
-    window?.let {
+    val activity = LocalContext.current as? Activity
+    activity?.window?.let {
         // 沉浸式状态栏设置
         WindowCompat.setDecorFitsSystemWindows(/* window = */ it, /* decorFitsSystemWindows = */ isFitsSystemWindows)
     }
