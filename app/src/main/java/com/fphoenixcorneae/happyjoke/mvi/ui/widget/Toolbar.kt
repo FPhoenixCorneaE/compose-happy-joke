@@ -1,8 +1,10 @@
 package com.fphoenixcorneae.happyjoke.mvi.ui.widget
 
 import androidx.compose.animation.ExperimentalAnimationApi
+import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.*
 import androidx.compose.material3.Divider
+import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
@@ -36,7 +38,8 @@ fun Toolbar(
     Box(
         modifier = Modifier
             .fillMaxWidth()
-            .height(48.dp),
+            .height(48.dp)
+            .background(color = MaterialTheme.colorScheme.background),
     ) {
         AsyncImage(
             model = R.mipmap.ic_back,
@@ -84,11 +87,13 @@ fun Toolbar(
                     },
             )
         }
-        Divider(thickness = 1.dp, color = GreyLine, modifier = Modifier.align(Alignment.BottomCenter))
+        Divider(
+            thickness = 1.dp, color = GreyLine, modifier = Modifier.align(Alignment.BottomCenter)
+        )
     }
 }
 
-@Preview
+@Preview(showBackground = true, backgroundColor = 0xFFFFFFFF)
 @Composable
 fun PreviewToolbar() {
     Toolbar(titleText = "标题", rightText = "测试")

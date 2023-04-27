@@ -11,6 +11,7 @@ import androidx.compose.ui.Modifier
 import com.fphoenixcorneae.happyjoke.const.Constant
 import com.fphoenixcorneae.happyjoke.mvi.ui.page.home.MainScreen
 import com.fphoenixcorneae.happyjoke.mvi.ui.page.joke.JokePostScreen
+import com.fphoenixcorneae.happyjoke.mvi.ui.page.settings.SettingsScreen
 import com.fphoenixcorneae.happyjoke.mvi.ui.page.splash.SplashScreen
 import com.fphoenixcorneae.happyjoke.mvi.ui.page.user.LoginScreen
 import com.fphoenixcorneae.happyjoke.mvi.ui.page.user.PasswordResetScreen
@@ -78,6 +79,15 @@ class MainActivity : ComponentActivity() {
                             popExitTransition = { slideOutVertically(targetOffsetY = { it }) + fadeOut() },
                         ) {
                             PasswordResetScreen(navController = navController)
+                        }
+                        composable(
+                            Constant.NavRoute.SETTINGS,
+                            enterTransition = { fadeIn() },
+                            exitTransition = { fadeOut() },
+                            popEnterTransition = { fadeIn() },
+                            popExitTransition = { fadeOut() },
+                        ) {
+                            SettingsScreen(navController = navController)
                         }
                     }
                 }

@@ -30,6 +30,7 @@ object Constant {
         const val JOKE_POST = "joke_post"
         const val LOGIN = "login"
         const val PASSWORD_RESET = "password_reset"
+        const val SETTINGS = "settings"
 
         /**
          * @desc：主页

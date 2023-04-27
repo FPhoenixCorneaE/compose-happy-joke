@@ -31,13 +31,13 @@ import com.google.accompanist.navigation.animation.rememberAnimatedNavController
  * @date：2023/04/20 15:10
  */
 @OptIn(ExperimentalAnimationApi::class)
-@Preview
+@Preview(showBackground = true, backgroundColor = 0xFFFFFFFF)
 @Composable
 fun JokePostScreen(
     navController: NavHostController = rememberAnimatedNavController(),
 ) {
     SystemUiScaffold {
-        Column(Modifier.fillMaxWidth()) {
+        Column(Modifier.fillMaxSize()) {
             Toolbar(
                 navController = navController,
                 titleText = stringResource(R.string.joke_post),
@@ -55,7 +55,11 @@ fun JokePostScreen(
                 textStyle = TextStyle(color = Color.Black, fontSize = 14.sp),
             ) { innerTextField ->
                 if (content.isEmpty()) {
-                    Text(text = stringResource(R.string.joke_post_hint), color = Grey60, fontSize = 14.sp)
+                    Text(
+                        text = stringResource(R.string.joke_post_hint),
+                        color = Grey60,
+                        fontSize = 14.sp
+                    )
                 }
                 // 原本输入框的内容
                 innerTextField()
@@ -94,16 +98,14 @@ fun JokePostScreen(
 
                         },
                 )
-                Text(
-                    text = "${content.length} / ${contentMaxLengths}字",
+                Text(text = "${content.length} / ${contentMaxLengths}字",
                     color = Grey60,
                     fontSize = 12.sp,
                     modifier = Modifier.constrainAs(contentLimit) {
                         end.linkTo(parent.end, margin = 20.dp)
                         top.linkTo(parent.top)
                         bottom.linkTo(parent.bottom)
-                    }
-                )
+                    })
             }
         }
     }

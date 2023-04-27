@@ -133,7 +133,7 @@ fun MeScreen(
                     Text(
                         text = stringResource(id = R.string.attention),
                         color = Grey60,
-                        fontSize = 12.sp
+                        fontSize = 13.sp
                     )
                 }
                 Column(
@@ -146,7 +146,7 @@ fun MeScreen(
                         fontSize = 14.sp,
                     )
                     Text(
-                        text = stringResource(id = R.string.fans), color = Grey60, fontSize = 12.sp
+                        text = stringResource(id = R.string.fans), color = Grey60, fontSize = 13.sp
                     )
                 }
                 Column(
@@ -158,7 +158,7 @@ fun MeScreen(
                         color = Black30,
                         fontSize = 14.sp,
                     )
-                    Text(text = stringResource(R.string.le_dou), color = Grey60, fontSize = 12.sp)
+                    Text(text = stringResource(R.string.le_dou), color = Grey60, fontSize = 13.sp)
                 }
             }
             Card(
@@ -183,7 +183,7 @@ fun MeScreen(
                             contentDescription = null,
                             modifier = Modifier.size(36.dp),
                         )
-                        Text(text = "帖子", color = Black30, fontSize = 11.sp)
+                        Text(text = "帖子", color = Black30, fontSize = 12.sp)
                     }
                     Column(verticalArrangement = Arrangement.spacedBy(6.dp),
                         horizontalAlignment = Alignment.CenterHorizontally,
@@ -193,7 +193,7 @@ fun MeScreen(
                             contentDescription = null,
                             modifier = Modifier.size(36.dp),
                         )
-                        Text(text = "评论", color = Black30, fontSize = 11.sp)
+                        Text(text = "评论", color = Black30, fontSize = 12.sp)
                     }
                     Column(verticalArrangement = Arrangement.spacedBy(6.dp),
                         horizontalAlignment = Alignment.CenterHorizontally,
@@ -203,7 +203,7 @@ fun MeScreen(
                             contentDescription = null,
                             modifier = Modifier.size(36.dp),
                         )
-                        Text(text = "赞过", color = Black30, fontSize = 11.sp)
+                        Text(text = "赞过", color = Black30, fontSize = 12.sp)
                     }
                     Column(verticalArrangement = Arrangement.spacedBy(6.dp),
                         horizontalAlignment = Alignment.CenterHorizontally,
@@ -213,7 +213,7 @@ fun MeScreen(
                             contentDescription = null,
                             modifier = Modifier.size(36.dp),
                         )
-                        Text(text = "收藏", color = Black30, fontSize = 11.sp)
+                        Text(text = "收藏", color = Black30, fontSize = 12.sp)
                     }
                 }
             }
@@ -262,7 +262,9 @@ fun MeScreen(
                 MeItem(iconResId = R.mipmap.ic_me_share, content = "分享给朋友")
                 MeItem(iconResId = R.mipmap.ic_me_feedback, content = "意见反馈")
                 MeItem(iconResId = R.mipmap.ic_me_praise, content = "赏个好评")
-                MeItem(iconResId = R.mipmap.ic_me_setting, content = "设置")
+                MeItem(iconResId = R.mipmap.ic_me_setting, content = "设置") {
+                    navHostController.navigate(Constant.NavRoute.SETTINGS)
+                }
             }
             Spacer(modifier = Modifier.height(80.dp))
         }
@@ -278,7 +280,7 @@ private fun MeItem(
     Box(
         modifier = Modifier
             .fillMaxWidth()
-            .padding(12.dp)
+            .padding(16.dp)
             .clickableNoRipple {
                 onItemClick()
             },
@@ -293,7 +295,7 @@ private fun MeItem(
         Text(
             text = content,
             color = Black30,
-            fontSize = 12.sp,
+            fontSize = 14.sp,
             modifier = Modifier
                 .padding(start = 28.dp)
                 .align(Alignment.CenterStart),

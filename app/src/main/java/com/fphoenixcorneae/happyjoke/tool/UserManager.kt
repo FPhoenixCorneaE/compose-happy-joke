@@ -38,4 +38,10 @@ object UserManager {
 
     fun getUserInfo() = applicationContext.getSyncDS(Constant.User.USER_INFO, "")
         .toObject(UserInfoReply.Data::class.java)
+
+    fun logout() {
+        globalScope.launch {
+            applicationContext.clearDS()
+        }
+    }
 }

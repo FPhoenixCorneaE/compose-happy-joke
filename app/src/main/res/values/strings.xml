@@ -51,4 +51,5 @@
     <string name="send_code_success">验证码发送成功</string>
     <string name="password_reset_success">重置密码成功</string>
     <string name="login_success">登录成功</string>
+    <string name="settings">设置</string>
 </resources>
