@@ -10,6 +10,7 @@ import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.*
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
@@ -28,8 +29,11 @@ import coil.request.ImageRequest
 import coil.transform.CircleCropTransformation
 import com.fphoenixcorneae.happyjoke.R
 import com.fphoenixcorneae.happyjoke.ext.LifecycleObserver
+import com.fphoenixcorneae.happyjoke.ext.toast
 import com.fphoenixcorneae.happyjoke.mvi.ui.theme.GreyBackground
 import com.fphoenixcorneae.happyjoke.mvi.ui.theme.GreyPlaceholder
+import com.fphoenixcorneae.happyjoke.mvi.viewmodel.HomepageAction
+import com.fphoenixcorneae.happyjoke.mvi.viewmodel.HomepageUiState
 import com.fphoenixcorneae.happyjoke.mvi.viewmodel.HomepageViewModel
 import com.google.accompanist.placeholder.PlaceholderHighlight
 import com.google.accompanist.placeholder.placeholder
@@ -57,7 +61,13 @@ fun AttentionRecommend(
     viewModel: HomepageViewModel = viewModel(),
 ) {
     val context = LocalContext.current
-    val attentionUiState by viewModel.attentionUiState.collectAsState()
+    val homepageUiState by viewModel.homepageUiState.collectAsState()
+    LaunchedEffect(key1 = homepageUiState.attentionResult) {
+        if (homepageUiState.attentionResult?.state == HomepageUiState.AttentionResult.ATTENTION_SUCCESS) {
+            context.getString(R.string.attention_success).toast()
+            viewModel.dispatchIntent(HomepageAction.GetAttentionRecommend)
+        }
+    }
     Column(
         modifier = Modifier
             .fillMaxWidth()
@@ -74,7 +84,7 @@ fun AttentionRecommend(
             item {
                 Spacer(modifier = Modifier.width(12.dp))
             }
-            items(attentionUiState.attentionRecommend ?: mutableListOf()) {
+            items(homepageUiState.attentionRecommend ?: mutableListOf()) {
                 Card(
                     modifier = Modifier
                         .width(150.dp)
@@ -183,7 +193,9 @@ fun AttentionRecommend(
                     }
 
                     Button(
-                        onClick = { },
+                        onClick = {
+                            viewModel.dispatchIntent(HomepageAction.UserAttention(1, it.userId.toString()))
+                        },
                         modifier = Modifier
                             .padding(20.dp)
                             .fillMaxWidth()
@@ -208,7 +220,7 @@ fun AttentionRecommend(
     }
     LifecycleObserver(
         onCreate = {
-            viewModel.getAttentionRecommend()
+            viewModel.dispatchIntent(HomepageAction.GetAttentionRecommend)
         }
     )
 }

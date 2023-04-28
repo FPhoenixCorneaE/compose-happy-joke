@@ -73,4 +73,16 @@ interface UserService {
      */
     @POST("/jokes/user/info")
     suspend fun getUserInfo(): UserInfoReply?
+
+    /**
+     * 用户关注
+     * @param status 1 关注 0 取消关注
+     * @param userId 用户id
+     */
+    @FormUrlEncoded
+    @POST("/jokes/user/attention")
+    suspend fun userAttention(
+        @Field("status") status: Int,
+        @Field("userId") userId: String,
+    ): UserAttentionReply?
 }

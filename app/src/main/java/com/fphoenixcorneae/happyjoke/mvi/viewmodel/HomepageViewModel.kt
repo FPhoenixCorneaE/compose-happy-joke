@@ -5,14 +5,19 @@ import androidx.lifecycle.viewModelScope
 import androidx.paging.Pager
 import androidx.paging.PagingConfig
 import androidx.paging.cachedIn
+import com.fphoenixcorneae.happyjoke.ext.launchDefault
 import com.fphoenixcorneae.happyjoke.ext.launchIo
 import com.fphoenixcorneae.happyjoke.https.apiService
 import com.fphoenixcorneae.happyjoke.https.doOnSuccess
 import com.fphoenixcorneae.happyjoke.https.httpRequest
+import com.fphoenixcorneae.happyjoke.https.userService
 import com.fphoenixcorneae.happyjoke.mvi.model.AttentionRecommend
+import com.fphoenixcorneae.happyjoke.mvi.model.BaseReply
 import com.fphoenixcorneae.happyjoke.mvi.model.paging.*
+import kotlinx.coroutines.channels.Channel
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
+import kotlinx.coroutines.flow.receiveAsFlow
 import kotlinx.coroutines.flow.update
 
 /**
@@ -46,19 +51,47 @@ class HomepageViewModel : ViewModel() {
         SweepTikTokSource()
     }.flow.cachedIn(viewModelScope)
 
-    private val _attentionUiState = MutableStateFlow(AttentionUiState())
-    val attentionUiState = _attentionUiState.asStateFlow()
+    private val _homepageUiState = MutableStateFlow(HomepageUiState())
+    val homepageUiState = _homepageUiState.asStateFlow()
 
-    /**
-     * 获取首页的推荐关注数据
-     */
-    fun getAttentionRecommend() {
-        launchIo {
-            httpRequest {
-                apiService.homepageAttentionRecommend()
-            }.doOnSuccess { result ->
-                _attentionUiState.update {
-                    it.copy(attentionRecommend = result?.data)
+    private val homepageAction = Channel<HomepageAction>()
+
+    fun dispatchIntent(action: HomepageAction) {
+        launchDefault {
+            homepageAction.send(action)
+        }
+    }
+
+    init {
+        launchDefault {
+            homepageAction.receiveAsFlow().collect {
+                when (it) {
+                    is HomepageAction.UserAttention -> launchIo {
+                        httpRequest {
+                            userService.userAttention(it.status, it.userId)
+                        }.doOnSuccess { reply ->
+                            if (reply?.code == BaseReply.OK) {
+                                // 关注/取消关注成功
+                                _homepageUiState.update {
+                                    it.copy(
+                                        attentionResult = HomepageUiState.AttentionResult(
+                                            state = reply.data?.attentionState,
+                                            time = System.currentTimeMillis()
+                                        )
+                                    )
+                                }
+                            }
+                        }
+                    }
+                    HomepageAction.GetAttentionRecommend -> launchIo {
+                        httpRequest {
+                            apiService.homepageAttentionRecommend()
+                        }.doOnSuccess { result ->
+                            _homepageUiState.update {
+                                it.copy(attentionRecommend = result?.data)
+                            }
+                        }
+                    }
                 }
             }
         }
@@ -69,6 +102,26 @@ class HomepageViewModel : ViewModel() {
  * @desc：定义页面状态的时候，每个属性值都是不可变的，如果需要结合多个状态判断做页面展示，这种判断可直接在UiState扩展。
  * @date：2023/04/20 17:45
  */
-data class AttentionUiState(
+data class HomepageUiState(
     val attentionRecommend: List<AttentionRecommend.Data>? = null,
-)
+    val attentionResult: AttentionResult? = null,
+) {
+    data class AttentionResult(val state: Int?, val time: Long) {
+        companion object {
+            const val CANCEL_ATTENTION_SUCCESS = 0
+            const val ATTENTION_SUCCESS = 2
+        }
+    }
+}
+
+/**
+ * @desc：
+ * @date：2023/04/27 17:52
+ */
+sealed class HomepageAction {
+    /** 获取推荐关注数据 */
+    object GetAttentionRecommend : HomepageAction()
+
+    /** 用户关注 */
+    data class UserAttention(val status: Int, val userId: String) : HomepageAction()
+}
