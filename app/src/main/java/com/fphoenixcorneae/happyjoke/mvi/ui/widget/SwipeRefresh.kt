@@ -36,6 +36,7 @@ import com.fphoenixcorneae.happyjoke.mvi.ui.theme.Grey70
 @Composable
 fun <T : Any> SwipeRefresh(
     lazyPagingItems: LazyPagingItems<T>,
+    modifier: Modifier = Modifier,
     lazyListState: LazyListState = rememberLazyListState(),
     contentPadding: PaddingValues = PaddingValues(0.dp),
     content: LazyListScope.() -> Unit,
@@ -44,7 +45,11 @@ fun <T : Any> SwipeRefresh(
         refreshing = lazyPagingItems.loadState.refresh is LoadState.Loading,
         onRefresh = { lazyPagingItems.refresh() },
     )
-    Box(modifier = Modifier.pullRefresh(state = pullRefreshState)) {
+    Box(
+        modifier = Modifier
+            .then(modifier)
+            .pullRefresh(state = pullRefreshState)
+    ) {
         LazyColumn(
             state = lazyListState,
             modifier = Modifier

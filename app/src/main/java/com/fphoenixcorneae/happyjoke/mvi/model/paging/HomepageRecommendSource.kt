@@ -2,7 +2,7 @@ package com.fphoenixcorneae.happyjoke.mvi.model.paging
 
 import androidx.paging.PagingSource
 import androidx.paging.PagingState
-import com.fphoenixcorneae.happyjoke.https.apiService
+import com.fphoenixcorneae.happyjoke.https.homepageService
 import com.fphoenixcorneae.happyjoke.mvi.model.HomepageRecommend
 
 /**
@@ -18,7 +18,7 @@ class HomepageRecommendSource : PagingSource<Int, HomepageRecommend.Data>() {
         return runCatching {
             val nextPage = params.key ?: 1
             LoadResult.Page(
-                data = apiService.homepageRecommend()?.data ?: mutableListOf(),
+                data = homepageService.homepageRecommend()?.data ?: mutableListOf(),
                 prevKey = if (nextPage == 1) null else nextPage - 1,
                 nextKey = nextPage + 1
             )

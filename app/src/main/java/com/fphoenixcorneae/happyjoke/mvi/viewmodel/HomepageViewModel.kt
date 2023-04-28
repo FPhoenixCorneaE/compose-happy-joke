@@ -7,8 +7,8 @@ import androidx.paging.PagingConfig
 import androidx.paging.cachedIn
 import com.fphoenixcorneae.happyjoke.ext.launchDefault
 import com.fphoenixcorneae.happyjoke.ext.launchIo
-import com.fphoenixcorneae.happyjoke.https.apiService
 import com.fphoenixcorneae.happyjoke.https.doOnSuccess
+import com.fphoenixcorneae.happyjoke.https.homepageService
 import com.fphoenixcorneae.happyjoke.https.httpRequest
 import com.fphoenixcorneae.happyjoke.https.userService
 import com.fphoenixcorneae.happyjoke.mvi.model.AttentionRecommend
@@ -25,6 +25,11 @@ import kotlinx.coroutines.flow.update
  * @date：2023/03/21 17:48
  */
 class HomepageViewModel : ViewModel() {
+
+    /** 首页关注的用户发布的段子列表 */
+    val homepageAttentionList = Pager(config = PagingConfig(pageSize = 10)) {
+        HomepageAttentionListSource()
+    }.flow.cachedIn(viewModelScope)
 
     /** 首页推荐列表 */
     val homepageRecommends = Pager(config = PagingConfig(pageSize = 10)) {
@@ -85,7 +90,7 @@ class HomepageViewModel : ViewModel() {
                     }
                     HomepageAction.GetAttentionRecommend -> launchIo {
                         httpRequest {
-                            apiService.homepageAttentionRecommend()
+                            homepageService.homepageAttentionRecommend()
                         }.doOnSuccess { result ->
                             _homepageUiState.update {
                                 it.copy(attentionRecommend = result?.data)

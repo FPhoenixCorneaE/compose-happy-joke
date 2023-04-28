@@ -1,13 +1,15 @@
 package com.fphoenixcorneae.happyjoke.https.service
 
 import com.fphoenixcorneae.happyjoke.mvi.model.*
+import retrofit2.http.Field
+import retrofit2.http.FormUrlEncoded
 import retrofit2.http.POST
 
 /**
  * @desc：接口地址：http://tools.cretinzp.com/jokes/doc.html
  * @date：2023/03/22 10:05
  */
-interface ApiService {
+interface HomepageService {
 
     /**
      * 获取首页的推荐列表数据
@@ -20,6 +22,13 @@ interface ApiService {
      */
     @POST("/jokes/home/attention/recommend")
     suspend fun homepageAttentionRecommend(): AttentionRecommend?
+
+    /**
+     * 获取关注的用户发布的段子列表
+     */
+    @FormUrlEncoded
+    @POST("/jokes/home/attention/list")
+    suspend fun homepageAttentionList(@Field("page") page: Int): HomepageRecommend?
 
     /**
      * 获取首页的最新列表数据

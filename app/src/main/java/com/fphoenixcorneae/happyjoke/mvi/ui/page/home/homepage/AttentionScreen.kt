@@ -24,6 +24,9 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.lifecycle.viewmodel.compose.viewModel
+import androidx.paging.LoadState
+import androidx.paging.compose.collectAsLazyPagingItems
+import androidx.paging.compose.items
 import coil.compose.AsyncImage
 import coil.request.ImageRequest
 import coil.transform.CircleCropTransformation
@@ -32,6 +35,7 @@ import com.fphoenixcorneae.happyjoke.ext.LifecycleObserver
 import com.fphoenixcorneae.happyjoke.ext.toast
 import com.fphoenixcorneae.happyjoke.mvi.ui.theme.GreyBackground
 import com.fphoenixcorneae.happyjoke.mvi.ui.theme.GreyPlaceholder
+import com.fphoenixcorneae.happyjoke.mvi.ui.widget.SwipeRefresh
 import com.fphoenixcorneae.happyjoke.mvi.viewmodel.HomepageAction
 import com.fphoenixcorneae.happyjoke.mvi.viewmodel.HomepageUiState
 import com.fphoenixcorneae.happyjoke.mvi.viewmodel.HomepageViewModel
@@ -45,9 +49,25 @@ import com.google.accompanist.placeholder.shimmer
  */
 @Preview
 @Composable
-fun AttentionScreen() {
-    Column(modifier = Modifier.background(color = GreyBackground)) {
-        AttentionRecommend()
+fun AttentionScreen(
+    viewModel: HomepageViewModel = viewModel(),
+) {
+    val homepageAttentionList = viewModel.homepageAttentionList.collectAsLazyPagingItems()
+    SwipeRefresh(
+        lazyPagingItems = homepageAttentionList,
+        modifier = Modifier.background(color = GreyBackground),
+        contentPadding = PaddingValues(bottom = 60.dp)
+    ) {
+        item {
+            AttentionRecommend()
+        }
+        item {
+            Spacer(modifier = Modifier.height(10.dp))
+        }
+        items(homepageAttentionList) { item ->
+            val isLoading = homepageAttentionList.loadState.append is LoadState.Loading
+            HomepageRecommendItem(item, isLoading)
+        }
     }
 }
 
