@@ -46,7 +46,7 @@ import com.google.accompanist.navigation.animation.rememberAnimatedNavController
 @Preview(showBackground = true, backgroundColor = 0xFFFFFFFF)
 @Composable
 fun MeScreen(
-    navHostController: NavHostController = rememberAnimatedNavController(),
+    navController: NavHostController = rememberAnimatedNavController(),
     viewModel: MeViewModel = viewModel(),
 ) {
     val context = LocalContext.current
@@ -73,7 +73,7 @@ fun MeScreen(
                         if (UserManager.isLoggedIn()) {
 
                         } else {
-                            navHostController.navigate(Constant.NavRoute.LOGIN)
+                            navController.navigate(Constant.NavRoute.LOGIN)
                         }
                     },
             ) {
@@ -263,7 +263,7 @@ fun MeScreen(
                 MeItem(iconResId = R.mipmap.ic_me_feedback, content = "意见反馈")
                 MeItem(iconResId = R.mipmap.ic_me_praise, content = "赏个好评")
                 MeItem(iconResId = R.mipmap.ic_me_setting, content = "设置") {
-                    navHostController.navigate(Constant.NavRoute.SETTINGS)
+                    navController.navigate(Constant.NavRoute.SETTINGS)
                 }
             }
             Spacer(modifier = Modifier.height(80.dp))

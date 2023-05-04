@@ -30,6 +30,7 @@ import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.TextUnit
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.constraintlayout.compose.ConstraintLayout
 import coil.compose.AsyncImage
 import com.fphoenixcorneae.happyjoke.R
 import com.fphoenixcorneae.happyjoke.ext.clickableNoRipple
@@ -54,6 +55,7 @@ fun BottomNavigationBar(
     lineMarginTop: Dp = 10.dp,
     centerArcRadius: Dp = 30.dp,
     darkMode: Boolean = false,
+    messageCornerMark: Int = 0,
     onCenterIconClick: () -> Unit = {},
     onNavItemClick: (Int) -> Unit = {},
 ) {
@@ -179,7 +181,7 @@ fun BottomNavigationBar(
             }
             naviItems.forEachIndexed { index, naviItem ->
                 naviItem?.let {
-                    Column(
+                    ConstraintLayout(
                         modifier = Modifier
                             .width(0.dp)
                             .weight(1f)
@@ -196,16 +198,37 @@ fun BottomNavigationBar(
                                     onNavItemClick(index)
                                 }
                             },
-                        horizontalAlignment = Alignment.CenterHorizontally,
                     ) {
+                        val (icon, text, cornerMark) = createRefs()
                         AsyncImage(
                             model = if (selectedPosition == index) it.selectedIcon else it.icon,
                             contentDescription = null,
                             colorFilter = if (isDarkMode) ColorFilter.tint(color = Color.White) else null,
                             modifier = Modifier
+                                .constrainAs(icon) {
+                                    top.linkTo(parent.top)
+                                    start.linkTo(parent.start)
+                                    end.linkTo(parent.end)
+                                }
                                 .rotate(if (selectedPosition == index) rotate else 0f)
                                 .scale(if (selectedPosition == index) scale else 1f)
                         )
+                        // 角标显示
+                        if (it.cornerMark > 0) {
+                            Text(
+                                text = if (it.cornerMark >= 100) "99+" else "${it.cornerMark}",
+                                color = Color.White,
+                                fontSize = 8.sp,
+                                modifier = Modifier
+                                    .constrainAs(cornerMark) {
+                                        top.linkTo(icon.top)
+                                        start.linkTo(icon.end)
+                                        end.linkTo(icon.end)
+                                    }
+                                    .background(color = Color.Red, RoundedCornerShape(8.dp))
+                                    .padding(horizontal = 4.dp),
+                            )
+                        }
                         Text(
                             text = it.name,
                             style = TextStyle(
@@ -213,6 +236,12 @@ fun BottomNavigationBar(
                                 fontSize = it.textSize,
                                 fontWeight = if (selectedPosition == index) FontWeight.Bold else null,
                             ),
+                            modifier = Modifier
+                                .constrainAs(text) {
+                                    top.linkTo(icon.bottom)
+                                    start.linkTo(parent.start)
+                                    end.linkTo(parent.end)
+                                },
                         )
                     }
                 } ?: Box(
@@ -250,6 +279,7 @@ data class NaviItem(
     val color: Color = Color.Gray,
     val selectedColor: Color = Color.Black,
     val textSize: TextUnit = 12.sp,
+    val cornerMark: Int = 0,
 )
 
 /**

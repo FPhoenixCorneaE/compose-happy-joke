@@ -10,10 +10,13 @@ import androidx.compose.runtime.*
 import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavHostController
 import com.fphoenixcorneae.happyjoke.const.Constant
 import com.fphoenixcorneae.happyjoke.mvi.ui.page.dialog.AppUpdateDialog
 import com.fphoenixcorneae.happyjoke.mvi.ui.widget.BottomNavigationBar
+import com.fphoenixcorneae.happyjoke.mvi.viewmodel.HomepageAction
+import com.fphoenixcorneae.happyjoke.mvi.viewmodel.HomepageViewModel
 import com.fphoenixcorneae.happyjoke.tool.UserManager
 import com.google.accompanist.navigation.animation.AnimatedNavHost
 import com.google.accompanist.navigation.animation.composable
@@ -27,7 +30,15 @@ import com.google.accompanist.navigation.animation.rememberAnimatedNavController
 @Composable
 fun MainScreen(
     navController: NavHostController = rememberAnimatedNavController(),
+    viewModel: HomepageViewModel = viewModel(),
 ) {
+    val homepageUiState by viewModel.homepageUiState.collectAsState()
+    val isLoggedIn by homepageUiState.loginStateFlow.collectAsState(initial = false)
+    LaunchedEffect(key1 = isLoggedIn) {
+        if (isLoggedIn) {
+            viewModel.dispatchIntent(HomepageAction.GetUnreadMessages)
+        }
+    }
     Column(
         modifier = Modifier
             .fillMaxSize()
@@ -48,7 +59,7 @@ fun MainScreen(
                     enterTransition = { fadeIn() },
                     exitTransition = { fadeOut() },
                 ) {
-                    HomepageScreen()
+                    HomepageScreen(navController = navController)
                 }
                 composable(
                     route = Constant.NavRoute.Main.SWEEP,
@@ -69,13 +80,14 @@ fun MainScreen(
                     enterTransition = { fadeIn() },
                     exitTransition = { fadeOut() },
                 ) {
-                    MeScreen(navHostController = navController)
+                    MeScreen(navController = navController)
                 }
             }
             var currentPosition by rememberSaveable { mutableStateOf(0) }
             BottomNavigationBar(
                 modifier = Modifier.align(alignment = Alignment.BottomCenter),
                 currentPosition = currentPosition,
+                messageCornerMark = homepageUiState.getMessageMark(),
                 onCenterIconClick = {
                     navController.navigate(Constant.NavRoute.JOKE_POST)
                 }

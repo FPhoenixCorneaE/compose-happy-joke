@@ -1,5 +1,6 @@
 package com.fphoenixcorneae.happyjoke.mvi.ui.page.home
 
+import androidx.compose.animation.ExperimentalAnimationApi
 import androidx.compose.animation.animateColorAsState
 import androidx.compose.animation.core.animateFloatAsState
 import androidx.compose.foundation.ExperimentalFoundationApi
@@ -19,22 +20,26 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.compose.ui.zIndex
+import androidx.navigation.NavHostController
 import coil.compose.AsyncImage
 import com.fphoenixcorneae.happyjoke.R
 import com.fphoenixcorneae.happyjoke.ext.clickableNoRipple
 import com.fphoenixcorneae.happyjoke.mvi.ui.page.home.homepage.*
 import com.fphoenixcorneae.happyjoke.mvi.ui.theme.GreyLine
 import com.fphoenixcorneae.happyjoke.mvi.ui.widget.SystemUiScaffold
+import com.google.accompanist.navigation.animation.rememberAnimatedNavController
 import kotlinx.coroutines.launch
 
 /**
  * @desc：首页，默认推荐
  * @date：2023/03/17 09:30
  */
-@OptIn(ExperimentalFoundationApi::class)
+@OptIn(ExperimentalFoundationApi::class, ExperimentalAnimationApi::class)
 @Preview
 @Composable
-fun HomepageScreen() {
+fun HomepageScreen(
+    navController: NavHostController = rememberAnimatedNavController(),
+) {
     SystemUiScaffold {
         val labels = listOf(
             stringResource(R.string.attention),
@@ -98,7 +103,7 @@ fun HomepageScreen() {
             Divider(color = GreyLine, thickness = 0.5.dp)
             HorizontalPager(pageCount = labels.size, state = pagerState) { page ->
                 when (page) {
-                    0 -> AttentionScreen()
+                    0 -> AttentionScreen(navController = navController)
                     1 -> RecommendScreen()
                     2 -> LatestScreen()
                     3 -> PoliteLettersScreen()

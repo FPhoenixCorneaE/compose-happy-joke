@@ -7,18 +7,14 @@ import androidx.paging.PagingConfig
 import androidx.paging.cachedIn
 import com.fphoenixcorneae.happyjoke.ext.launchDefault
 import com.fphoenixcorneae.happyjoke.ext.launchIo
-import com.fphoenixcorneae.happyjoke.https.doOnSuccess
-import com.fphoenixcorneae.happyjoke.https.homepageService
-import com.fphoenixcorneae.happyjoke.https.httpRequest
-import com.fphoenixcorneae.happyjoke.https.userService
+import com.fphoenixcorneae.happyjoke.https.*
 import com.fphoenixcorneae.happyjoke.mvi.model.AttentionRecommend
 import com.fphoenixcorneae.happyjoke.mvi.model.BaseReply
+import com.fphoenixcorneae.happyjoke.mvi.model.UnreadMessagesReply
 import com.fphoenixcorneae.happyjoke.mvi.model.paging.*
+import com.fphoenixcorneae.happyjoke.tool.UserManager
 import kotlinx.coroutines.channels.Channel
-import kotlinx.coroutines.flow.MutableStateFlow
-import kotlinx.coroutines.flow.asStateFlow
-import kotlinx.coroutines.flow.receiveAsFlow
-import kotlinx.coroutines.flow.update
+import kotlinx.coroutines.flow.*
 
 /**
  * @desc：
@@ -97,6 +93,15 @@ class HomepageViewModel : ViewModel() {
                             }
                         }
                     }
+                    HomepageAction.GetUnreadMessages -> launchIo {
+                        httpRequest {
+                            messageService.getUnreadMessages()
+                        }.doOnSuccess { result ->
+                            _homepageUiState.update {
+                                it.copy(unreadMessages = result?.data)
+                            }
+                        }
+                    }
                 }
             }
         }
@@ -108,9 +113,16 @@ class HomepageViewModel : ViewModel() {
  * @date：2023/04/20 17:45
  */
 data class HomepageUiState(
+    val loginStateFlow: Flow<Boolean> = UserManager.loginStateFlow(),
     val attentionRecommend: List<AttentionRecommend.Data>? = null,
     val attentionResult: AttentionResult? = null,
+    val unreadMessages: UnreadMessagesReply.Data? = null,
 ) {
+
+    fun getMessageMark() = unreadMessages?.run {
+        systemNum + likeNum + commentNum + attentionMum
+    } ?: 0
+
     data class AttentionResult(val state: Int?, val time: Long) {
         companion object {
             const val CANCEL_ATTENTION_SUCCESS = 0
@@ -126,6 +138,9 @@ data class HomepageUiState(
 sealed class HomepageAction {
     /** 获取推荐关注数据 */
     object GetAttentionRecommend : HomepageAction()
+
+    /** 获取当前用户的未读消息数 */
+    object GetUnreadMessages : HomepageAction()
 
     /** 用户关注 */
     data class UserAttention(val status: Int, val userId: String) : HomepageAction()

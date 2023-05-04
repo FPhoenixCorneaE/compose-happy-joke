@@ -1,6 +1,7 @@
 package com.fphoenixcorneae.happyjoke.mvi.ui.page.home.homepage
 
 import android.graphics.drawable.GradientDrawable
+import androidx.compose.animation.ExperimentalAnimationApi
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
 import androidx.compose.foundation.layout.*
@@ -24,6 +25,7 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.lifecycle.viewmodel.compose.viewModel
+import androidx.navigation.NavHostController
 import androidx.paging.LoadState
 import androidx.paging.compose.collectAsLazyPagingItems
 import androidx.paging.compose.items
@@ -31,6 +33,7 @@ import coil.compose.AsyncImage
 import coil.request.ImageRequest
 import coil.transform.CircleCropTransformation
 import com.fphoenixcorneae.happyjoke.R
+import com.fphoenixcorneae.happyjoke.const.Constant
 import com.fphoenixcorneae.happyjoke.ext.LifecycleObserver
 import com.fphoenixcorneae.happyjoke.ext.toast
 import com.fphoenixcorneae.happyjoke.mvi.ui.theme.GreyBackground
@@ -39,6 +42,8 @@ import com.fphoenixcorneae.happyjoke.mvi.ui.widget.SwipeRefresh
 import com.fphoenixcorneae.happyjoke.mvi.viewmodel.HomepageAction
 import com.fphoenixcorneae.happyjoke.mvi.viewmodel.HomepageUiState
 import com.fphoenixcorneae.happyjoke.mvi.viewmodel.HomepageViewModel
+import com.fphoenixcorneae.happyjoke.tool.UserManager
+import com.google.accompanist.navigation.animation.rememberAnimatedNavController
 import com.google.accompanist.placeholder.PlaceholderHighlight
 import com.google.accompanist.placeholder.placeholder
 import com.google.accompanist.placeholder.shimmer
@@ -47,9 +52,11 @@ import com.google.accompanist.placeholder.shimmer
  * @desc：关注
  * @date：2023/04/17 10:17
  */
+@OptIn(ExperimentalAnimationApi::class)
 @Preview
 @Composable
 fun AttentionScreen(
+    navController: NavHostController = rememberAnimatedNavController(),
     viewModel: HomepageViewModel = viewModel(),
 ) {
     val homepageAttentionList = viewModel.homepageAttentionList.collectAsLazyPagingItems()
@@ -59,7 +66,7 @@ fun AttentionScreen(
         contentPadding = PaddingValues(bottom = 60.dp)
     ) {
         item {
-            AttentionRecommend()
+            AttentionRecommend(navController = navController)
         }
         item {
             Spacer(modifier = Modifier.height(10.dp))
@@ -75,9 +82,11 @@ fun AttentionScreen(
  * @desc：关注推荐
  * @date：2023/04/17 17:54
  */
+@OptIn(ExperimentalAnimationApi::class)
 @Preview
 @Composable
 fun AttentionRecommend(
+    navController: NavHostController = rememberAnimatedNavController(),
     viewModel: HomepageViewModel = viewModel(),
 ) {
     val context = LocalContext.current
@@ -214,7 +223,11 @@ fun AttentionRecommend(
 
                     Button(
                         onClick = {
-                            viewModel.dispatchIntent(HomepageAction.UserAttention(1, it.userId.toString()))
+                            if (UserManager.isLoggedIn()) {
+                                viewModel.dispatchIntent(HomepageAction.UserAttention(1, it.userId.toString()))
+                            } else {
+                                navController.navigate(Constant.NavRoute.LOGIN)
+                            }
                         },
                         modifier = Modifier
                             .padding(20.dp)
