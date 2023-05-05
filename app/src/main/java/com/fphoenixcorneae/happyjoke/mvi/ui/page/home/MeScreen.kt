@@ -30,7 +30,6 @@ import coil.transform.CircleCropTransformation
 import com.fphoenixcorneae.happyjoke.R
 import com.fphoenixcorneae.happyjoke.const.Constant
 import com.fphoenixcorneae.happyjoke.ext.clickableNoRipple
-import com.fphoenixcorneae.happyjoke.ext.urlAESDecrypt
 import com.fphoenixcorneae.happyjoke.mvi.ui.theme.*
 import com.fphoenixcorneae.happyjoke.mvi.ui.widget.SystemUiScaffold
 import com.fphoenixcorneae.happyjoke.mvi.viewmodel.MeAction
@@ -71,7 +70,7 @@ fun MeScreen(
                     .wrapContentHeight()
                     .clickableNoRipple {
                         if (UserManager.isLoggedIn()) {
-
+                            navController.navigate("${Constant.NavRoute.USER_DETAILS}/${meUiState.userInfo?.user?.userId}")
                         } else {
                             navController.navigate(Constant.NavRoute.LOGIN)
                         }
@@ -79,9 +78,11 @@ fun MeScreen(
             ) {
                 AsyncImage(
                     model = ImageRequest.Builder(context)
-                        .data(meUiState.userInfo?.user?.avatar.urlAESDecrypt())
-                        .error(R.mipmap.ic_avatar_default).crossfade(true)
-                        .transformations(CircleCropTransformation()).build(),
+                        .data(meUiState.userInfo?.user?.avatar)
+                        .error(R.mipmap.ic_avatar_default)
+                        .crossfade(true)
+                        .transformations(CircleCropTransformation())
+                        .build(),
                     contentDescription = null,
                     modifier = Modifier
                         .size(60.dp)

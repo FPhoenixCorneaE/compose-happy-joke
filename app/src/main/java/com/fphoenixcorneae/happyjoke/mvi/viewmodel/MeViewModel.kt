@@ -1,7 +1,6 @@
 package com.fphoenixcorneae.happyjoke.mvi.viewmodel
 
 import androidx.lifecycle.ViewModel
-import androidx.lifecycle.viewModelScope
 import com.fphoenixcorneae.happyjoke.ext.launchDefault
 import com.fphoenixcorneae.happyjoke.ext.launchIo
 import com.fphoenixcorneae.happyjoke.https.doOnSuccess
@@ -12,7 +11,6 @@ import com.fphoenixcorneae.happyjoke.mvi.model.UserInfoReply
 import com.fphoenixcorneae.happyjoke.tool.UserManager
 import kotlinx.coroutines.channels.Channel
 import kotlinx.coroutines.flow.*
-import kotlinx.coroutines.launch
 
 /**
  * @desc：
@@ -30,7 +28,7 @@ class MeViewModel : ViewModel() {
     }
 
     init {
-        viewModelScope.launch {
+        launchDefault {
             meAction.receiveAsFlow().collect {
                 when (it) {
                     MeAction.GetUserInfo -> launchIo {

@@ -8,6 +8,8 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Surface
 import androidx.compose.ui.Modifier
+import androidx.navigation.NavType
+import androidx.navigation.navArgument
 import com.fphoenixcorneae.happyjoke.const.Constant
 import com.fphoenixcorneae.happyjoke.mvi.ui.page.home.MainScreen
 import com.fphoenixcorneae.happyjoke.mvi.ui.page.joke.JokePostScreen
@@ -15,6 +17,7 @@ import com.fphoenixcorneae.happyjoke.mvi.ui.page.settings.SettingsScreen
 import com.fphoenixcorneae.happyjoke.mvi.ui.page.splash.SplashScreen
 import com.fphoenixcorneae.happyjoke.mvi.ui.page.user.LoginScreen
 import com.fphoenixcorneae.happyjoke.mvi.ui.page.user.PasswordResetScreen
+import com.fphoenixcorneae.happyjoke.mvi.ui.page.user.UserDetailsScreen
 import com.fphoenixcorneae.happyjoke.mvi.ui.theme.ComposeHappyJokeTheme
 import com.google.accompanist.navigation.animation.AnimatedNavHost
 import com.google.accompanist.navigation.animation.composable
@@ -88,6 +91,20 @@ class MainActivity : ComponentActivity() {
                             popExitTransition = { fadeOut() },
                         ) {
                             SettingsScreen(navController = navController)
+                        }
+                        composable(
+                            "${Constant.NavRoute.USER_DETAILS}/{${Constant.Key.TARGET_USER_ID}}",
+                            arguments = listOf(navArgument(Constant.Key.TARGET_USER_ID) { type = NavType.StringType }),
+                            enterTransition = { slideInHorizontally(initialOffsetX = { it }) + fadeIn() },
+                            exitTransition = { slideOutHorizontally(targetOffsetX = { it }) + fadeOut() },
+                            popEnterTransition = { slideInHorizontally(initialOffsetX = { it }) + fadeIn() },
+                            popExitTransition = { slideOutHorizontally(targetOffsetX = { it }) + fadeOut() },
+                        ) { backStackEntry ->
+                            UserDetailsScreen(
+                                navController = navController,
+                                targetUserId = backStackEntry.arguments?.getString(Constant.Key.TARGET_USER_ID)
+                                    .orEmpty(),
+                            )
                         }
                     }
                 }

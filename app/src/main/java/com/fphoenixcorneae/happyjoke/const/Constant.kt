@@ -11,6 +11,14 @@ object Constant {
     const val WEB_PROTO = "http://jokes-avatar.cretinzp.com/static/web/jokes-protocol.html"
 
     /**
+     * @desc：Key
+     * @date：2023/05/04 16:37
+     */
+    object Key {
+        const val TARGET_USER_ID = "target_user_id"
+    }
+
+    /**
      * @desc：用户
      * @date：2023/04/24 15:32
      */
@@ -31,6 +39,7 @@ object Constant {
         const val LOGIN = "login"
         const val PASSWORD_RESET = "password_reset"
         const val SETTINGS = "settings"
+        const val USER_DETAILS = "user_details"
 
         /**
          * @desc：主页

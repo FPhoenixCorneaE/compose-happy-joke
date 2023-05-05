@@ -85,4 +85,14 @@ interface UserService {
         @Field("status") status: Int,
         @Field("userId") userId: String,
     ): UserAttentionReply?
+
+    /**
+     * 获取指定用户的信息
+     * @param targetUserId 目标用户id
+     */
+    @FormUrlEncoded
+    @POST("/jokes/user/info/target")
+    suspend fun getTargetUserInfo(
+        @Field("targetUserId") targetUserId: String,
+    ): TargetUserInfoReply?
 }

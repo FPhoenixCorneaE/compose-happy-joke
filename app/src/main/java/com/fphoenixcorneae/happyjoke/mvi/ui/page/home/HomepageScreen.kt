@@ -104,10 +104,10 @@ fun HomepageScreen(
             HorizontalPager(pageCount = labels.size, state = pagerState) { page ->
                 when (page) {
                     0 -> AttentionScreen(navController = navController)
-                    1 -> RecommendScreen()
-                    2 -> LatestScreen()
-                    3 -> PoliteLettersScreen()
-                    else -> FunnyPicturesScreen()
+                    1 -> RecommendScreen(navController = navController)
+                    2 -> LatestScreen(navController = navController)
+                    3 -> PoliteLettersScreen(navController = navController)
+                    else -> FunnyPicturesScreen(navController = navController)
                 }
             }
         }

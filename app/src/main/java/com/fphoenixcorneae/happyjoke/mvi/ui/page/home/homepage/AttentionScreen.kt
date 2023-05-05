@@ -73,7 +73,7 @@ fun AttentionScreen(
         }
         items(homepageAttentionList) { item ->
             val isLoading = homepageAttentionList.loadState.append is LoadState.Loading
-            HomepageRecommendItem(item, isLoading)
+            HomepageRecommendItem(navController = navController, homepageRecommend = item, isLoading = isLoading)
         }
     }
 }
