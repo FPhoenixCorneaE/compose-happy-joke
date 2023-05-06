@@ -10,6 +10,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.graphics.ColorFilter
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
@@ -29,7 +30,10 @@ import com.google.accompanist.navigation.animation.rememberAnimatedNavController
 @Composable
 fun Toolbar(
     navController: NavHostController = rememberAnimatedNavController(),
+    background: Color = MaterialTheme.colorScheme.background,
+    leftIconTint: Color? = null,
     titleText: String = "",
+    titleTextColor: Color = Color.Black,
     rightText: String? = null,
     rightIcon: Any? = null,
     onRightTextClick: () -> Unit = {},
@@ -39,7 +43,7 @@ fun Toolbar(
         modifier = Modifier
             .fillMaxWidth()
             .height(48.dp)
-            .background(color = MaterialTheme.colorScheme.background),
+            .background(color = background),
     ) {
         AsyncImage(
             model = R.mipmap.ic_back,
@@ -51,10 +55,11 @@ fun Toolbar(
                 .clickableNoRipple {
                     navController.navigateUp()
                 },
+            colorFilter = leftIconTint?.run { ColorFilter.tint(this) },
         )
         Text(
             text = titleText,
-            color = Color.Black,
+            color = titleTextColor,
             fontSize = 17.sp,
             fontWeight = FontWeight.Bold,
             modifier = Modifier

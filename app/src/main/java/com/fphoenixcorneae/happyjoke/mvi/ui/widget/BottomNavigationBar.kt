@@ -78,6 +78,7 @@ fun BottomNavigationBar(
             icon = R.mipmap.ic_homepage_message_gray,
             selectedIcon = R.mipmap.ic_homepage_message_selected,
             selectedColor = Yellow40,
+            cornerMark = messageCornerMark,
         ),
         NaviItem(
             name = stringResource(R.string.me),
