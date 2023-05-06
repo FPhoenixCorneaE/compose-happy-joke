@@ -14,6 +14,7 @@ import androidx.compose.foundation.lazy.LazyListState
 import androidx.compose.foundation.lazy.rememberLazyListState
 import androidx.compose.runtime.*
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.unit.Dp
 import kotlinx.coroutines.launch
 
 /**
@@ -26,7 +27,7 @@ fun NestedLazyColumn(
     outerState: LazyListState = rememberLazyListState(),
     innerState: LazyListState = rememberLazyListState(),
     outerContent: LazyListScope.() -> Unit,
-    innerContent: LazyListScope.() -> Unit,
+    innerContent: LazyListScope.(Dp) -> Unit,
 ) {
     val scope = rememberCoroutineScope()
     val innerFirstVisibleItemIndex by remember {
@@ -35,8 +36,9 @@ fun NestedLazyColumn(
         }
     }
     SideEffect {
-        if (outerState.layoutInfo.visibleItemsInfo.size == 2 && innerState.layoutInfo.totalItemsCount == 0)
+        if (outerState.layoutInfo.visibleItemsInfo.size == 2 && innerState.layoutInfo.totalItemsCount == 0) {
             scope.launch { outerState.scrollToItem(outerState.layoutInfo.totalItemsCount) }
+        }
         println("outer ${outerState.layoutInfo.visibleItemsInfo.map { it.index }}")
         println("inner ${innerState.layoutInfo.visibleItemsInfo.map { it.index }}")
     }
@@ -81,7 +83,7 @@ fun NestedLazyColumn(
                     userScrollEnabled = false,
                     modifier = Modifier.height(maxHeight)
                 ) {
-                    innerContent()
+                    innerContent(maxHeight)
                 }
             }
         }

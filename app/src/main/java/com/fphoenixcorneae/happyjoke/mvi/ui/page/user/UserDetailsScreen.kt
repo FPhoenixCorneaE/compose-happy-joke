@@ -2,17 +2,17 @@ package com.fphoenixcorneae.happyjoke.mvi.ui.page.user
 
 import androidx.compose.animation.ExperimentalAnimationApi
 import androidx.compose.foundation.*
-import androidx.compose.foundation.gestures.Orientation
-import androidx.compose.foundation.gestures.scrollable
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
-import androidx.compose.foundation.lazy.rememberLazyListState
 import androidx.compose.foundation.pager.HorizontalPager
 import androidx.compose.foundation.pager.rememberPagerState
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.*
-import androidx.compose.runtime.*
+import androidx.compose.runtime.Composable
+import androidx.compose.runtime.collectAsState
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
@@ -24,7 +24,6 @@ import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.tooling.preview.Preview
-import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.lifecycle.viewmodel.compose.viewModel
@@ -64,7 +63,6 @@ fun UserDetailsScreen(
         factory = UserDetailsViewModelFactory(targetUserId = targetUserId)
     )
     val userDetailsUiState by viewModel.userDetailsUiState.collectAsState()
-    var selectedIndex by remember { mutableStateOf(0) }
     val labels = listOf(
         "作品" to userDetailsUiState.targetUserInfo?.jokesNum.orEmpty(),
         "喜欢" to userDetailsUiState.targetUserInfo?.jokeLikeNum.orEmpty(),
@@ -79,117 +77,110 @@ fun UserDetailsScreen(
         },
     )
     SystemUiScaffold(isFitsSystemWindows = false, statusBarsPadding = false, isDarkFont = false) {
-        BoxWithConstraints(
-            modifier = Modifier.scrollable(state = rememberScrollState(), orientation = Orientation.Vertical)
-        ) {
-            LazyColumn(
-                state = rememberLazyListState(),
-                userScrollEnabled = false,
-                modifier = Modifier.heightIn(maxHeight)
-            ) {
-                item {
-                    Column {
-                        TargetUserInfo(navController = navController, userDetailsUiState = userDetailsUiState)
-                        // 编辑资料
-                        Button(
-                            onClick = {
+        LazyColumn {
+            item {
+                Column {
+                    TargetUserInfo(navController = navController, userDetailsUiState = userDetailsUiState)
+                    // 编辑资料
+                    Button(
+                        onClick = {
 
-                            },
-                            modifier = Modifier
-                                .padding(top = 8.dp, end = 20.dp)
-                                .align(alignment = Alignment.End)
-                                .width(width = 100.dp)
-                                .height(height = 40.dp),
-                            colors = ButtonDefaults.textButtonColors(contentColor = Yellow30),
-                            shape = RoundedCornerShape(25.dp),
-                            border = BorderStroke(width = 2.dp, color = Yellow30),
-                            contentPadding = PaddingValues(0.dp),
-                        ) {
-                            Text(text = stringResource(R.string.edit_profile), fontSize = 14.sp)
-                        }
-                        // 用户昵称
-                        Text(
-                            text = userDetailsUiState.targetUserInfo?.nickname.orEmpty(),
-                            color = Black30,
-                            fontSize = 20.sp,
-                            fontWeight = FontWeight.ExtraBold,
-                            modifier = Modifier.padding(start = 20.dp),
-                        )
-                        // 入驻段子乐时长
-                        Text(
-                            text = "入驻段子乐：${userDetailsUiState.targetUserInfo?.joinTime.orEmpty()}",
-                            color = Grey60,
-                            fontSize = 12.sp,
-                            modifier = Modifier.padding(start = 20.dp),
-                        )
-                        // 分割线
-                        Divider(color = GreyLine, modifier = Modifier.padding(top = 16.dp))
-                        // 用户签名信息
-                        Text(
-                            text = userDetailsUiState.targetUserInfo?.sigbature.orEmpty(),
-                            color = Black30,
-                            fontSize = 14.sp,
-                            modifier = Modifier.padding(start = 20.dp, top = 16.dp),
-                        )
-                        // 获赞、关注、粉丝
-                        TargetUserLikeAttentionFansInfo(userDetailsUiState = userDetailsUiState)
-                    }
-                }
-                stickyHeader {
-                    ScrollableTabRow(
-                        selectedTabIndex = selectedIndex,
-                        modifier = Modifier
-                            .imePadding()
-                            .padding(top = 16.dp)
-                            .background(color = Color.White),
-                        edgePadding = 4.dp,
-                        divider = {
-                            Divider(color = GreyLine)
                         },
-                        indicator = { tabPositions ->
-                            TabRowDefaults.Indicator(
-                                modifier = Modifier.indicatorOffset(tabPositions[selectedIndex], 28.dp),
-                                color = Yellow30,
-                                height = 2.dp,
-                            )
-                        }
+                        modifier = Modifier
+                            .padding(top = 8.dp, end = 20.dp)
+                            .align(alignment = Alignment.End)
+                            .width(width = 100.dp)
+                            .height(height = 40.dp),
+                        colors = ButtonDefaults.textButtonColors(contentColor = Yellow30),
+                        shape = RoundedCornerShape(25.dp),
+                        border = BorderStroke(width = 2.dp, color = Yellow30),
+                        contentPadding = PaddingValues(0.dp),
                     ) {
-                        labels.forEachIndexed { index, label ->
-                            Tab(
-                                selected = selectedIndex == index,
-                                onClick = {
-                                    if (selectedIndex != index) {
-                                        coroutineScope.launch {
-                                            selectedIndex = index
-                                        }
+                        Text(text = stringResource(R.string.edit_profile), fontSize = 14.sp)
+                    }
+                    // 用户昵称
+                    Text(
+                        text = userDetailsUiState.targetUserInfo?.nickname.orEmpty(),
+                        color = Black30,
+                        fontSize = 20.sp,
+                        fontWeight = FontWeight.ExtraBold,
+                        modifier = Modifier.padding(start = 20.dp),
+                    )
+                    // 入驻段子乐时长
+                    Text(
+                        text = "入驻段子乐：${userDetailsUiState.targetUserInfo?.joinTime.orEmpty()}",
+                        color = Grey60,
+                        fontSize = 12.sp,
+                        modifier = Modifier.padding(start = 20.dp),
+                    )
+                    // 分割线
+                    Divider(color = GreyLine, modifier = Modifier.padding(top = 16.dp))
+                    // 用户签名信息
+                    Text(
+                        text = userDetailsUiState.targetUserInfo?.sigbature.orEmpty(),
+                        color = Black30,
+                        fontSize = 14.sp,
+                        modifier = Modifier.padding(start = 20.dp, top = 16.dp),
+                    )
+                    // 获赞、关注、粉丝
+                    TargetUserLikeAttentionFansInfo(userDetailsUiState = userDetailsUiState)
+                }
+            }
+            stickyHeader {
+                ScrollableTabRow(
+                    selectedTabIndex = pagerState.currentPage,
+                    modifier = Modifier
+                        .imePadding()
+                        .padding(top = 16.dp)
+                        .background(color = Color.White),
+                    edgePadding = 4.dp,
+                    divider = {
+                        Divider(color = GreyLine)
+                    },
+                    indicator = { tabPositions ->
+                        TabRowDefaults.Indicator(
+                            modifier = Modifier.indicatorOffset(tabPositions[pagerState.currentPage], 28.dp),
+                            color = Yellow30,
+                            height = 2.dp,
+                        )
+                    }
+                ) {
+                    labels.forEachIndexed { index, label ->
+                        Tab(
+                            selected = pagerState.currentPage == index,
+                            onClick = {
+                                if (pagerState.currentPage != index) {
+                                    coroutineScope.launch {
+                                        pagerState.animateScrollToPage(index)
                                     }
-                                },
-                                text = {
-                                    Row(verticalAlignment = Alignment.CenterVertically) {
-                                        Text(text = label.first, fontSize = 18.sp)
-                                        Text(text = label.second, fontSize = 16.sp)
-                                    }
-                                },
-                                selectedContentColor = Yellow30,
-                                unselectedContentColor = Black30,
-                            )
-                        }
+                                }
+                            },
+                            text = {
+                                Row(verticalAlignment = Alignment.CenterVertically) {
+                                    Text(text = label.first, fontSize = 18.sp)
+                                    Text(text = label.second, fontSize = 16.sp)
+                                }
+                            },
+                            selectedContentColor = Yellow30,
+                            unselectedContentColor = Black30,
+                        )
                     }
                 }
-                item {
-                    HorizontalPager(pageCount = labels.size, state = pagerState) { page ->
-                        when (page) {
-                            0 -> TargetUserJokeList(
-                                navController = navController,
-                                viewModel = viewModel,
-                                maxHeight = maxHeight,
-                            )
-                            else -> TargetUserJokeList(
-                                navController = navController,
-                                viewModel = viewModel,
-                                maxHeight = maxHeight
-                            )
-                        }
+            }
+            item {
+                HorizontalPager(
+                    pageCount = labels.size,
+                    state = pagerState,
+                ) { page ->
+                    when (page) {
+                        0 -> TargetUserJokeList(
+                            navController = navController,
+                            viewModel = viewModel,
+                        )
+                        else -> TargetUserJokeList(
+                            navController = navController,
+                            viewModel = viewModel,
+                        )
                     }
                 }
             }
@@ -201,12 +192,11 @@ fun UserDetailsScreen(
  * @desc：作品
  * @date：2023/05/06 10:29
  */
-@OptIn(ExperimentalFoundationApi::class, ExperimentalLayoutApi::class, ExperimentalMaterial3Api::class)
+@OptIn(ExperimentalFoundationApi::class, ExperimentalLayoutApi::class)
 @Composable
 private fun TargetUserJokeList(
     navController: NavHostController,
     viewModel: UserDetailsViewModel,
-    maxHeight: Dp,
 ) {
     val labels = listOf("文字·图片", "视频")
     val pagerState = rememberPagerState(initialPage = 0)
@@ -241,17 +231,19 @@ private fun TargetUserJokeList(
                 }
             }
         }
-        HorizontalPager(pageCount = labels.size, state = pagerState) { page ->
+        HorizontalPager(
+            pageCount = labels.size,
+            state = pagerState,
+            modifier = Modifier.height(1000.dp)
+        ) { page ->
             when (page) {
                 0 -> TargetUserTextPicJokeList(
                     navController = navController,
                     viewModel = viewModel,
-                    maxHeight = maxHeight
                 )
                 else -> TargetUserTextPicJokeList(
                     navController = navController,
                     viewModel = viewModel,
-                    maxHeight = maxHeight,
                 )
             }
         }
@@ -266,14 +258,9 @@ private fun TargetUserJokeList(
 private fun TargetUserTextPicJokeList(
     navController: NavHostController,
     viewModel: UserDetailsViewModel,
-    maxHeight: Dp,
 ) {
     val userTextPicJokeList = viewModel.userTextPicJokeList.collectAsLazyPagingItems()
-    LazyColumn(
-        state = rememberLazyListState(),
-        userScrollEnabled = false,
-        modifier = Modifier.height(maxHeight)
-    ) {
+    LazyColumn {
         items(userTextPicJokeList) { item ->
             val isLoading = userTextPicJokeList.loadState.append is LoadState.Loading
             JokeItem(navController = navController, joke = item, isLoading = isLoading)
