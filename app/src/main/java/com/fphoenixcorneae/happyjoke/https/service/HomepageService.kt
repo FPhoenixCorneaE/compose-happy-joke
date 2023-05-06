@@ -15,7 +15,7 @@ interface HomepageService {
      * 获取首页的推荐列表数据
      */
     @POST("/jokes/home/recommend")
-    suspend fun homepageRecommend(): HomepageRecommend?
+    suspend fun homepageRecommend(): JokeListReply?
 
     /**
      * 获取首页的推荐关注数据
@@ -28,25 +28,25 @@ interface HomepageService {
      */
     @FormUrlEncoded
     @POST("/jokes/home/attention/list")
-    suspend fun homepageAttentionList(@Field("page") page: Int): HomepageRecommend?
+    suspend fun homepageAttentionList(@Field("page") page: Int): JokeListReply?
 
     /**
      * 获取首页的最新列表数据
      */
     @POST("/jokes/home/latest")
-    suspend fun homepageLatest(): HomepageRecommend?
+    suspend fun homepageLatest(): JokeListReply?
 
     /**
      * 获取首页的纯文列表数据
      */
     @POST("/jokes/home/text")
-    suspend fun homepagePoliteLetters(): HomepageRecommend?
+    suspend fun homepagePoliteLetters(): JokeListReply?
 
     /**
      * 获取首页的纯图片列表数据
      */
     @POST("/jokes/home/pic")
-    suspend fun homepageFunnyPictures(): HomepageRecommend?
+    suspend fun homepageFunnyPictures(): JokeListReply?
 
     /**
      * 获取划一划页面的推荐列表数据

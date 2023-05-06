@@ -9,7 +9,7 @@ import androidx.annotation.Keep
  * @date：2023/03/22 17:21
  */
 @Keep
-data class HomepageRecommend(
+data class JokeListReply(
     val code: Int = 0, // 200
     val `data`: List<Data>? = null,
     val msg: String? = null // 数据返回成功

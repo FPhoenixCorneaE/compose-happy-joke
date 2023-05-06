@@ -10,6 +10,7 @@ import androidx.navigation.NavHostController
 import androidx.paging.LoadState
 import androidx.paging.compose.collectAsLazyPagingItems
 import androidx.paging.compose.items
+import com.fphoenixcorneae.happyjoke.mvi.ui.page.joke.JokeItem
 import com.fphoenixcorneae.happyjoke.mvi.ui.widget.SwipeRefresh
 import com.fphoenixcorneae.happyjoke.mvi.viewmodel.HomepageViewModel
 import com.google.accompanist.navigation.animation.rememberAnimatedNavController
@@ -32,7 +33,7 @@ fun FunnyPicturesScreen(
     ) {
         items(homepageFunnyPictures) { item ->
             val isLoading = homepageFunnyPictures.loadState.append is LoadState.Loading
-            HomepageRecommendItem(navController = navController, homepageRecommend = item, isLoading = isLoading)
+            JokeItem(navController = navController, joke = item, isLoading = isLoading)
         }
     }
 }

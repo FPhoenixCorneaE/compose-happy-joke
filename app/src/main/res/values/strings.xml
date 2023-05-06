@@ -53,4 +53,5 @@
     <string name="login_success">登录成功</string>
     <string name="settings">设置</string>
     <string name="attention_success">关注成功</string>
+    <string name="edit_profile">编辑资料</string>
 </resources>

@@ -36,6 +36,7 @@ import com.fphoenixcorneae.happyjoke.R
 import com.fphoenixcorneae.happyjoke.const.Constant
 import com.fphoenixcorneae.happyjoke.ext.LifecycleObserver
 import com.fphoenixcorneae.happyjoke.ext.toast
+import com.fphoenixcorneae.happyjoke.mvi.ui.page.joke.JokeItem
 import com.fphoenixcorneae.happyjoke.mvi.ui.theme.GreyBackground
 import com.fphoenixcorneae.happyjoke.mvi.ui.theme.GreyPlaceholder
 import com.fphoenixcorneae.happyjoke.mvi.ui.widget.SwipeRefresh
@@ -73,7 +74,7 @@ fun AttentionScreen(
         }
         items(homepageAttentionList) { item ->
             val isLoading = homepageAttentionList.loadState.append is LoadState.Loading
-            HomepageRecommendItem(navController = navController, homepageRecommend = item, isLoading = isLoading)
+            JokeItem(navController = navController, joke = item, isLoading = isLoading)
         }
     }
 }

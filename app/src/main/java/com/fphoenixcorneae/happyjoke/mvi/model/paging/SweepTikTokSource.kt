@@ -17,10 +17,11 @@ class SweepTikTokSource : PagingSource<Int, SweepTikTokVideo.Data>() {
     override suspend fun load(params: LoadParams<Int>): LoadResult<Int, SweepTikTokVideo.Data> {
         return runCatching {
             val nextPage = params.key ?: 1
+            val data = homepageService.sweepTikTokVideo()?.data ?: mutableListOf()
             LoadResult.Page(
-                data = homepageService.sweepTikTokVideo()?.data ?: mutableListOf(),
+                data = data,
                 prevKey = if (nextPage == 1) null else nextPage - 1,
-                nextKey = nextPage + 1
+                nextKey = if (data.isEmpty()) null else nextPage + 1,
             )
         }.getOrElse {
             LoadResult.Error(it)
