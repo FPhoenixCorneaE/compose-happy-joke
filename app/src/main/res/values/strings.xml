@@ -54,4 +54,12 @@
     <string name="settings">设置</string>
     <string name="attention_success">关注成功</string>
     <string name="edit_profile">编辑资料</string>
+    <string name="be_praised">获赞</string>
+    <string name="enter_joke">入驻段子乐：</string>
+    <string name="text_and_pic">文字·图片</string>
+    <string name="video">视频</string>
+    <string name="collect">收藏</string>
+    <string name="comment">评论</string>
+    <string name="like">喜欢</string>
+    <string name="production">作品</string>
 </resources>

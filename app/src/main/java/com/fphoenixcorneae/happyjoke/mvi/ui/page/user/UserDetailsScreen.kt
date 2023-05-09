@@ -6,6 +6,7 @@ import androidx.compose.foundation.*
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.pager.HorizontalPager
+import androidx.compose.foundation.pager.PagerState
 import androidx.compose.foundation.pager.rememberPagerState
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
@@ -52,6 +53,7 @@ import com.fphoenixcorneae.happyjoke.mvi.viewmodel.UserDetailsUiState
 import com.fphoenixcorneae.happyjoke.mvi.viewmodel.UserDetailsViewModel
 import com.fphoenixcorneae.happyjoke.mvi.viewmodel.UserDetailsViewModelFactory
 import com.google.accompanist.navigation.animation.rememberAnimatedNavController
+import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.launch
 import me.onebone.toolbar.CollapsingToolbarScaffold
 import me.onebone.toolbar.ScrollStrategy
@@ -73,10 +75,10 @@ fun UserDetailsScreen(
     )
     val userDetailsUiState by viewModel.userDetailsUiState.collectAsState()
     val labels = listOf(
-        "作品" to userDetailsUiState.targetUserInfo?.jokesNum.orEmpty(),
-        "喜欢" to userDetailsUiState.targetUserInfo?.jokeLikeNum.orEmpty(),
-        "评论" to userDetailsUiState.targetUserInfo?.commentNum.orEmpty(),
-        "收藏" to userDetailsUiState.targetUserInfo?.collectNum.orEmpty(),
+        stringResource(R.string.production) to userDetailsUiState.targetUserInfo?.jokesNum.orEmpty(),
+        stringResource(R.string.like) to userDetailsUiState.targetUserInfo?.jokeLikeNum.orEmpty(),
+        stringResource(R.string.comment) to userDetailsUiState.targetUserInfo?.commentNum.orEmpty(),
+        stringResource(R.string.collect) to userDetailsUiState.targetUserInfo?.collectNum.orEmpty(),
     )
     val pagerState = rememberPagerState(initialPage = 0)
     val coroutineScope = rememberCoroutineScope()
@@ -202,7 +204,11 @@ fun UserDetailsScreen(
                             navController = navController,
                             viewModel = viewModel,
                         )
-                        else -> TargetUserJokeList(
+                        1 -> TargetUserLikeJokeList(
+                            navController = navController,
+                            viewModel = viewModel,
+                        )
+                        else -> TargetUserLikeJokeList(
                             navController = navController,
                             viewModel = viewModel,
                         )
@@ -214,48 +220,21 @@ fun UserDetailsScreen(
 }
 
 /**
- * @desc：作品
+ * @desc：用户的作品
  * @date：2023/05/06 10:29
  */
-@OptIn(ExperimentalFoundationApi::class, ExperimentalLayoutApi::class)
+@OptIn(ExperimentalFoundationApi::class)
 @Composable
 private fun TargetUserJokeList(
     navController: NavHostController,
     viewModel: UserDetailsViewModel,
 ) {
-    val labels = listOf("文字·图片", "视频")
+    val labels = listOf(stringResource(R.string.text_and_pic), stringResource(R.string.video))
     val pagerState = rememberPagerState(initialPage = 0)
     val coroutineScope = rememberCoroutineScope()
     Column {
-        FlowRow(
-            modifier = Modifier.padding(horizontal = 20.dp, vertical = 8.dp),
-            horizontalArrangement = Arrangement.spacedBy(24.dp),
-            verticalAlignment = Alignment.CenterVertically
-        ) {
-            labels.forEachIndexed { index, s ->
-                Box(
-                    modifier = Modifier
-                        .width(60.dp)
-                        .height(20.dp)
-                        .background(
-                            color = if (pagerState.currentPage == index) Grey30.copy(alpha = 0.4f) else Color.Transparent,
-                            shape = RoundedCornerShape(4.dp)
-                        )
-                        .clickableNoRipple {
-                            coroutineScope.launch {
-                                pagerState.animateScrollToPage(index)
-                            }
-                        },
-                    contentAlignment = Alignment.Center
-                ) {
-                    Text(
-                        text = s,
-                        fontSize = 11.sp,
-                        color = Grey60,
-                    )
-                }
-            }
-        }
+        TabRow(labels, pagerState, coroutineScope)
+        Divider(color = GreyLine, thickness = 0.5.dp)
         HorizontalPager(
             pageCount = labels.size,
             state = pagerState,
@@ -275,7 +254,83 @@ private fun TargetUserJokeList(
 }
 
 /**
- * @desc：
+ * @desc：用户喜欢的作品
+ * @date：2023/05/06 10:29
+ */
+@OptIn(ExperimentalFoundationApi::class)
+@Composable
+private fun TargetUserLikeJokeList(
+    navController: NavHostController,
+    viewModel: UserDetailsViewModel,
+) {
+    val labels = listOf(stringResource(R.string.text_and_pic), stringResource(R.string.video))
+    val pagerState = rememberPagerState(initialPage = 0)
+    val coroutineScope = rememberCoroutineScope()
+    Column {
+        TabRow(labels, pagerState, coroutineScope)
+        Divider(color = GreyLine, thickness = 0.5.dp)
+        HorizontalPager(
+            pageCount = labels.size,
+            state = pagerState,
+        ) { page ->
+            when (page) {
+                0 -> TargetUserLikeTextPicJokeList(
+                    navController = navController,
+                    viewModel = viewModel,
+                )
+                else -> TargetUserLikeTextPicJokeList(
+                    navController = navController,
+                    viewModel = viewModel,
+                )
+            }
+        }
+    }
+}
+
+/**
+ * @desc：Tab标签
+ * @date：2023/05/09 17:06
+ */
+@Composable
+@OptIn(ExperimentalLayoutApi::class, ExperimentalFoundationApi::class)
+private fun TabRow(
+    labels: List<String>,
+    pagerState: PagerState,
+    coroutineScope: CoroutineScope,
+) {
+    FlowRow(
+        modifier = Modifier.padding(horizontal = 20.dp, vertical = 8.dp),
+        horizontalArrangement = Arrangement.spacedBy(24.dp),
+        verticalAlignment = Alignment.CenterVertically
+    ) {
+        labels.forEachIndexed { index, s ->
+            Box(
+                modifier = Modifier
+                    .width(60.dp)
+                    .height(20.dp)
+                    .background(
+                        color = if (pagerState.currentPage == index) Grey30.copy(alpha = 0.4f) else Color.Transparent,
+                        shape = RoundedCornerShape(4.dp)
+                    )
+                    .clickableNoRipple {
+                        coroutineScope.launch {
+                            pagerState.animateScrollToPage(index)
+                        }
+                    },
+                contentAlignment = Alignment.Center
+            ) {
+                Text(
+                    text = s,
+                    fontSize = 11.sp,
+                    color = Grey60,
+                )
+            }
+        }
+    }
+}
+
+/**
+ * @desc：用户图文段子列表
  * @date：2023/05/06 11:21
  */
 @Composable
@@ -287,7 +342,25 @@ private fun TargetUserTextPicJokeList(
     LazyColumn {
         items(userTextPicJokeList) { item ->
             val isLoading = userTextPicJokeList.loadState.append is LoadState.Loading
-            JokeItem(navController = navController, joke = item, isLoading = isLoading)
+            JokeItem(navController = navController, joke = item, isLoading = isLoading, showUserInfo = false)
+        }
+    }
+}
+
+/**
+ * @desc：用户喜欢的图文段子列表
+ * @date：2023/05/09 17:09
+ */
+@Composable
+private fun TargetUserLikeTextPicJokeList(
+    navController: NavHostController,
+    viewModel: UserDetailsViewModel,
+) {
+    val userTextPicJokeList = viewModel.userLikeTextPicJokeList.collectAsLazyPagingItems()
+    LazyColumn {
+        items(userTextPicJokeList) { item ->
+            val isLoading = userTextPicJokeList.loadState.append is LoadState.Loading
+            JokeItem(navController = navController, joke = item, isLoading = isLoading, showUserInfo = false)
         }
     }
 }
@@ -391,7 +464,7 @@ private fun TargetUserInfo(
         ) {
             // 入驻段子乐时长
             Text(
-                text = "入驻段子乐：${userDetailsUiState.targetUserInfo?.joinTime.orEmpty()}",
+                text = stringResource(R.string.enter_joke) + userDetailsUiState.targetUserInfo?.joinTime.orEmpty(),
                 color = Grey60,
                 fontSize = 12.sp,
                 modifier = Modifier.padding(start = 20.dp),
@@ -430,7 +503,7 @@ private fun TargetUserLikeAttentionFansInfo(userDetailsUiState: UserDetailsUiSta
             fontWeight = FontWeight.ExtraBold,
         )
         Text(
-            text = "获赞",
+            text = stringResource(R.string.be_praised),
             color = Black30,
             fontSize = 15.sp,
             modifier = Modifier.padding(start = 2.dp),
@@ -444,7 +517,7 @@ private fun TargetUserLikeAttentionFansInfo(userDetailsUiState: UserDetailsUiSta
             modifier = Modifier.padding(start = 20.dp),
         )
         Text(
-            text = "关注",
+            text = stringResource(id = R.string.attention),
             color = Black30,
             fontSize = 15.sp,
             modifier = Modifier.padding(start = 2.dp),
@@ -458,7 +531,7 @@ private fun TargetUserLikeAttentionFansInfo(userDetailsUiState: UserDetailsUiSta
             modifier = Modifier.padding(start = 20.dp),
         )
         Text(
-            text = "粉丝",
+            text = stringResource(id = R.string.fans),
             color = Black30,
             fontSize = 15.sp,
             modifier = Modifier.padding(start = 2.dp),

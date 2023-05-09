@@ -60,6 +60,7 @@ fun JokeItem(
     navController: NavHostController = rememberAnimatedNavController(),
     joke: JokeListReply.Data? = null,
     isLoading: Boolean = true,
+    showUserInfo: Boolean = true,
 ) {
     val context = LocalContext.current
     val density = LocalDensity.current
@@ -69,122 +70,124 @@ fun JokeItem(
                 .background(color = MaterialTheme.colorScheme.background),
             horizontalAlignment = Alignment.CenterHorizontally
         ) {
-            ConstraintLayout(
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .height(60.dp)
-            ) {
-                val (avatar, name, signature, attention, more) = createRefs()
-                // 用户头像
-                AsyncImage(
-                    model = ImageRequest.Builder(context)
-                        .data(joke?.user?.avatar)
-                        .error(GradientDrawable().apply {
-                            shape = GradientDrawable.OVAL
-                            setColor(Color.Gray.toArgb())
-                        })
-                        .transformations(CircleCropTransformation())
-                        .crossfade(true)
-                        .build(),
-                    contentDescription = null,
-                    contentScale = ContentScale.Crop,
+            if (showUserInfo) {
+                ConstraintLayout(
                     modifier = Modifier
-                        .size(36.dp)
-                        .constrainAs(avatar) {
-                            start.linkTo(parent.start, margin = 16.dp)
-                            top.linkTo(parent.top)
-                            bottom.linkTo(parent.bottom)
-                        }
-                        .placeholder(
-                            visible = isLoading,
-                            color = GreyPlaceholder,
-                            shape = CircleShape,
-                            highlight = PlaceholderHighlight.shimmer(highlightColor = Color.White),
-                        )
-                        .clickableNoRipple {
-                            navController.navigate("${Constant.NavRoute.USER_DETAILS}/${joke?.user?.userId}")
-                        }
-                )
-                // 用户昵称
-                Text(
-                    text = joke?.user?.nickName.orEmpty(),
-                    style = TextStyle(color = Color.Black, fontSize = 14.sp),
-                    modifier = Modifier
-                        .constrainAs(name) {
-                            start.linkTo(avatar.end, margin = 8.dp)
-                            top.linkTo(avatar.top)
-                        }
-                        .placeholder(
-                            visible = isLoading,
-                            color = GreyPlaceholder,
-                            shape = RoundedCornerShape(4.dp),
-                            highlight = PlaceholderHighlight.shimmer(highlightColor = Color.White),
-                        ),
-                )
-                // 用户签名信息
-                Text(
-                    text = joke?.user?.signature.orEmpty(),
-                    style = TextStyle(color = Color.Gray, fontSize = 13.sp),
-                    textAlign = TextAlign.Start,
-                    overflow = TextOverflow.Ellipsis,
-                    maxLines = 1,
-                    softWrap = false,
-                    modifier = Modifier
-                        .constrainAs(signature) {
-                            top.linkTo(name.bottom, margin = 2.dp)
-                            start.linkTo(name.start)
-                            end.linkTo(attention.start, margin = 8.dp)
-                            width = Dimension.fillToConstraints
-                        }
-                        .placeholder(
-                            visible = isLoading,
-                            color = GreyPlaceholder,
-                            shape = RoundedCornerShape(4.dp),
-                            highlight = PlaceholderHighlight.shimmer(highlightColor = Color.White),
-                        ),
-                )
-                // +关注
-                Text(
-                    text = stringResource(id = R.string.add_attention),
-                    style = TextStyle(color = Yellow30, fontSize = 14.sp),
-                    modifier = Modifier
-                        .constrainAs(attention) {
-                            top.linkTo(parent.top)
-                            bottom.linkTo(parent.bottom)
-                            end.linkTo(more.start, margin = 12.dp)
-                        }
-                        .placeholder(
-                            visible = isLoading,
-                            color = GreyPlaceholder,
-                            shape = RoundedCornerShape(4.dp),
-                            highlight = PlaceholderHighlight.shimmer(highlightColor = Color.White),
-                        )
-                        .clickableNoRipple {
+                        .fillMaxWidth()
+                        .height(60.dp)
+                ) {
+                    val (avatar, name, signature, attention, more) = createRefs()
+                    // 用户头像
+                    AsyncImage(
+                        model = ImageRequest.Builder(context)
+                            .data(joke?.user?.avatar)
+                            .error(GradientDrawable().apply {
+                                shape = GradientDrawable.OVAL
+                                setColor(Color.Gray.toArgb())
+                            })
+                            .transformations(CircleCropTransformation())
+                            .crossfade(true)
+                            .build(),
+                        contentDescription = null,
+                        contentScale = ContentScale.Crop,
+                        modifier = Modifier
+                            .size(36.dp)
+                            .constrainAs(avatar) {
+                                start.linkTo(parent.start, margin = 16.dp)
+                                top.linkTo(parent.top)
+                                bottom.linkTo(parent.bottom)
+                            }
+                            .placeholder(
+                                visible = isLoading,
+                                color = GreyPlaceholder,
+                                shape = CircleShape,
+                                highlight = PlaceholderHighlight.shimmer(highlightColor = Color.White),
+                            )
+                            .clickableNoRipple {
+                                navController.navigate("${Constant.NavRoute.USER_DETAILS}/${joke?.user?.userId}")
+                            }
+                    )
+                    // 用户昵称
+                    Text(
+                        text = joke?.user?.nickName.orEmpty(),
+                        style = TextStyle(color = Color.Black, fontSize = 14.sp),
+                        modifier = Modifier
+                            .constrainAs(name) {
+                                start.linkTo(avatar.end, margin = 8.dp)
+                                top.linkTo(avatar.top)
+                            }
+                            .placeholder(
+                                visible = isLoading,
+                                color = GreyPlaceholder,
+                                shape = RoundedCornerShape(4.dp),
+                                highlight = PlaceholderHighlight.shimmer(highlightColor = Color.White),
+                            ),
+                    )
+                    // 用户签名信息
+                    Text(
+                        text = joke?.user?.signature.orEmpty(),
+                        style = TextStyle(color = Color.Gray, fontSize = 13.sp),
+                        textAlign = TextAlign.Start,
+                        overflow = TextOverflow.Ellipsis,
+                        maxLines = 1,
+                        softWrap = false,
+                        modifier = Modifier
+                            .constrainAs(signature) {
+                                top.linkTo(name.bottom, margin = 2.dp)
+                                start.linkTo(name.start)
+                                end.linkTo(attention.start, margin = 8.dp)
+                                width = Dimension.fillToConstraints
+                            }
+                            .placeholder(
+                                visible = isLoading,
+                                color = GreyPlaceholder,
+                                shape = RoundedCornerShape(4.dp),
+                                highlight = PlaceholderHighlight.shimmer(highlightColor = Color.White),
+                            ),
+                    )
+                    // +关注
+                    Text(
+                        text = stringResource(id = R.string.add_attention),
+                        style = TextStyle(color = Yellow30, fontSize = 14.sp),
+                        modifier = Modifier
+                            .constrainAs(attention) {
+                                top.linkTo(parent.top)
+                                bottom.linkTo(parent.bottom)
+                                end.linkTo(more.start, margin = 12.dp)
+                            }
+                            .placeholder(
+                                visible = isLoading,
+                                color = GreyPlaceholder,
+                                shape = RoundedCornerShape(4.dp),
+                                highlight = PlaceholderHighlight.shimmer(highlightColor = Color.White),
+                            )
+                            .clickableNoRipple {
 
-                        },
-                )
-                // 更多
-                Icon(
-                    painter = painterResource(id = R.mipmap.ic_more),
-                    contentDescription = null,
-                    modifier = Modifier
-                        .size(24.dp)
-                        .constrainAs(more) {
-                            top.linkTo(parent.top)
-                            bottom.linkTo(parent.bottom)
-                            end.linkTo(parent.end, margin = 16.dp)
-                        }
-                        .clickableNoRipple {
+                            },
+                    )
+                    // 更多
+                    Icon(
+                        painter = painterResource(id = R.mipmap.ic_more),
+                        contentDescription = null,
+                        modifier = Modifier
+                            .size(24.dp)
+                            .constrainAs(more) {
+                                top.linkTo(parent.top)
+                                bottom.linkTo(parent.bottom)
+                                end.linkTo(parent.end, margin = 16.dp)
+                            }
+                            .clickableNoRipple {
 
-                        },
-                )
+                            },
+                    )
+                }
             }
             // 段子内容
             Text(
                 text = joke?.joke?.content.orEmpty(),
                 style = TextStyle(color = Color.Black, fontSize = 14.sp),
                 modifier = Modifier
-                    .padding(start = 16.dp, end = 16.dp)
+                    .padding(start = 16.dp, top = if (showUserInfo) 0.dp else 8.dp, end = 16.dp)
                     .fillMaxWidth()
                     .wrapContentHeight()
                     .placeholder(
