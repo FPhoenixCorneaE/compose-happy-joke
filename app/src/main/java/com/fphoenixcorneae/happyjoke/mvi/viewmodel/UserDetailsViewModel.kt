@@ -13,9 +13,9 @@ import com.fphoenixcorneae.happyjoke.https.httpRequest
 import com.fphoenixcorneae.happyjoke.https.userService
 import com.fphoenixcorneae.happyjoke.mvi.model.BaseReply
 import com.fphoenixcorneae.happyjoke.mvi.model.TargetUserInfoReply
-import com.fphoenixcorneae.happyjoke.mvi.model.paging.HomepageRecommendSource
 import com.fphoenixcorneae.happyjoke.mvi.model.paging.UserLikeTextPicJokeListSource
 import com.fphoenixcorneae.happyjoke.mvi.model.paging.UserTextPicJokeListSource
+import com.fphoenixcorneae.happyjoke.mvi.model.paging.UserVideoJokeListSource
 import kotlinx.coroutines.channels.Channel
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
@@ -44,6 +44,11 @@ class UserDetailsViewModel(private val targetUserId: String) : ViewModel() {
     /** 用户图文段子列表 */
     val userTextPicJokeList = Pager(config = PagingConfig(pageSize = 10)) {
         UserTextPicJokeListSource(targetUserId = targetUserId)
+    }.flow.cachedIn(viewModelScope)
+
+    /** 用户所有视频列表 */
+    val userVideoJokeList = Pager(config = PagingConfig(pageSize = 10)) {
+        UserVideoJokeListSource(targetUserId = targetUserId)
     }.flow.cachedIn(viewModelScope)
 
     /** 用户喜欢的图文段子列表 */

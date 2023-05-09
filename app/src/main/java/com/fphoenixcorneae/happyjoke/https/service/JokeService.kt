@@ -41,7 +41,7 @@ interface JokeService {
      */
     @FormUrlEncoded
     @POST("/jokes/jokes/video/list")
-    suspend fun getTargetUserVideoList(
+    suspend fun getTargetUserVideoJokeList(
         @Field("targetUserId") targetUserId: String,
         @Field("page") page: Int,
     ): VideoListReply?
@@ -52,7 +52,7 @@ interface JokeService {
      */
     @FormUrlEncoded
     @POST("/jokes/jokes/video/like/list")
-    suspend fun getTargetUserLikeVideoList(
+    suspend fun getTargetUserLikeVideoJokeList(
         @Field("targetUserId") targetUserId: String,
         @Field("page") page: Int,
     ): VideoListReply?

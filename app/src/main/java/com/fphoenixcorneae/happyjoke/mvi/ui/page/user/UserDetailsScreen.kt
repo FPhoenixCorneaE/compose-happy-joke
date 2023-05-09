@@ -1,10 +1,13 @@
 package com.fphoenixcorneae.happyjoke.mvi.ui.page.user
 
+import android.graphics.drawable.GradientDrawable
 import androidx.compose.animation.ExperimentalAnimationApi
 import androidx.compose.animation.animateColorAsState
 import androidx.compose.foundation.*
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
+import androidx.compose.foundation.lazy.grid.GridCells
+import androidx.compose.foundation.lazy.grid.LazyVerticalGrid
 import androidx.compose.foundation.pager.HorizontalPager
 import androidx.compose.foundation.pager.PagerState
 import androidx.compose.foundation.pager.rememberPagerState
@@ -41,9 +44,7 @@ import coil.compose.AsyncImage
 import coil.request.ImageRequest
 import coil.transform.CircleCropTransformation
 import com.fphoenixcorneae.happyjoke.R
-import com.fphoenixcorneae.happyjoke.ext.LifecycleObserver
-import com.fphoenixcorneae.happyjoke.ext.clickableNoRipple
-import com.fphoenixcorneae.happyjoke.ext.indicatorOffset
+import com.fphoenixcorneae.happyjoke.ext.*
 import com.fphoenixcorneae.happyjoke.mvi.ui.page.joke.JokeItem
 import com.fphoenixcorneae.happyjoke.mvi.ui.theme.*
 import com.fphoenixcorneae.happyjoke.mvi.ui.widget.SystemUiScaffold
@@ -53,6 +54,9 @@ import com.fphoenixcorneae.happyjoke.mvi.viewmodel.UserDetailsUiState
 import com.fphoenixcorneae.happyjoke.mvi.viewmodel.UserDetailsViewModel
 import com.fphoenixcorneae.happyjoke.mvi.viewmodel.UserDetailsViewModelFactory
 import com.google.accompanist.navigation.animation.rememberAnimatedNavController
+import com.google.accompanist.placeholder.PlaceholderHighlight
+import com.google.accompanist.placeholder.placeholder
+import com.google.accompanist.placeholder.shimmer
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.launch
 import me.onebone.toolbar.CollapsingToolbarScaffold
@@ -244,7 +248,7 @@ private fun TargetUserJokeList(
                     navController = navController,
                     viewModel = viewModel,
                 )
-                else -> TargetUserTextPicJokeList(
+                else -> TargetUserVideoJokeList(
                     navController = navController,
                     viewModel = viewModel,
                 )
@@ -348,6 +352,49 @@ private fun TargetUserTextPicJokeList(
 }
 
 /**
+ * @desc：用户所有视频列表
+ * @date：2023/05/09 17:25
+ */
+@Composable
+private fun TargetUserVideoJokeList(
+    navController: NavHostController,
+    viewModel: UserDetailsViewModel,
+) {
+    val userVideoJokeList = viewModel.userVideoJokeList.collectAsLazyPagingItems()
+    LazyVerticalGrid(
+        columns = GridCells.Fixed(3),
+        horizontalArrangement = Arrangement.spacedBy(1.dp),
+        verticalArrangement = Arrangement.spacedBy(1.dp),
+    ) {
+        items(items = userVideoJokeList) { item ->
+            val isLoading = userVideoJokeList.loadState.append is LoadState.Loading
+            val context = LocalContext.current
+            AsyncImage(
+                model = ImageRequest.Builder(context)
+                    .data(item?.cover.urlAESDecrypt())
+                    .error(GradientDrawable().apply {
+                        setColor(Color.Black.toArgb())
+                    })
+                    .crossfade(true)
+                    .build(),
+                contentDescription = null,
+                contentScale = ContentScale.Crop,
+                modifier = Modifier
+                    .aspectRatio(0.8f)
+                    .placeholder(
+                        visible = isLoading,
+                        color = GreyPlaceholder,
+                        highlight = PlaceholderHighlight.shimmer(highlightColor = Color.White),
+                    )
+                    .clickableNoRipple {
+
+                    }
+            )
+        }
+    }
+}
+
+/**
  * @desc：用户喜欢的图文段子列表
  * @date：2023/05/09 17:09
  */
@@ -356,10 +403,10 @@ private fun TargetUserLikeTextPicJokeList(
     navController: NavHostController,
     viewModel: UserDetailsViewModel,
 ) {
-    val userTextPicJokeList = viewModel.userLikeTextPicJokeList.collectAsLazyPagingItems()
+    val userLikeTextPicJokeList = viewModel.userLikeTextPicJokeList.collectAsLazyPagingItems()
     LazyColumn {
-        items(userTextPicJokeList) { item ->
-            val isLoading = userTextPicJokeList.loadState.append is LoadState.Loading
+        items(userLikeTextPicJokeList) { item ->
+            val isLoading = userLikeTextPicJokeList.loadState.append is LoadState.Loading
             JokeItem(navController = navController, joke = item, isLoading = isLoading, showUserInfo = false)
         }
     }
