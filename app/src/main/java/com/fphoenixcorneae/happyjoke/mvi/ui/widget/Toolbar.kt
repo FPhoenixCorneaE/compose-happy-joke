@@ -29,6 +29,7 @@ import com.google.accompanist.navigation.animation.rememberAnimatedNavController
 @OptIn(ExperimentalAnimationApi::class)
 @Composable
 fun Toolbar(
+    modifier: Modifier = Modifier,
     navController: NavHostController = rememberAnimatedNavController(),
     background: Color = MaterialTheme.colorScheme.background,
     leftIconTint: Color? = null,
@@ -41,6 +42,7 @@ fun Toolbar(
 ) {
     Box(
         modifier = Modifier
+            .then(modifier)
             .fillMaxWidth()
             .height(48.dp)
             .background(color = background),
