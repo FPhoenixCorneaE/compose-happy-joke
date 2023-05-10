@@ -45,6 +45,7 @@ import coil.request.ImageRequest
 import coil.transform.CircleCropTransformation
 import com.fphoenixcorneae.happyjoke.R
 import com.fphoenixcorneae.happyjoke.ext.*
+import com.fphoenixcorneae.happyjoke.mvi.model.VideoListReply
 import com.fphoenixcorneae.happyjoke.mvi.ui.page.joke.JokeItem
 import com.fphoenixcorneae.happyjoke.mvi.ui.theme.*
 import com.fphoenixcorneae.happyjoke.mvi.ui.widget.SystemUiScaffold
@@ -81,8 +82,6 @@ fun UserDetailsScreen(
     val labels = listOf(
         stringResource(R.string.production) to userDetailsUiState.targetUserInfo?.jokesNum.orEmpty(),
         stringResource(R.string.like) to userDetailsUiState.targetUserInfo?.jokeLikeNum.orEmpty(),
-        stringResource(R.string.comment) to userDetailsUiState.targetUserInfo?.commentNum.orEmpty(),
-        stringResource(R.string.collect) to userDetailsUiState.targetUserInfo?.collectNum.orEmpty(),
     )
     val pagerState = rememberPagerState(initialPage = 0)
     val coroutineScope = rememberCoroutineScope()
@@ -208,10 +207,6 @@ fun UserDetailsScreen(
                             navController = navController,
                             viewModel = viewModel,
                         )
-                        1 -> TargetUserLikeJokeList(
-                            navController = navController,
-                            viewModel = viewModel,
-                        )
                         else -> TargetUserLikeJokeList(
                             navController = navController,
                             viewModel = viewModel,
@@ -282,7 +277,7 @@ private fun TargetUserLikeJokeList(
                     navController = navController,
                     viewModel = viewModel,
                 )
-                else -> TargetUserLikeTextPicJokeList(
+                else -> TargetUserLikeVideoJokeList(
                     navController = navController,
                     viewModel = viewModel,
                 )
@@ -368,32 +363,10 @@ private fun TargetUserVideoJokeList(
     ) {
         items(items = userVideoJokeList) { item ->
             val isLoading = userVideoJokeList.loadState.append is LoadState.Loading
-            val context = LocalContext.current
-            AsyncImage(
-                model = ImageRequest.Builder(context)
-                    .data(item?.cover.urlAESDecrypt())
-                    .error(GradientDrawable().apply {
-                        setColor(Color.Black.toArgb())
-                    })
-                    .crossfade(true)
-                    .build(),
-                contentDescription = null,
-                contentScale = ContentScale.Crop,
-                modifier = Modifier
-                    .aspectRatio(0.8f)
-                    .placeholder(
-                        visible = isLoading,
-                        color = GreyPlaceholder,
-                        highlight = PlaceholderHighlight.shimmer(highlightColor = Color.White),
-                    )
-                    .clickableNoRipple {
-
-                    }
-            )
+            VideoJokeItem(item, isLoading)
         }
     }
 }
-
 /**
  * @desc：用户喜欢的图文段子列表
  * @date：2023/05/09 17:09
@@ -408,6 +381,93 @@ private fun TargetUserLikeTextPicJokeList(
         items(userLikeTextPicJokeList) { item ->
             val isLoading = userLikeTextPicJokeList.loadState.append is LoadState.Loading
             JokeItem(navController = navController, joke = item, isLoading = isLoading, showUserInfo = false)
+        }
+    }
+}
+
+/**
+ * @desc：用户喜欢的视频列表
+ * @date：2023/05/10 10:26
+ */
+@Composable
+private fun TargetUserLikeVideoJokeList(
+    navController: NavHostController,
+    viewModel: UserDetailsViewModel,
+) {
+    val userLikeVideoJokeList = viewModel.userLikeVideoJokeList.collectAsLazyPagingItems()
+    LazyVerticalGrid(
+        columns = GridCells.Fixed(3),
+        horizontalArrangement = Arrangement.spacedBy(1.dp),
+        verticalArrangement = Arrangement.spacedBy(1.dp),
+    ) {
+        items(items = userLikeVideoJokeList) { item ->
+            val isLoading = userLikeVideoJokeList.loadState.append is LoadState.Loading
+            VideoJokeItem(item, isLoading)
+        }
+    }
+}
+
+/**
+ * @desc：
+ * @date：2023/05/10 09:28
+ */
+@Composable
+private fun VideoJokeItem(
+    item: VideoListReply.Data?,
+    isLoading: Boolean,
+) {
+    val context = LocalContext.current
+    Box(
+        modifier = Modifier
+            .aspectRatio(0.75f)
+    ) {
+        AsyncImage(
+            model = ImageRequest.Builder(context)
+                .data(item?.cover.urlAESDecrypt())
+                .error(GradientDrawable().apply {
+                    setColor(Color.Black.toArgb())
+                })
+                .crossfade(true)
+                .build(),
+            contentDescription = null,
+            contentScale = ContentScale.Crop,
+            modifier = Modifier
+                .fillMaxSize()
+                .placeholder(
+                    visible = isLoading,
+                    color = GreyPlaceholder,
+                    highlight = PlaceholderHighlight.shimmer(highlightColor = Color.White),
+                )
+                .clickableNoRipple {
+
+                }
+        )
+        Row(
+            modifier = Modifier
+                .padding(8.dp)
+                .align(Alignment.BottomStart),
+            verticalAlignment = Alignment.CenterVertically,
+            horizontalArrangement = Arrangement.spacedBy(2.dp),
+        ) {
+            Image(
+                painter = painterResource(id = R.mipmap.ic_like_border),
+                contentDescription = null,
+                modifier = Modifier
+                    .size(16.dp),
+            )
+            Text(
+                text = item?.likeNum.orEmpty(),
+                color = Color.White,
+                fontSize = 14.sp,
+                modifier = Modifier
+                    .defaultMinSize(minWidth = 20.dp)
+                    .placeholder(
+                        visible = isLoading,
+                        color = GreyPlaceholder,
+                        shape = RoundedCornerShape(2.dp),
+                        highlight = PlaceholderHighlight.shimmer(highlightColor = Color.White),
+                    ),
+            )
         }
     }
 }
