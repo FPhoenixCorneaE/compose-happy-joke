@@ -15,6 +15,7 @@ import androidx.compose.ui.layout.onSizeChanged
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.tooling.preview.Preview
+import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.IntSize
 import androidx.compose.ui.unit.dp
 import coil.ImageLoader
@@ -38,6 +39,9 @@ fun NineGridImage(
     modifier: Modifier = Modifier,
     imageDatas: List<Any?>? = mutableListOf(),
     isLoading: Boolean = true,
+    horizontalSpace: Dp = 8.dp,
+    verticalSpace: Dp = 8.dp,
+    cornerRadius: Dp = 8.dp,
 ) {
     if (imageDatas.isNullOrEmpty()) {
         return
@@ -60,18 +64,10 @@ fun NineGridImage(
             .onSizeChanged { size = it },
     ) {
         val width = LocalDensity.current.run { size.width.toDp() }
-        val verticalSpace = 8.dp
-        val horizontalSpace = 8.dp
         val itemWidth = when (imageDatas.size) {
-            1 -> {
-                width
-            }
-            2 -> {
-                (width - verticalSpace) / 2
-            }
-            else -> {
-                (width - verticalSpace * 2) / 3
-            }
+            1 -> width
+            2 -> (width - verticalSpace) / 2
+            else -> (width - verticalSpace * 2) / 3
         }
         if (imageDatas.size == 1) {
             Box(
@@ -79,7 +75,7 @@ fun NineGridImage(
                     .width(itemWidth)
                     .aspectRatio(16f / 9f),
             ) {
-                NineGridImageItem(imageDatas[0], isLoading)
+                NineGridImageItem(it = imageDatas[0], isLoading = isLoading, radius = cornerRadius)
             }
         } else {
             imageMatrix.forEachIndexed { index, rowDatas ->
@@ -89,7 +85,7 @@ fun NineGridImage(
                             modifier = Modifier
                                 .width(itemWidth),
                         ) {
-                            NineGridImageItem(data, isLoading)
+                            NineGridImageItem(it = data, isLoading = isLoading, radius = cornerRadius)
                         }
                         if (index < rowDatas.size - 1) {
                             VerticalDivider(thickness = verticalSpace, color = Color.Transparent)
@@ -105,8 +101,7 @@ fun NineGridImage(
 }
 
 @Composable
-private fun NineGridImageItem(it: Any?, isLoading: Boolean) {
-    val radius = 8.dp
+private fun NineGridImageItem(it: Any?, isLoading: Boolean, radius: Dp) {
     Card(shape = RoundedCornerShape(radius)) {
         AsyncImage(
             model = ImageRequest.Builder(LocalContext.current)

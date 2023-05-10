@@ -1,9 +1,6 @@
 package com.fphoenixcorneae.happyjoke.https.service
 
-import com.fphoenixcorneae.happyjoke.mvi.model.BaseReply
-import com.fphoenixcorneae.happyjoke.mvi.model.JokeListReply
-import com.fphoenixcorneae.happyjoke.mvi.model.LikeListReply
-import com.fphoenixcorneae.happyjoke.mvi.model.VideoListReply
+import com.fphoenixcorneae.happyjoke.mvi.model.*
 import retrofit2.http.Field
 import retrofit2.http.FormUrlEncoded
 import retrofit2.http.POST
@@ -56,6 +53,16 @@ interface JokeService {
         @Field("targetUserId") targetUserId: String,
         @Field("page") page: Int,
     ): VideoListReply?
+
+    /**
+     * 获取指定id的段子
+     * @param jokeId 段子id
+     */
+    @FormUrlEncoded
+    @POST("/jokes/jokes/target")
+    suspend fun getJokeById(
+        @Field("jokeId") jokeId: String,
+    ): JokeDetailsReply?
 
     /**
      * 获取指定id对应视频列表

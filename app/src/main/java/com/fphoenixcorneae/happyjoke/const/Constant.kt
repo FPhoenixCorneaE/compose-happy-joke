@@ -16,6 +16,7 @@ object Constant {
      */
     object Key {
         const val TARGET_USER_ID = "target_user_id"
+        const val TARGET_JOKE_ID = "target_joke_id"
     }
 
     /**
@@ -40,6 +41,7 @@ object Constant {
         const val PASSWORD_RESET = "password_reset"
         const val SETTINGS = "settings"
         const val USER_DETAILS = "user_details"
+        const val JOKE_DETAILS = "joke_details"
 
         /**
          * @desc：主页

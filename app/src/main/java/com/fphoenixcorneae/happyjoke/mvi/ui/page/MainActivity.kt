@@ -12,6 +12,7 @@ import androidx.navigation.NavType
 import androidx.navigation.navArgument
 import com.fphoenixcorneae.happyjoke.const.Constant
 import com.fphoenixcorneae.happyjoke.mvi.ui.page.home.MainScreen
+import com.fphoenixcorneae.happyjoke.mvi.ui.page.joke.JokeDetailsScreen
 import com.fphoenixcorneae.happyjoke.mvi.ui.page.joke.JokePostScreen
 import com.fphoenixcorneae.happyjoke.mvi.ui.page.settings.SettingsScreen
 import com.fphoenixcorneae.happyjoke.mvi.ui.page.splash.SplashScreen
@@ -103,6 +104,20 @@ class MainActivity : ComponentActivity() {
                             UserDetailsScreen(
                                 navController = navController,
                                 targetUserId = backStackEntry.arguments?.getString(Constant.Key.TARGET_USER_ID)
+                                    .orEmpty(),
+                            )
+                        }
+                        composable(
+                            "${Constant.NavRoute.JOKE_DETAILS}/{${Constant.Key.TARGET_JOKE_ID}}",
+                            arguments = listOf(navArgument(Constant.Key.TARGET_JOKE_ID) { type = NavType.StringType }),
+                            enterTransition = { slideInHorizontally(initialOffsetX = { it }) + fadeIn() },
+                            exitTransition = { slideOutHorizontally(targetOffsetX = { it }) + fadeOut() },
+                            popEnterTransition = { slideInHorizontally(initialOffsetX = { it }) + fadeIn() },
+                            popExitTransition = { slideOutHorizontally(targetOffsetX = { it }) + fadeOut() },
+                        ) { backStackEntry ->
+                            JokeDetailsScreen(
+                                navController = navController,
+                                targetJokeId = backStackEntry.arguments?.getString(Constant.Key.TARGET_JOKE_ID)
                                     .orEmpty(),
                             )
                         }

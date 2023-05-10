@@ -62,4 +62,5 @@
     <string name="comment">评论</string>
     <string name="like">喜欢</string>
     <string name="production">作品</string>
+    <string name="post_details">帖子详情</string>
 </resources>
