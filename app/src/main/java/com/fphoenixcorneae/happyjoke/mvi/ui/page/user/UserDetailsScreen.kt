@@ -167,7 +167,7 @@ fun UserDetailsScreen(
                         .background(color = Color.White),
                     edgePadding = 4.dp,
                     divider = {
-                        Divider(color = GreyLine)
+                        Divider(color = GreyLine, thickness = 0.5.dp)
                     },
                     indicator = { tabPositions ->
                         TabRowDefaults.Indicator(
@@ -578,7 +578,7 @@ private fun TargetUserInfo(
                 modifier = Modifier.padding(start = 20.dp),
             )
             // 分割线
-            Divider(color = GreyLine, modifier = Modifier.padding(top = 16.dp))
+            Divider(color = GreyLine, thickness = 0.5.dp, modifier = Modifier.padding(top = 16.dp))
             // 用户签名信息
             Text(
                 text = userDetailsUiState.targetUserInfo?.sigbature.orEmpty(),

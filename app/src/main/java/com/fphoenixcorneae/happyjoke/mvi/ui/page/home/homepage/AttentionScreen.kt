@@ -114,7 +114,7 @@ fun AttentionRecommend(
             item {
                 Spacer(modifier = Modifier.width(12.dp))
             }
-            items(homepageUiState.attentionRecommend ?: mutableListOf()) {
+            items(homepageUiState.attentionRecommends ?: mutableListOf()) {
                 Card(
                     modifier = Modifier
                         .width(150.dp)

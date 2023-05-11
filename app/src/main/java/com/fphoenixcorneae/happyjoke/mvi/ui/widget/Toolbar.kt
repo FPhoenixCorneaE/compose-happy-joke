@@ -95,7 +95,7 @@ fun Toolbar(
             )
         }
         Divider(
-            thickness = 1.dp, color = GreyLine, modifier = Modifier.align(Alignment.BottomCenter)
+            thickness = 0.5.dp, color = GreyLine, modifier = Modifier.align(Alignment.BottomCenter)
         )
     }
 }

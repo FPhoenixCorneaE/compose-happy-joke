@@ -30,7 +30,7 @@ inline fun SystemUiScaffold(
     statusBarColor: Color = Color.Transparent,
     navigationBarColor: Color = Color.Transparent,
     isDarkFont: Boolean = !isSystemInDarkTheme(),
-    crossinline content: @Composable () -> Unit,
+    crossinline content: @Composable BoxScope.() -> Unit,
 ) {
     val activity = LocalContext.current as? Activity
     activity?.window?.let {

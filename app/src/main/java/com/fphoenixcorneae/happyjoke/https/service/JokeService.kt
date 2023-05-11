@@ -75,15 +75,27 @@ interface JokeService {
     ): JokeListReply?
 
     /**
+     * 获取评论列表
+     * @param jokeId 段子id
+     * @param page   分页
+     */
+    @FormUrlEncoded
+    @POST("/jokes/jokes/comment/list")
+    suspend fun getTargetJokeCommentList(
+        @Field("jokeId") jokeId: String,
+        @Field("page") page: Int,
+    ): JokeCommentListReply?
+
+    /**
      * 获取指定id的段子的点赞列表
      * @param jokeId 段子id
      */
     @FormUrlEncoded
-    @POST("/jokes/jokes/video/list")
+    @POST("/jokes/jokes/like/list")
     suspend fun getTargetJokeLikeList(
-        @Field("jokeId") jokeId: Int,
+        @Field("jokeId") jokeId: String,
         @Field("page") page: Int,
-    ): LikeListReply?
+    ): JokeLikeListReply?
 
     /**
      * 给段子点赞/取消点赞
@@ -91,9 +103,9 @@ interface JokeService {
      * @param status true为点赞 false为取消点赞
      */
     @FormUrlEncoded
-    @POST("/jokes/jokes/video/list")
+    @POST("/jokes/jokes/like")
     suspend fun likeJoke(
-        @Field("id") id: Int,
+        @Field("id") id: String,
         @Field("status") status: Boolean,
     ): BaseReply<Any>?
 }

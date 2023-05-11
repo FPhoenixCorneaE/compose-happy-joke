@@ -58,13 +58,12 @@ import com.google.accompanist.placeholder.shimmer
 @OptIn(ExperimentalAnimationApi::class)
 @Preview
 @Composable
-fun JokeDetails(
+fun JokeContent(
     navController: NavHostController = rememberAnimatedNavController(),
     joke: JokeDetailsReply.Data? = null,
     isLoading: Boolean = true,
 ) {
     val context = LocalContext.current
-    val density = LocalDensity.current
     Column {
         Column(
             modifier = Modifier

@@ -21,7 +21,7 @@ interface HomepageService {
      * 获取首页的推荐关注数据
      */
     @POST("/jokes/home/attention/recommend")
-    suspend fun homepageAttentionRecommend(): AttentionRecommend?
+    suspend fun homepageAttentionRecommend(): AttentionRecommendReply?
 
     /**
      * 获取关注的用户发布的段子列表
@@ -52,5 +52,5 @@ interface HomepageService {
      * 获取划一划页面的推荐列表数据
      */
     @POST("/jokes/douyin/list")
-    suspend fun sweepTikTokVideo(): SweepTikTokVideo?
+    suspend fun sweepTikTokVideos(): JokeListReply?
 }

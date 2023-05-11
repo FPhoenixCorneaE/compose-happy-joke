@@ -8,7 +8,7 @@ import androidx.paging.cachedIn
 import com.fphoenixcorneae.happyjoke.ext.launchDefault
 import com.fphoenixcorneae.happyjoke.ext.launchIo
 import com.fphoenixcorneae.happyjoke.https.*
-import com.fphoenixcorneae.happyjoke.mvi.model.AttentionRecommend
+import com.fphoenixcorneae.happyjoke.mvi.model.AttentionRecommendReply
 import com.fphoenixcorneae.happyjoke.mvi.model.BaseReply
 import com.fphoenixcorneae.happyjoke.mvi.model.UnreadMessagesReply
 import com.fphoenixcorneae.happyjoke.mvi.model.paging.*
@@ -89,7 +89,7 @@ class HomepageViewModel : ViewModel() {
                             homepageService.homepageAttentionRecommend()
                         }.doOnSuccess { result ->
                             _homepageUiState.update {
-                                it.copy(attentionRecommend = result?.data)
+                                it.copy(attentionRecommends = result?.data)
                             }
                         }
                     }
@@ -114,7 +114,7 @@ class HomepageViewModel : ViewModel() {
  */
 data class HomepageUiState(
     val loginStateFlow: Flow<Boolean> = UserManager.loginStateFlow(),
-    val attentionRecommend: List<AttentionRecommend.Data>? = null,
+    val attentionRecommends: List<AttentionRecommendReply.Data>? = null,
     val attentionResult: AttentionResult? = null,
     val unreadMessages: UnreadMessagesReply.Data? = null,
 ) {

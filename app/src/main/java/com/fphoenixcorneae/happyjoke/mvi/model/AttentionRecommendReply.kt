@@ -8,7 +8,7 @@ import androidx.annotation.Keep
  * @date：2023/04/17 13:52
  */
 @Keep
-data class AttentionRecommend(
+data class AttentionRecommendReply(
     val code: Int = 0, // 200
     val `data`: List<Data>? = null,
     val msg: String? = null // 数据返回成功

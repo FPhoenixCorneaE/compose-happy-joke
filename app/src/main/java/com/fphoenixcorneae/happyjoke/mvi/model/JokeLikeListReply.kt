@@ -9,9 +9,9 @@ import com.google.gson.annotations.SerializedName
  * @date：2023/05/05 17:50
  */
 @Keep
-data class LikeListReply(
+data class JokeLikeListReply(
     val code: Int = 0, // 200
-    val `data`: List<Data?>? = null,
+    val `data`: List<Data>? = null,
     val msg: String? = null // 数据返回成功
 ) {
     @Keep
