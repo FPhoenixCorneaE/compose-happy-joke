@@ -50,61 +50,76 @@ fun <T : Any> SwipeRefresh(
             .then(modifier)
             .pullRefresh(state = pullRefreshState)
     ) {
-        LazyColumn(
-            state = lazyListState,
-            modifier = Modifier
-                .fillMaxSize(),
+        PagingLazyColumn(
+            lazyPagingItems = lazyPagingItems,
+            lazyListState = lazyListState,
             contentPadding = contentPadding,
-        ) {
-            content()
-            lazyPagingItems.apply {
-                when {
-                    loadState.append is LoadState.Loading -> {
-                        // 加载更多，底部loading
-                        item { LoadingItem() }
+            content = content
+        )
+        PullRefreshIndicator(
+            refreshing = lazyPagingItems.loadState.refresh is LoadState.Loading,
+            state = pullRefreshState,
+            modifier = Modifier.align(Alignment.TopCenter),
+        )
+    }
+}
+
+@Composable
+private fun <T : Any> PagingLazyColumn(
+    lazyPagingItems: LazyPagingItems<T>,
+    lazyListState: LazyListState = rememberLazyListState(),
+    contentPadding: PaddingValues = PaddingValues(0.dp),
+    content: LazyListScope.() -> Unit,
+) {
+    LazyColumn(
+        state = lazyListState,
+        modifier = Modifier
+            .fillMaxSize(),
+        contentPadding = contentPadding,
+    ) {
+        content()
+        lazyPagingItems.apply {
+            when {
+                loadState.append is LoadState.Loading -> {
+                    // 加载更多，底部loading
+                    item { LoadingItem() }
+                }
+                loadState.append is LoadState.Error -> {
+                    // 加载更多异常
+                    item {
+                        ErrorMoreRetryItem {
+                            lazyPagingItems.retry()
+                        }
                     }
-                    loadState.append is LoadState.Error -> {
-                        // 加载更多异常
+                }
+                loadState.append == LoadState.NotLoading(endOfPaginationReached = true) -> {
+                    // 没有更多数据了
+                    item { NoMoreDataFindUI() }
+                }
+                loadState.refresh is LoadState.Error -> {
+                    if (lazyPagingItems.itemCount <= 0) {
+                        // 刷新的时候，如果itemCount小于0，第一次加载异常
+                        item {
+                            ErrorContent {
+                                lazyPagingItems.retry()
+                            }
+                        }
+                    } else {
                         item {
                             ErrorMoreRetryItem {
                                 lazyPagingItems.retry()
                             }
                         }
                     }
-                    loadState.append == LoadState.NotLoading(endOfPaginationReached = true) -> {
-                        // 没有更多数据了
-                        item { NoMoreDataFindUI() }
-                    }
-                    loadState.refresh is LoadState.Error -> {
-                        if (lazyPagingItems.itemCount <= 0) {
-                            // 刷新的时候，如果itemCount小于0，第一次加载异常
-                            item {
-                                ErrorContent {
-                                    lazyPagingItems.retry()
-                                }
-                            }
-                        } else {
-                            item {
-                                ErrorMoreRetryItem {
-                                    lazyPagingItems.retry()
-                                }
-                            }
-                        }
-                    }
-                    loadState.refresh is LoadState.Loading -> {
-                        // 第一次加载且正在加载中
-                        if (lazyPagingItems.itemCount == 0) {
-                        }
+                }
+                loadState.refresh is LoadState.Loading -> {
+                    // 第一次加载且正在加载中
+                    if (lazyPagingItems.itemCount == 0) {
                     }
                 }
             }
-
         }
-        PullRefreshIndicator(
-            refreshing = lazyPagingItems.loadState.refresh is LoadState.Loading,
-            state = pullRefreshState,
-            modifier = Modifier.align(Alignment.TopCenter),
-        )
+
     }
 }
 

@@ -1,5 +1,7 @@
 package com.fphoenixcorneae.happyjoke.mvi.ui.page.home
 
+import android.app.Activity
+import android.view.WindowManager
 import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
@@ -13,10 +15,7 @@ import androidx.compose.material.pullrefresh.pullRefresh
 import androidx.compose.material.pullrefresh.rememberPullRefreshState
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
-import androidx.compose.runtime.Composable
-import androidx.compose.runtime.derivedStateOf
-import androidx.compose.runtime.getValue
-import androidx.compose.runtime.remember
+import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
@@ -190,6 +189,15 @@ fun SweepScreen(
                 state = pullRefreshState,
                 modifier = Modifier.align(Alignment.TopCenter),
             )
+        }
+        DisposableEffect(Unit) {
+            val activity = context as? Activity
+            // 保持屏幕常亮, 无需添加任何权限
+            activity?.window?.addFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON)
+            onDispose {
+                // 关闭屏幕常亮
+                activity?.window?.clearFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON)
+            }
         }
     }
 }
