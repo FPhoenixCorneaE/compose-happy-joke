@@ -74,6 +74,7 @@ dependencies {
     implementation "com.google.accompanist:accompanist-systemuicontroller:$accompanist"
     implementation "com.google.accompanist:accompanist-permissions:$accompanist"
     implementation "com.google.accompanist:accompanist-swiperefresh:$accompanist"
+    implementation "com.google.accompanist:accompanist-webview:$accompanist"
     implementation "com.google.accompanist:accompanist-placeholder-material:$accompanist"
     implementation "com.google.accompanist:accompanist-navigation-animation:$accompanist"
     implementation "com.google.accompanist:accompanist-navigation-material:$accompanist"
