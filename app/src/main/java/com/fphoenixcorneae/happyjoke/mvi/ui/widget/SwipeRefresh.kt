@@ -16,6 +16,7 @@ import androidx.compose.material.TextButton
 import androidx.compose.material.pullrefresh.PullRefreshIndicator
 import androidx.compose.material.pullrefresh.pullRefresh
 import androidx.compose.material.pullrefresh.rememberPullRefreshState
+import androidx.compose.material3.MaterialTheme
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -24,8 +25,8 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.paging.LoadState
 import androidx.paging.compose.LazyPagingItems
+import com.fphoenixcorneae.happyjoke.ext.clickableNoRipple
 import com.fphoenixcorneae.happyjoke.mvi.ui.theme.Grey30
-import com.fphoenixcorneae.happyjoke.mvi.ui.theme.Grey60
 import com.fphoenixcorneae.happyjoke.mvi.ui.theme.Grey70
 
 /**
@@ -65,7 +66,7 @@ fun <T : Any> SwipeRefresh(
 }
 
 @Composable
-private fun <T : Any> PagingLazyColumn(
+fun <T : Any> PagingLazyColumn(
     lazyPagingItems: LazyPagingItems<T>,
     lazyListState: LazyListState = rememberLazyListState(),
     contentPadding: PaddingValues = PaddingValues(0.dp),
@@ -94,7 +95,7 @@ private fun <T : Any> PagingLazyColumn(
                 }
                 loadState.append == LoadState.NotLoading(endOfPaginationReached = true) -> {
                     // 没有更多数据了
-                    item { NoMoreDataFindUI() }
+                    item { NoMoreDataItem() }
                 }
                 loadState.refresh is LoadState.Error -> {
                     if (lazyPagingItems.itemCount <= 0) {
@@ -128,23 +129,19 @@ private fun <T : Any> PagingLazyColumn(
  */
 @Composable
 fun ErrorMoreRetryItem(retry: () -> Unit) {
-    Box(modifier = Modifier.fillMaxWidth(), contentAlignment = Alignment.Center) {
-        TextButton(
-            onClick = { retry() },
+    Box(
+        modifier = Modifier
+            .fillMaxWidth()
+            .clickableNoRipple { retry() },
+        contentAlignment = Alignment.Center,
+    ) {
+        Text(
+            text = "加载更多失败，请重试！",
+            color = Grey70,
+            fontSize = 14.sp,
             modifier = Modifier
-                .padding(20.dp)
-                .width(80.dp)
-                .height(30.dp),
-            shape = RoundedCornerShape(6.dp),
-            contentPadding = PaddingValues(3.dp),
-            colors = textButtonColors(backgroundColor = Grey30),
-            elevation = elevation(
-                defaultElevation = 2.dp,
-                pressedElevation = 4.dp,
-            ),
-        ) {
-            Text(text = "加载更多失败，请重试！", color = Grey60)
-        }
+                .padding(8.dp),
+        )
     }
 }
 
@@ -152,24 +149,9 @@ fun ErrorMoreRetryItem(retry: () -> Unit) {
  * 底部加载更多到底了
  */
 @Composable
-fun NoMoreDataFindUI() {
+fun NoMoreDataItem() {
     Box(modifier = Modifier.fillMaxWidth(), contentAlignment = Alignment.Center) {
-        TextButton(
-            onClick = {},
-            modifier = Modifier
-                .padding(20.dp)
-                .width(80.dp)
-                .height(30.dp),
-            shape = RoundedCornerShape(6.dp),
-            contentPadding = PaddingValues(3.dp),
-            colors = textButtonColors(backgroundColor = Grey30),
-            elevation = elevation(
-                defaultElevation = 2.dp,
-                pressedElevation = 4.dp,
-            ),
-        ) {
-            Text(text = "没有更多了哟~", color = Grey60)
-        }
+        Text(text = "没有更多了哟~", color = Grey70, fontSize = 14.sp, modifier = Modifier.padding(8.dp))
     }
 }
 
@@ -199,12 +181,12 @@ fun ErrorContent(retry: () -> Unit) {
                 .height(30.dp),
             shape = RoundedCornerShape(10.dp),
             contentPadding = PaddingValues(5.dp),
-            colors = textButtonColors(backgroundColor = Grey30),
+            colors = textButtonColors(backgroundColor = Grey30, contentColor = Grey70),
             elevation = elevation(
                 defaultElevation = 2.dp,
                 pressedElevation = 4.dp,
             )
-        ) { Text(text = "重试", color = Grey70) }
+        ) { Text(text = "重试", color = Grey70, fontSize = 14.sp) }
     }
 }
 
@@ -217,22 +199,22 @@ fun LoadingItem() {
         modifier = Modifier
             .height(34.dp)
             .fillMaxWidth()
-            .padding(5.dp),
+            .padding(8.dp),
         horizontalArrangement = Arrangement.Center
     ) {
         CircularProgressIndicator(
             modifier = Modifier
                 .size(24.dp),
-            color = Grey60,
+            color = MaterialTheme.colorScheme.onSecondary,
             strokeWidth = 2.dp
         )
         Text(
             text = "加载中...",
-            color = Grey60,
+            color = Grey70,
             modifier = Modifier
                 .fillMaxHeight()
-                .padding(start = 20.dp),
-            fontSize = 18.sp,
+                .padding(start = 16.dp),
+            fontSize = 14.sp,
         )
     }
 }

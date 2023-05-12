@@ -45,6 +45,7 @@ import com.fphoenixcorneae.happyjoke.const.Constant
 import com.fphoenixcorneae.happyjoke.ext.LifecycleObserver
 import com.fphoenixcorneae.happyjoke.ext.clickableNoRipple
 import com.fphoenixcorneae.happyjoke.mvi.ui.theme.*
+import com.fphoenixcorneae.happyjoke.mvi.ui.widget.PagingLazyColumn
 import com.fphoenixcorneae.happyjoke.mvi.ui.widget.SystemUiScaffold
 import com.fphoenixcorneae.happyjoke.mvi.ui.widget.Toolbar
 import com.fphoenixcorneae.happyjoke.mvi.viewmodel.JokeDetailsAction
@@ -201,7 +202,7 @@ fun TargetJokeCommentList(
 ) {
     val jokeCommentList = viewModel.jokeCommentList.collectAsLazyPagingItems()
     val context = LocalContext.current
-    LazyColumn {
+    PagingLazyColumn(lazyPagingItems = jokeCommentList) {
         items(jokeCommentList) { comment ->
             val isLoading = jokeCommentList.loadState.append is LoadState.Loading
             Row(
@@ -320,7 +321,7 @@ fun TargetJokeLikeList(
 ) {
     val jokeLikeList = viewModel.jokeLikeList.collectAsLazyPagingItems()
     val context = LocalContext.current
-    LazyColumn {
+    PagingLazyColumn(lazyPagingItems = jokeLikeList) {
         items(jokeLikeList) { like ->
             val isLoading = jokeLikeList.loadState.append is LoadState.Loading
             Row(
