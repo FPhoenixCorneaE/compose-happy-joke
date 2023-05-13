@@ -80,14 +80,14 @@ fun JokeDetailsScreen(
     )
     // 屏幕高度，不包括状态栏、导航栏高度
     val screenHeight = LocalConfiguration.current.screenHeightDp.dp
-    LifecycleObserver(
-        onCreate = {
-            viewModel.dispatchIntent(JokeDetailsAction.GetJokeDetails)
-        }
-    )
+    LifecycleObserver(onCreate = {
+        viewModel.dispatchIntent(JokeDetailsAction.GetJokeDetails)
+    })
     SystemUiScaffold {
         Column(modifier = Modifier.background(color = GreyBackground)) {
-            Toolbar(navController = navController, titleText = stringResource(R.string.post_details))
+            Toolbar(
+                navController = navController, titleText = stringResource(R.string.post_details)
+            )
             LazyColumn(modifier = Modifier.weight(1f)) {
                 item {
                     JokeContent(
@@ -123,8 +123,7 @@ fun JokeDetailsScreen(
                                                     pagerState.animateScrollToPage(index)
                                                 }
                                             }
-                                        },
-                                    contentAlignment = Alignment.Center
+                                        }, contentAlignment = Alignment.Center
                                 ) {
                                     Row(
                                         verticalAlignment = Alignment.CenterVertically,
@@ -145,12 +144,14 @@ fun JokeDetailsScreen(
                             }
                         }
                         val currentTabWidth by animateDpAsState(
-                            targetValue = tabWidth,
-                            animationSpec = tween(durationMillis = 250, easing = FastOutSlowInEasing)
+                            targetValue = tabWidth, animationSpec = tween(
+                                durationMillis = 250, easing = FastOutSlowInEasing
+                            )
                         )
                         val indicatorOffset by animateDpAsState(
-                            targetValue = tabWidth * pagerState.currentPage,
-                            animationSpec = tween(durationMillis = 250, easing = FastOutSlowInEasing)
+                            targetValue = tabWidth * pagerState.currentPage, animationSpec = tween(
+                                durationMillis = 250, easing = FastOutSlowInEasing
+                            )
                         )
                         Box(
                             modifier = Modifier
@@ -162,7 +163,11 @@ fun JokeDetailsScreen(
                                 .offset(x = indicatorOffset)
                                 .background(Yellow30)
                         )
-                        Divider(color = GreyLine, thickness = 0.5.dp, modifier = Modifier.align(Alignment.BottomStart))
+                        Divider(
+                            color = GreyLine,
+                            thickness = 0.5.dp,
+                            modifier = Modifier.align(Alignment.BottomStart)
+                        )
                     }
                 }
                 item {
@@ -214,13 +219,9 @@ fun TargetJokeCommentList(
                 horizontalArrangement = Arrangement.spacedBy(16.dp)
             ) {
                 // 用户头像
-                AsyncImage(
-                    model = ImageRequest.Builder(context)
-                        .data(comment?.commentUser?.userAvatar)
-                        .error(R.mipmap.ic_avatar_default)
-                        .transformations(CircleCropTransformation())
-                        .crossfade(true)
-                        .build(),
+                AsyncImage(model = ImageRequest.Builder(context)
+                    .data(comment?.commentUser?.userAvatar).error(R.mipmap.ic_avatar_default)
+                    .transformations(CircleCropTransformation()).crossfade(true).build(),
                     contentDescription = null,
                     contentScale = ContentScale.Crop,
                     modifier = Modifier
@@ -233,18 +234,16 @@ fun TargetJokeCommentList(
                         )
                         .clickableNoRipple {
                             navController.navigate("${Constant.NavRoute.USER_DETAILS}/${comment?.commentUser?.userId}")
-                        }
-                )
+                        })
                 Column(
                     modifier = Modifier
-                        .padding(start = 8.dp)
                         .weight(1f)
                         .wrapContentHeight(),
                 ) {
                     // 用户昵称
                     Text(
                         text = comment?.commentUser?.nickname.orEmpty(),
-                        color = Grey80,
+                        color = Grey60,
                         fontSize = 14.sp,
                         fontWeight = FontWeight.Bold,
                         modifier = Modifier
@@ -277,14 +276,16 @@ fun TargetJokeCommentList(
                 Column(
                     horizontalAlignment = Alignment.CenterHorizontally,
                     verticalArrangement = Arrangement.spacedBy(2.dp),
-                    modifier = Modifier.clickableNoRipple {
-                        isLike = !isLike
-                        likeNum = if (isLike) {
-                            likeNum + 1
-                        } else {
-                            (likeNum - 1).coerceAtLeast(0)
-                        }
-                    }
+                    modifier = Modifier
+                        .padding(top = 8.dp)
+                        .clickableNoRipple {
+                            isLike = !isLike
+                            likeNum = if (isLike) {
+                                likeNum + 1
+                            } else {
+                                (likeNum - 1).coerceAtLeast(0)
+                            }
+                        },
                 ) {
                     Image(
                         painter = painterResource(id = if (isLike) R.mipmap.ic_comment_like else R.mipmap.ic_comment_unlike),
@@ -333,13 +334,9 @@ fun TargetJokeLikeList(
                 horizontalArrangement = Arrangement.spacedBy(16.dp)
             ) {
                 // 用户头像
-                AsyncImage(
-                    model = ImageRequest.Builder(context)
-                        .data(like?.avatar)
-                        .error(R.mipmap.ic_avatar_default)
-                        .transformations(CircleCropTransformation())
-                        .crossfade(true)
-                        .build(),
+                AsyncImage(model = ImageRequest.Builder(context).data(like?.avatar)
+                    .error(R.mipmap.ic_avatar_default).transformations(CircleCropTransformation())
+                    .crossfade(true).build(),
                     contentDescription = null,
                     contentScale = ContentScale.Crop,
                     modifier = Modifier
@@ -352,8 +349,7 @@ fun TargetJokeLikeList(
                         )
                         .clickableNoRipple {
                             navController.navigate("${Constant.NavRoute.USER_DETAILS}/${like?.userId}")
-                        }
-                )
+                        })
                 // 用户昵称
                 Text(
                     text = like?.nickname.orEmpty(),

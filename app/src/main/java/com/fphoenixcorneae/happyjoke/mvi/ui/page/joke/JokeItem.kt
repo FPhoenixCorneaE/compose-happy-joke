@@ -59,14 +59,14 @@ fun JokeItem(
     joke: JokeListReply.Data? = null,
     isLoading: Boolean = true,
     showUserInfo: Boolean = true,
+    onMoreClick: () -> Unit = {},
 ) {
     val context = LocalContext.current
     val density = LocalDensity.current
     Column {
         Column(
-            modifier = Modifier
-                .background(color = MaterialTheme.colorScheme.background),
-            horizontalAlignment = Alignment.CenterHorizontally
+            modifier = Modifier.background(color = MaterialTheme.colorScheme.background),
+            horizontalAlignment = Alignment.CenterHorizontally,
         ) {
             if (showUserInfo) {
                 ConstraintLayout(
@@ -80,12 +80,9 @@ fun JokeItem(
                     val (avatar, name, signature, attention, more) = createRefs()
                     // 用户头像
                     AsyncImage(
-                        model = ImageRequest.Builder(context)
-                            .data(joke?.user?.avatar)
+                        model = ImageRequest.Builder(context).data(joke?.user?.avatar)
                             .error(R.mipmap.ic_avatar_default)
-                            .transformations(CircleCropTransformation())
-                            .crossfade(true)
-                            .build(),
+                            .transformations(CircleCropTransformation()).crossfade(true).build(),
                         contentDescription = null,
                         contentScale = ContentScale.Crop,
                         modifier = Modifier
@@ -103,7 +100,7 @@ fun JokeItem(
                             )
                             .clickableNoRipple {
                                 navController.navigate("${Constant.NavRoute.USER_DETAILS}/${joke?.user?.userId}")
-                            }
+                            },
                     )
                     // 用户昵称
                     Text(
@@ -175,7 +172,7 @@ fun JokeItem(
                                 end.linkTo(parent.end, margin = 16.dp)
                             }
                             .clickableNoRipple {
-
+                                onMoreClick()
                             },
                     )
                 }
@@ -185,7 +182,9 @@ fun JokeItem(
                 text = joke?.joke?.content.orEmpty(),
                 style = TextStyle(color = Color.Black, fontSize = 14.sp),
                 modifier = Modifier
-                    .padding(start = 16.dp, top = if (showUserInfo) 0.dp else 8.dp, end = 16.dp)
+                    .padding(
+                        start = 16.dp, top = if (showUserInfo) 0.dp else 8.dp, end = 16.dp
+                    )
                     .fillMaxWidth()
                     .wrapContentHeight()
                     .placeholder(
@@ -205,7 +204,8 @@ fun JokeItem(
                         modifier = Modifier
                             .fillMaxWidth()
                             .padding(start = 16.dp, top = 8.dp, end = 16.dp),
-                        imageDatas = joke.joke.imageUrl?.split(",")?.mapNotNull { it.urlAESDecrypt() },
+                        imageDatas = joke.joke.imageUrl?.split(",")
+                            ?.mapNotNull { it.urlAESDecrypt() },
                         isLoading = isLoading,
                     )
                 }
@@ -213,7 +213,9 @@ fun JokeItem(
                     // 视频
                     ShortVideoPlayer(
                         modifier = Modifier
-                            .padding(start = 16.dp, top = 8.dp, end = 16.dp)
+                            .padding(
+                                start = 16.dp, top = 8.dp, end = 16.dp
+                            )
                             .width(density.run {
                                 (joke?.joke?.videoSize
                                     ?.split(",")
@@ -224,10 +226,9 @@ fun JokeItem(
                                 joke?.joke?.videoSize
                                     ?.split(",")
                                     ?.run {
-                                        (getOrNull(0)?.toIntOrNull() ?: 1) /
-                                                (getOrNull(1)?.toIntOrNull() ?: 1).toFloat()
-                                    } ?: 1f
-                            )
+                                        (getOrNull(0)?.toIntOrNull()
+                                            ?: 1) / (getOrNull(1)?.toIntOrNull() ?: 1).toFloat()
+                                    } ?: 1f)
                             .clip(shape = RoundedCornerShape(8.dp))
                             .placeholder(
                                 visible = isLoading,
@@ -239,7 +240,7 @@ fun JokeItem(
                             context = context,
                             url = joke?.joke?.videoUrl.urlAESDecrypt(),
                         ),
-                        thumbUrl = joke?.joke?.thumbUrl?.urlAESDecrypt()
+                        thumbUrl = joke?.joke?.thumbUrl?.urlAESDecrypt(),
                     )
                 }
             }
@@ -257,8 +258,7 @@ fun JokeItem(
             ) {
                 // 点赞数
                 Row(
-                    modifier = Modifier
-                        .weight(1f),
+                    modifier = Modifier.weight(1f),
                     horizontalArrangement = Arrangement.Center,
                     verticalAlignment = Alignment.CenterVertically,
                 ) {
@@ -282,8 +282,7 @@ fun JokeItem(
                 }
                 // 踩的数量
                 Row(
-                    modifier = Modifier
-                        .weight(1f),
+                    modifier = Modifier.weight(1f),
                     horizontalArrangement = Arrangement.Center,
                     verticalAlignment = Alignment.CenterVertically,
                 ) {
@@ -307,8 +306,7 @@ fun JokeItem(
                 }
                 // 评论数
                 Row(
-                    modifier = Modifier
-                        .weight(1f),
+                    modifier = Modifier.weight(1f),
                     horizontalArrangement = Arrangement.Center,
                     verticalAlignment = Alignment.CenterVertically,
                 ) {
@@ -332,8 +330,7 @@ fun JokeItem(
                 }
                 // 分享数
                 Row(
-                    modifier = Modifier
-                        .weight(1f),
+                    modifier = Modifier.weight(1f),
                     horizontalArrangement = Arrangement.Center,
                     verticalAlignment = Alignment.CenterVertically,
                 ) {

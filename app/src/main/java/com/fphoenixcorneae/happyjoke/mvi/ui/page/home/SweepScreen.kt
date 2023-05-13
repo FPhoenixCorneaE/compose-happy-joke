@@ -2,6 +2,7 @@ package com.fphoenixcorneae.happyjoke.mvi.ui.page.home
 
 import android.app.Activity
 import android.view.WindowManager
+import androidx.compose.animation.core.*
 import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
@@ -20,9 +21,11 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.graphics.graphicsLayer
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.text.TextStyle
+import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
@@ -79,8 +82,8 @@ fun SweepScreen(
                     }
                     Column(
                         modifier = Modifier
-                            .align(Alignment.TopEnd)
-                            .padding(top = maxHeight * 0.4f, end = 16.dp),
+                            .align(Alignment.BottomEnd)
+                            .padding(end = 8.dp, bottom = 16.dp),
                         horizontalAlignment = Alignment.CenterHorizontally,
                     ) {
                         // 头像
@@ -122,7 +125,6 @@ fun SweepScreen(
                                 color = Color.White,
                                 fontSize = 14.sp,
                             ),
-                            modifier = Modifier.padding(top = 8.dp),
                         )
                         // 评论
                         AsyncImage(
@@ -138,7 +140,6 @@ fun SweepScreen(
                                 color = Color.White,
                                 fontSize = 14.sp,
                             ),
-                            modifier = Modifier.padding(top = 8.dp),
                         )
                         // 评论
                         AsyncImage(
@@ -154,20 +155,41 @@ fun SweepScreen(
                                 color = Color.White,
                                 fontSize = 14.sp,
                             ),
-                            modifier = Modifier.padding(top = 8.dp),
+                        )
+                        // 旋转头像
+                        val infiniteTransition = rememberInfiniteTransition()
+                        val rotation by infiniteTransition.animateFloat(
+                            initialValue = 0f,
+                            targetValue = 360f,
+                            animationSpec = infiniteRepeatable(
+                                animation = tween(10000, easing = LinearEasing),
+                            )
+                        )
+                        AsyncImage(
+                            model = item?.user?.avatar,
+                            contentDescription = null,
+                            modifier = Modifier
+                                .padding(top = 16.dp)
+                                .size(48.dp)
+                                .clip(CircleShape)
+                                .graphicsLayer(
+                                    rotationZ = rotation,
+                                ),
+                            contentScale = ContentScale.Crop,
                         )
                     }
                     Column(
                         modifier = Modifier
-                            .padding(20.dp)
+                            .padding(start = 16.dp, end = 80.dp, bottom = 16.dp)
                             .align(Alignment.BottomStart)
                     ) {
                         // 昵称
                         Text(
                             text = "@${item?.user?.nickName.orEmpty()}",
                             style = TextStyle(
-                                color = Color.LightGray,
-                                fontSize = 14.sp,
+                                color = Color.White,
+                                fontSize = 16.sp,
+                                fontWeight = FontWeight.Bold,
                             ),
                         )
                         // 视频内容
@@ -175,7 +197,7 @@ fun SweepScreen(
                             text = item?.joke?.content.orEmpty(),
                             style = TextStyle(
                                 color = Color.White,
-                                fontSize = 16.sp,
+                                fontSize = 14.sp,
                             ),
                             modifier = Modifier.padding(top = 8.dp),
                             overflow = TextOverflow.Ellipsis,

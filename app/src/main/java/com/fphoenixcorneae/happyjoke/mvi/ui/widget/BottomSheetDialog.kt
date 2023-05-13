@@ -56,16 +56,14 @@ fun BottomSheetDialog(
             enter = fadeIn(animationSpec = tween(durationMillis = 400, easing = LinearEasing)),
             exit = fadeOut(animationSpec = tween(durationMillis = 400, easing = LinearEasing)),
         ) {
-            Box(
-                modifier = Modifier
-                    .fillMaxSize()
-                    .background(color = background)
-                    .clickableNoRipple {
-                        if (canceledOnTouchOutside) {
-                            onDismiss()
-                        }
+            Box(modifier = Modifier
+                .fillMaxSize()
+                .background(color = background)
+                .clickableNoRipple {
+                    if (canceledOnTouchOutside) {
+                        onDismiss()
                     }
-            )
+                })
         }
         InnerDialog(
             visible = visible,
@@ -101,11 +99,9 @@ private fun BoxScope.InnerDialog(
                 IntOffset(0, offsetYAnimate.roundToInt())
             })
             .draggable(
-                state = rememberDraggableState(
-                    onDelta = {
-                        offsetY = (offsetY + it.toInt()).coerceAtLeast(0f)
-                    }
-                ),
+                state = rememberDraggableState(onDelta = {
+                    offsetY = (offsetY + it.toInt()).coerceAtLeast(0f)
+                }),
                 orientation = Orientation.Vertical,
                 onDragStarted = {
 
@@ -116,21 +112,25 @@ private fun BoxScope.InnerDialog(
                     } else {
                         offsetY = 0f
                     }
-                }
+                },
             ),
         visible = visible,
         enter = slideInVertically(
-            animationSpec = tween(durationMillis = 400, easing = LinearOutSlowInEasing),
+            animationSpec = tween(
+                durationMillis = 400, easing = LinearOutSlowInEasing
+            ),
             initialOffsetY = {
                 2 * it
-            }
+            },
         ),
         exit = slideOutVertically(
-            animationSpec = tween(durationMillis = 400, easing = LinearOutSlowInEasing),
+            animationSpec = tween(
+                durationMillis = 400, easing = LinearOutSlowInEasing
+            ),
             targetOffsetY = {
                 it
-            }
-        )
+            },
+        ),
     ) {
         DisposableEffect(key1 = null) {
             onDispose {

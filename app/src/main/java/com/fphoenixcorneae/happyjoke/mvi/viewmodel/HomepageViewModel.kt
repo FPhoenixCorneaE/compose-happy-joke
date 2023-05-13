@@ -1,6 +1,5 @@
 package com.fphoenixcorneae.happyjoke.mvi.viewmodel
 
-import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import androidx.paging.Pager
 import androidx.paging.PagingConfig
@@ -13,14 +12,16 @@ import com.fphoenixcorneae.happyjoke.mvi.model.BaseReply
 import com.fphoenixcorneae.happyjoke.mvi.model.UnreadMessagesReply
 import com.fphoenixcorneae.happyjoke.mvi.model.paging.*
 import com.fphoenixcorneae.happyjoke.tool.UserManager
-import kotlinx.coroutines.channels.Channel
-import kotlinx.coroutines.flow.*
+import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.asStateFlow
+import kotlinx.coroutines.flow.update
 
 /**
  * @desc：
  * @date：2023/03/21 17:48
  */
-class HomepageViewModel : ViewModel() {
+class HomepageViewModel : BaseViewModel<HomepageAction>() {
 
     /** 首页关注的用户发布的段子列表 */
     val homepageAttentionList = Pager(config = PagingConfig(pageSize = 10)) {
@@ -55,53 +56,46 @@ class HomepageViewModel : ViewModel() {
     private val _homepageUiState = MutableStateFlow(HomepageUiState())
     val homepageUiState = _homepageUiState.asStateFlow()
 
-    private val homepageAction = Channel<HomepageAction>()
-
-    fun dispatchIntent(action: HomepageAction) {
-        launchDefault {
-            homepageAction.send(action)
-        }
-    }
-
-    init {
-        launchDefault {
-            homepageAction.receiveAsFlow().collect {
-                when (it) {
-                    is HomepageAction.UserAttention -> launchIo {
-                        httpRequest {
-                            userService.userAttention(it.status, it.userId)
-                        }.doOnSuccess { reply ->
-                            if (reply?.code == BaseReply.OK) {
-                                // 关注/取消关注成功
-                                _homepageUiState.update {
-                                    it.copy(
-                                        attentionResult = HomepageUiState.AttentionResult(
-                                            state = reply.data?.attentionState,
-                                            time = System.currentTimeMillis()
-                                        )
-                                    )
-                                }
-                            }
+    override fun dealIntent(action: HomepageAction) {
+        when (action) {
+            is HomepageAction.UserAttention -> launchIo {
+                httpRequest {
+                    userService.userAttention(action.status, action.userId)
+                }.doOnSuccess { reply ->
+                    if (reply?.code == BaseReply.OK) {
+                        // 关注/取消关注成功
+                        _homepageUiState.update {
+                            it.copy(
+                                attentionResult = HomepageUiState.AttentionResult(
+                                    state = reply.data?.attentionState,
+                                    time = System.currentTimeMillis()
+                                )
+                            )
                         }
                     }
-                    HomepageAction.GetAttentionRecommend -> launchIo {
-                        httpRequest {
-                            homepageService.homepageAttentionRecommend()
-                        }.doOnSuccess { result ->
-                            _homepageUiState.update {
-                                it.copy(attentionRecommends = result?.data)
-                            }
-                        }
+                }
+            }
+            HomepageAction.GetAttentionRecommend -> launchIo {
+                httpRequest {
+                    homepageService.homepageAttentionRecommend()
+                }.doOnSuccess { result ->
+                    _homepageUiState.update {
+                        it.copy(attentionRecommends = result?.data)
                     }
-                    HomepageAction.GetUnreadMessages -> launchIo {
-                        httpRequest {
-                            messageService.getUnreadMessages()
-                        }.doOnSuccess { result ->
-                            _homepageUiState.update {
-                                it.copy(unreadMessages = result?.data)
-                            }
-                        }
+                }
+            }
+            HomepageAction.GetUnreadMessages -> launchIo {
+                httpRequest {
+                    messageService.getUnreadMessages()
+                }.doOnSuccess { result ->
+                    _homepageUiState.update {
+                        it.copy(unreadMessages = result?.data)
                     }
+                }
+            }
+            HomepageAction.ToggleReportDialog -> launchDefault {
+                _homepageUiState.update {
+                    it.copy(showReportDialog = !it.showReportDialog)
                 }
             }
         }
@@ -117,6 +111,7 @@ data class HomepageUiState(
     val attentionRecommends: List<AttentionRecommendReply.Data>? = null,
     val attentionResult: AttentionResult? = null,
     val unreadMessages: UnreadMessagesReply.Data? = null,
+    val showReportDialog: Boolean = false,
 ) {
 
     fun getMessageMark() = unreadMessages?.run {
@@ -144,4 +139,7 @@ sealed class HomepageAction {
 
     /** 用户关注 */
     data class UserAttention(val status: Int, val userId: String) : HomepageAction()
+
+    /** 显示或隐藏举报弹窗 */
+    object ToggleReportDialog : HomepageAction()
 }

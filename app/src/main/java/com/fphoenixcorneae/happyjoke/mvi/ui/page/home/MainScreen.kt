@@ -42,11 +42,10 @@ fun MainScreen(
     Column(
         modifier = Modifier
             .fillMaxSize()
-            .background(color = MaterialTheme.colorScheme.background)
+            .background(color = MaterialTheme.colorScheme.background),
     ) {
         Box(
-            modifier = Modifier
-                .fillMaxSize()
+            modifier = Modifier.fillMaxSize()
         ) {
             val animatedNavController = rememberAnimatedNavController()
             AnimatedNavHost(
@@ -84,15 +83,18 @@ fun MainScreen(
                 }
             }
             var currentPosition by rememberSaveable { mutableStateOf(0) }
+            var darkMode by rememberSaveable { mutableStateOf(false) }
             BottomNavigationBar(
                 modifier = Modifier.align(alignment = Alignment.BottomCenter),
                 currentPosition = currentPosition,
+                darkMode = darkMode,
                 messageCornerMark = homepageUiState.getMessageMark(),
                 onCenterIconClick = {
                     navController.navigate(Constant.NavRoute.JOKE_POST)
-                }
+                },
             ) {
                 currentPosition = it
+                darkMode = it == 1
                 when (it) {
                     0 -> animatedNavController.navigate(Constant.NavRoute.Main.HOMEPAGE)
                     1 -> animatedNavController.navigate(Constant.NavRoute.Main.SWEEP)
