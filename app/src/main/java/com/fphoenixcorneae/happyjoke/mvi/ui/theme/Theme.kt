@@ -1,7 +1,11 @@
 package com.fphoenixcorneae.happyjoke.mvi.ui.theme
 
 import android.app.Activity
+import android.graphics.ColorMatrix
+import android.graphics.ColorMatrixColorFilter
+import android.graphics.Paint
 import android.os.Build
+import android.view.View
 import androidx.compose.foundation.isSystemInDarkTheme
 import androidx.compose.material3.*
 import androidx.compose.runtime.Composable
@@ -76,4 +80,15 @@ fun ComposeHappyJokeTheme(
             }
         }
     )
+}
+
+/**
+ * app灰白化,特殊节日使用
+ */
+fun Activity.appGraying() {
+    val paint = Paint()
+    val colorMatrix = ColorMatrix()
+    colorMatrix.setSaturation(0f)
+    paint.colorFilter = ColorMatrixColorFilter(colorMatrix)
+    window.decorView.setLayerType(View.LAYER_TYPE_HARDWARE, paint)
 }
