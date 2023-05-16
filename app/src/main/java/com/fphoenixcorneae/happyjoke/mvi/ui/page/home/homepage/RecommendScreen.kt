@@ -3,8 +3,6 @@ package com.fphoenixcorneae.happyjoke.mvi.ui.page.home.homepage
 import androidx.compose.animation.ExperimentalAnimationApi
 import androidx.compose.foundation.layout.*
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.collectAsState
-import androidx.compose.runtime.getValue
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.viewmodel.compose.viewModel
@@ -12,7 +10,6 @@ import androidx.navigation.NavHostController
 import androidx.paging.LoadState
 import androidx.paging.compose.collectAsLazyPagingItems
 import androidx.paging.compose.items
-import com.fphoenixcorneae.happyjoke.mvi.ui.page.dialog.ReportDialog
 import com.fphoenixcorneae.happyjoke.mvi.ui.page.joke.JokeItem
 import com.fphoenixcorneae.happyjoke.mvi.ui.widget.SwipeRefresh
 import com.fphoenixcorneae.happyjoke.mvi.viewmodel.HomepageAction
@@ -31,7 +28,6 @@ fun RecommendScreen(
     viewModel: HomepageViewModel = viewModel(),
 ) {
     val homepageRecommends = viewModel.homepageRecommends.collectAsLazyPagingItems()
-    val homepageUiState by viewModel.homepageUiState.collectAsState()
     SwipeRefresh(
         lazyPagingItems = homepageRecommends, contentPadding = PaddingValues(bottom = 60.dp)
     ) {
@@ -47,14 +43,5 @@ fun RecommendScreen(
             )
         }
     }
-    ReportDialog(
-        show = homepageUiState.showReportDialog,
-        onReportPromulgator = {},
-        onReportContent = {},
-        onUninterested = {},
-        onDismiss = {
-            viewModel.dispatchIntent(HomepageAction.ToggleReportDialog)
-        },
-    )
 }
 

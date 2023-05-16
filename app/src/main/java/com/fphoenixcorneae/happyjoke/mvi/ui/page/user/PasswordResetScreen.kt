@@ -70,9 +70,10 @@ fun PasswordResetScreen(
             navController.navigateUp()
         }
     }
-    SystemUiScaffold {
+    SystemUiScaffold(statusBarsPadding = false) {
         Column(
             modifier = Modifier
+                .statusBarsPadding()
                 .fillMaxSize()
                 .padding(20.dp)
         ) {

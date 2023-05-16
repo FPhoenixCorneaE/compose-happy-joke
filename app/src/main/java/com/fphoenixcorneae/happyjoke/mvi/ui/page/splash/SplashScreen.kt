@@ -37,7 +37,7 @@ import com.google.accompanist.permissions.rememberMultiplePermissionsState
 fun SplashScreen(
     navController: NavHostController = rememberAnimatedNavController(),
 ) {
-    SystemUiScaffold(isFitsSystemWindows = false, statusBarsPadding = false, isDarkFont = false) {
+    SystemUiScaffold(statusBarsPadding = false, isDarkFont = false) {
         // 基于 LocalContext 获取 Context
         val context = LocalContext.current
         Box(modifier = Modifier.fillMaxSize()) {

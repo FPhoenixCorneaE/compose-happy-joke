@@ -14,6 +14,7 @@ import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavHostController
 import com.fphoenixcorneae.happyjoke.const.Constant
 import com.fphoenixcorneae.happyjoke.mvi.ui.page.dialog.AppUpdateDialog
+import com.fphoenixcorneae.happyjoke.mvi.ui.page.dialog.ReportDialog
 import com.fphoenixcorneae.happyjoke.mvi.ui.widget.BottomNavigationBar
 import com.fphoenixcorneae.happyjoke.mvi.viewmodel.HomepageAction
 import com.fphoenixcorneae.happyjoke.mvi.viewmodel.HomepageViewModel
@@ -58,7 +59,7 @@ fun MainScreen(
                     enterTransition = { fadeIn() },
                     exitTransition = { fadeOut() },
                 ) {
-                    HomepageScreen(navController = navController)
+                    HomepageScreen(navController = navController, viewModel = viewModel)
                 }
                 composable(
                     route = Constant.NavRoute.Main.SWEEP,
@@ -112,6 +113,15 @@ fun MainScreen(
             }
         }
     }
+    ReportDialog(
+        show = homepageUiState.showReportDialog,
+        onReportPromulgator = {},
+        onReportContent = {},
+        onUninterested = {},
+        onDismiss = {
+            viewModel.dispatchIntent(HomepageAction.ToggleReportDialog)
+        },
+    )
     // App更新弹窗
     var showAppUpdateDialog by remember { mutableStateOf(false) }
     if (showAppUpdateDialog) {
