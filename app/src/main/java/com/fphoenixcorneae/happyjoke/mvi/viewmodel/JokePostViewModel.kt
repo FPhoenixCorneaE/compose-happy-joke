@@ -11,6 +11,7 @@ import com.fphoenixcorneae.happyjoke.https.jokeService
 import com.fphoenixcorneae.happyjoke.https.request.JokePostParams
 import com.fphoenixcorneae.happyjoke.mvi.model.BaseReply
 import com.google.gson.reflect.TypeToken
+import github.leavesczy.matisse.MediaResource
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
@@ -31,6 +32,67 @@ class JokePostViewModel : BaseViewModel<JokePostAction>() {
         launchDefault {
             _jokePostUiState.update {
                 it.copy(jokePostParams = it.jokePostParams.copy(content = content))
+            }
+        }
+    }
+
+    fun imageUrlsChanged(result: List<MediaResource>) {
+        launchDefault {
+            val imageUrls = StringBuilder()
+            val imageSize = StringBuilder()
+            result.forEachIndexed { index, mediaResource ->
+                imageUrls.append(mediaResource.uri.toString())
+                imageSize.append("${mediaResource.width}x${mediaResource.height}")
+                if (index != result.lastIndex) {
+                    imageUrls.append(",")
+                    imageSize.append(",")
+                }
+            }
+            _jokePostUiState.update {
+                it.copy(
+                    jokePostParams = it.jokePostParams.copy(
+                        imageUrls = imageUrls.toString(),
+                        imageSize = imageSize.toString(),
+                    )
+                )
+            }
+        }
+    }
+
+    fun textType() {
+        launchDefault {
+            _jokePostUiState.update {
+                it.copy(jokePostParams = JokePostParams(content = it.jokePostParams.content, type = "1"))
+            }
+        }
+    }
+
+    fun imageType() {
+        launchDefault {
+            _jokePostUiState.update {
+                it.copy(
+                    jokePostParams = it.jokePostParams.copy(
+                        type = "2",
+                        videoDuration = "",
+                        videoSize = "",
+                        videoThumbnailUrl = "",
+                        videoUrl = "",
+                    )
+                )
+            }
+        }
+    }
+
+    fun videoType() {
+        launchDefault {
+            _jokePostUiState.update {
+                it.copy(
+                    jokePostParams = it.jokePostParams.copy(
+                        type = "3",
+                        imageUrls = "",
+                        imageSize = "",
+                    )
+                )
             }
         }
     }
@@ -70,6 +132,18 @@ data class JokePostUiState(
     fun isContentBlank() = jokePostParams.content.isBlank()
 
     fun isContentExceedLimit() = jokePostParams.content.length > 300
+
+    fun mediaResource() = when (jokePostParams.type) {
+        "2" -> {
+            jokePostParams.imageUrls?.split(",") ?: mutableListOf()
+        }
+        "3" -> {
+            mutableListOf(jokePostParams.videoThumbnailUrl)
+        }
+        else -> {
+            mutableListOf()
+        }
+    }
 }
 
 /**
