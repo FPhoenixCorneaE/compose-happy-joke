@@ -2,6 +2,7 @@ package com.fphoenixcorneae.happyjoke.https.service
 
 import com.fphoenixcorneae.happyjoke.mvi.model.*
 import retrofit2.http.Field
+import retrofit2.http.FieldMap
 import retrofit2.http.FormUrlEncoded
 import retrofit2.http.POST
 
@@ -10,6 +11,19 @@ import retrofit2.http.POST
  * @date：2023/05/05 17:13
  */
 interface JokeService {
+    /**
+     * 发布段子
+     * 使用 @JvmSuppressWildcards 避免出现异常：
+     * lang.IllegalArgumentException:
+     * Parameter type must not include a type variable or wildcard: java.util.Map<java.lang.String, ?>
+     */
+    @FormUrlEncoded
+    @POST("/jokes/jokes/post")
+    @JvmSuppressWildcards
+    suspend fun postJoke(
+        @FieldMap params: Map<String, Any?>?,
+    ): BaseReply<Any>?
+
     /**
      * 获取指定用户图文段子列表
      * @param targetUserId 目标用户id
