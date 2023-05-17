@@ -77,12 +77,9 @@ fun MeScreen(
                     },
             ) {
                 AsyncImage(
-                    model = ImageRequest.Builder(context)
-                        .data(meUiState.userInfo?.user?.avatar)
-                        .error(R.mipmap.ic_avatar_default)
-                        .crossfade(true)
-                        .transformations(CircleCropTransformation())
-                        .build(),
+                    model = ImageRequest.Builder(context).data(meUiState.userInfo?.user?.avatar)
+                        .error(R.mipmap.ic_avatar_default).crossfade(true)
+                        .transformations(CircleCropTransformation()).build(),
                     contentDescription = null,
                     modifier = Modifier
                         .size(60.dp)
@@ -184,7 +181,11 @@ fun MeScreen(
                             contentDescription = null,
                             modifier = Modifier.size(36.dp),
                         )
-                        Text(text = stringResource(id = R.string.joke), color = Black30, fontSize = 12.sp)
+                        Text(
+                            text = stringResource(id = R.string.joke),
+                            color = Black30,
+                            fontSize = 12.sp
+                        )
                     }
                     Column(verticalArrangement = Arrangement.spacedBy(6.dp),
                         horizontalAlignment = Alignment.CenterHorizontally,
@@ -194,7 +195,11 @@ fun MeScreen(
                             contentDescription = null,
                             modifier = Modifier.size(36.dp),
                         )
-                        Text(text = stringResource(id = R.string.comment), color = Black30, fontSize = 12.sp)
+                        Text(
+                            text = stringResource(id = R.string.comment),
+                            color = Black30,
+                            fontSize = 12.sp
+                        )
                     }
                     Column(verticalArrangement = Arrangement.spacedBy(6.dp),
                         horizontalAlignment = Alignment.CenterHorizontally,
@@ -204,7 +209,11 @@ fun MeScreen(
                             contentDescription = null,
                             modifier = Modifier.size(36.dp),
                         )
-                        Text(text = stringResource(id = R.string.praised), color = Black30, fontSize = 12.sp)
+                        Text(
+                            text = stringResource(id = R.string.praised),
+                            color = Black30,
+                            fontSize = 12.sp
+                        )
                     }
                     Column(verticalArrangement = Arrangement.spacedBy(6.dp),
                         horizontalAlignment = Alignment.CenterHorizontally,
@@ -214,7 +223,11 @@ fun MeScreen(
                             contentDescription = null,
                             modifier = Modifier.size(36.dp),
                         )
-                        Text(text = stringResource(id = R.string.collect), color = Black30, fontSize = 12.sp)
+                        Text(
+                            text = stringResource(id = R.string.collect),
+                            color = Black30,
+                            fontSize = 12.sp
+                        )
                     }
                 }
             }
@@ -236,7 +249,9 @@ fun MeScreen(
                         shape = RoundedCornerShape(8.dp),
                     )
             ) {
-                MeItem(iconResId = R.mipmap.ic_me_kefu, content = stringResource(id = R.string.kefu))
+                MeItem(
+                    iconResId = R.mipmap.ic_me_kefu, content = stringResource(id = R.string.kefu)
+                )
             }
             Column(
                 modifier = Modifier
@@ -251,13 +266,21 @@ fun MeScreen(
                     iconResId = R.mipmap.ic_me_auditing,
                     content = stringResource(id = R.string.auditing),
                 ) {
-                    navController.navigate("${Constant.NavRoute.JOKE_AUDIT}/0")
+                    if (isLoggedIn) {
+                        navController.navigate("${Constant.NavRoute.JOKE_AUDIT}/0")
+                    } else {
+                        navController.navigate(Constant.NavRoute.LOGIN)
+                    }
                 }
                 MeItem(
                     iconResId = R.mipmap.ic_me_audit_failure,
                     content = stringResource(id = R.string.audit_failure),
                 ) {
-                    navController.navigate("${Constant.NavRoute.JOKE_AUDIT}/1")
+                    if (isLoggedIn) {
+                        navController.navigate("${Constant.NavRoute.JOKE_AUDIT}/1")
+                    } else {
+                        navController.navigate(Constant.NavRoute.LOGIN)
+                    }
                 }
             }
             Column(
@@ -269,10 +292,22 @@ fun MeScreen(
                         shape = RoundedCornerShape(8.dp),
                     )
             ) {
-                MeItem(iconResId = R.mipmap.ic_me_share, content = stringResource(id = R.string.share_with_friends))
-                MeItem(iconResId = R.mipmap.ic_me_feedback, content = stringResource(id = R.string.advice_feedback))
-                MeItem(iconResId = R.mipmap.ic_me_praise, content = stringResource(id = R.string.give_a_good_opinion))
-                MeItem(iconResId = R.mipmap.ic_me_setting, content = stringResource(id = R.string.setting)) {
+                MeItem(
+                    iconResId = R.mipmap.ic_me_share,
+                    content = stringResource(id = R.string.share_with_friends)
+                )
+                MeItem(
+                    iconResId = R.mipmap.ic_me_feedback,
+                    content = stringResource(id = R.string.advice_feedback)
+                )
+                MeItem(
+                    iconResId = R.mipmap.ic_me_praise,
+                    content = stringResource(id = R.string.give_a_good_opinion)
+                )
+                MeItem(
+                    iconResId = R.mipmap.ic_me_setting,
+                    content = stringResource(id = R.string.setting)
+                ) {
                     navController.navigate(Constant.NavRoute.SETTINGS)
                 }
             }
