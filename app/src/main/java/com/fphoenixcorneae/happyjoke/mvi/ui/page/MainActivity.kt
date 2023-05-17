@@ -12,6 +12,7 @@ import androidx.navigation.NavType
 import androidx.navigation.navArgument
 import com.fphoenixcorneae.happyjoke.const.Constant
 import com.fphoenixcorneae.happyjoke.mvi.ui.page.home.MainScreen
+import com.fphoenixcorneae.happyjoke.mvi.ui.page.joke.JokeAuditScreen
 import com.fphoenixcorneae.happyjoke.mvi.ui.page.joke.JokeDetailsScreen
 import com.fphoenixcorneae.happyjoke.mvi.ui.page.joke.JokePostScreen
 import com.fphoenixcorneae.happyjoke.mvi.ui.page.settings.SettingsScreen
@@ -50,7 +51,7 @@ class MainActivity : ComponentActivity() {
                             SplashScreen(navController = navController)
                         }
                         composable(
-                            Constant.NavRoute.MAIN,
+                            route = Constant.NavRoute.MAIN,
                             enterTransition = { fadeIn() },
                             exitTransition = { fadeOut() },
                             popEnterTransition = { fadeIn() },
@@ -59,7 +60,7 @@ class MainActivity : ComponentActivity() {
                             MainScreen(navController = navController)
                         }
                         composable(
-                            Constant.NavRoute.JOKE_POST,
+                            route = Constant.NavRoute.JOKE_POST,
                             enterTransition = { slideInVertically(initialOffsetY = { it }) + fadeIn() },
                             exitTransition = { slideOutVertically(targetOffsetY = { it }) + fadeOut() },
                             popEnterTransition = { slideInVertically(initialOffsetY = { it }) + fadeIn() },
@@ -68,7 +69,7 @@ class MainActivity : ComponentActivity() {
                             JokePostScreen(navController = navController)
                         }
                         composable(
-                            Constant.NavRoute.LOGIN,
+                            route = Constant.NavRoute.LOGIN,
                             enterTransition = { slideInVertically(initialOffsetY = { it }) + fadeIn() },
                             exitTransition = { slideOutVertically(targetOffsetY = { it }) + fadeOut() },
                             popEnterTransition = { slideInVertically(initialOffsetY = { it }) + fadeIn() },
@@ -77,7 +78,7 @@ class MainActivity : ComponentActivity() {
                             LoginScreen(navController = navController)
                         }
                         composable(
-                            Constant.NavRoute.PASSWORD_RESET,
+                            route = Constant.NavRoute.PASSWORD_RESET,
                             enterTransition = { slideInVertically(initialOffsetY = { it }) + fadeIn() },
                             exitTransition = { slideOutVertically(targetOffsetY = { it }) + fadeOut() },
                             popEnterTransition = { slideInVertically(initialOffsetY = { it }) + fadeIn() },
@@ -86,7 +87,7 @@ class MainActivity : ComponentActivity() {
                             PasswordResetScreen(navController = navController)
                         }
                         composable(
-                            Constant.NavRoute.SETTINGS,
+                            route = Constant.NavRoute.SETTINGS,
                             enterTransition = { fadeIn() },
                             exitTransition = { fadeOut() },
                             popEnterTransition = { fadeIn() },
@@ -95,7 +96,7 @@ class MainActivity : ComponentActivity() {
                             SettingsScreen(navController = navController)
                         }
                         composable(
-                            "${Constant.NavRoute.USER_DETAILS}/{${Constant.Key.TARGET_USER_ID}}",
+                            route = "${Constant.NavRoute.USER_DETAILS}/{${Constant.Key.TARGET_USER_ID}}",
                             arguments = listOf(navArgument(Constant.Key.TARGET_USER_ID) { type = NavType.StringType }),
                             enterTransition = { slideInHorizontally(initialOffsetX = { it }) + fadeIn() },
                             exitTransition = { slideOutHorizontally(targetOffsetX = { it }) + fadeOut() },
@@ -109,7 +110,7 @@ class MainActivity : ComponentActivity() {
                             )
                         }
                         composable(
-                            "${Constant.NavRoute.JOKE_DETAILS}/{${Constant.Key.TARGET_JOKE_ID}}",
+                            route = "${Constant.NavRoute.JOKE_DETAILS}/{${Constant.Key.TARGET_JOKE_ID}}",
                             arguments = listOf(navArgument(Constant.Key.TARGET_JOKE_ID) { type = NavType.StringType }),
                             enterTransition = { slideInHorizontally(initialOffsetX = { it }) + fadeIn() },
                             exitTransition = { slideOutHorizontally(targetOffsetX = { it }) + fadeOut() },
@@ -123,7 +124,23 @@ class MainActivity : ComponentActivity() {
                             )
                         }
                         composable(
-                            "${Constant.NavRoute.WEB}?${Constant.Key.WEB_URL}={${Constant.Key.WEB_URL}}",
+                            route = "${Constant.NavRoute.JOKE_AUDIT}/{${Constant.Key.JOKE_AUDIT_STATUS}}",
+                            arguments = listOf(navArgument(Constant.Key.JOKE_AUDIT_STATUS) {
+                                type = NavType.StringType
+                            }),
+                            enterTransition = { slideInHorizontally(initialOffsetX = { it }) + fadeIn() },
+                            exitTransition = { slideOutHorizontally(targetOffsetX = { it }) + fadeOut() },
+                            popEnterTransition = { slideInHorizontally(initialOffsetX = { it }) + fadeIn() },
+                            popExitTransition = { slideOutHorizontally(targetOffsetX = { it }) + fadeOut() },
+                        ) { backStackEntry ->
+                            JokeAuditScreen(
+                                navController = navController,
+                                status = backStackEntry.arguments?.getString(Constant.Key.JOKE_AUDIT_STATUS)
+                                    .orEmpty(),
+                            )
+                        }
+                        composable(
+                            route = "${Constant.NavRoute.WEB}?${Constant.Key.WEB_URL}={${Constant.Key.WEB_URL}}",
                             arguments = listOf(navArgument(Constant.Key.WEB_URL) { type = NavType.StringType }),
                             enterTransition = { slideInHorizontally(initialOffsetX = { it }) + fadeIn() },
                             exitTransition = { slideOutHorizontally(targetOffsetX = { it }) + fadeOut() },

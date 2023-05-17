@@ -184,7 +184,7 @@ fun MeScreen(
                             contentDescription = null,
                             modifier = Modifier.size(36.dp),
                         )
-                        Text(text = "帖子", color = Black30, fontSize = 12.sp)
+                        Text(text = stringResource(id = R.string.joke), color = Black30, fontSize = 12.sp)
                     }
                     Column(verticalArrangement = Arrangement.spacedBy(6.dp),
                         horizontalAlignment = Alignment.CenterHorizontally,
@@ -194,7 +194,7 @@ fun MeScreen(
                             contentDescription = null,
                             modifier = Modifier.size(36.dp),
                         )
-                        Text(text = "评论", color = Black30, fontSize = 12.sp)
+                        Text(text = stringResource(id = R.string.comment), color = Black30, fontSize = 12.sp)
                     }
                     Column(verticalArrangement = Arrangement.spacedBy(6.dp),
                         horizontalAlignment = Alignment.CenterHorizontally,
@@ -204,7 +204,7 @@ fun MeScreen(
                             contentDescription = null,
                             modifier = Modifier.size(36.dp),
                         )
-                        Text(text = "赞过", color = Black30, fontSize = 12.sp)
+                        Text(text = stringResource(id = R.string.praised), color = Black30, fontSize = 12.sp)
                     }
                     Column(verticalArrangement = Arrangement.spacedBy(6.dp),
                         horizontalAlignment = Alignment.CenterHorizontally,
@@ -214,7 +214,7 @@ fun MeScreen(
                             contentDescription = null,
                             modifier = Modifier.size(36.dp),
                         )
-                        Text(text = "收藏", color = Black30, fontSize = 12.sp)
+                        Text(text = stringResource(id = R.string.collect), color = Black30, fontSize = 12.sp)
                     }
                 }
             }
@@ -236,7 +236,7 @@ fun MeScreen(
                         shape = RoundedCornerShape(8.dp),
                     )
             ) {
-                MeItem(iconResId = R.mipmap.ic_me_kefu, content = "我的客服")
+                MeItem(iconResId = R.mipmap.ic_me_kefu, content = stringResource(id = R.string.kefu))
             }
             Column(
                 modifier = Modifier
@@ -247,9 +247,18 @@ fun MeScreen(
                         shape = RoundedCornerShape(8.dp),
                     )
             ) {
-                MeItem(iconResId = R.mipmap.ic_me_auditing, content = "审核中")
-                MeItem(iconResId = R.mipmap.ic_me_audit_failure, content = "审核失败")
-                MeItem(iconResId = R.mipmap.ic_me_audit_pending, content = "待审核")
+                MeItem(
+                    iconResId = R.mipmap.ic_me_auditing,
+                    content = stringResource(id = R.string.auditing),
+                ) {
+                    navController.navigate("${Constant.NavRoute.JOKE_AUDIT}/0")
+                }
+                MeItem(
+                    iconResId = R.mipmap.ic_me_audit_failure,
+                    content = stringResource(id = R.string.audit_failure),
+                ) {
+                    navController.navigate("${Constant.NavRoute.JOKE_AUDIT}/1")
+                }
             }
             Column(
                 modifier = Modifier
@@ -260,10 +269,10 @@ fun MeScreen(
                         shape = RoundedCornerShape(8.dp),
                     )
             ) {
-                MeItem(iconResId = R.mipmap.ic_me_share, content = "分享给朋友")
-                MeItem(iconResId = R.mipmap.ic_me_feedback, content = "意见反馈")
-                MeItem(iconResId = R.mipmap.ic_me_praise, content = "赏个好评")
-                MeItem(iconResId = R.mipmap.ic_me_setting, content = "设置") {
+                MeItem(iconResId = R.mipmap.ic_me_share, content = stringResource(id = R.string.share_with_friends))
+                MeItem(iconResId = R.mipmap.ic_me_feedback, content = stringResource(id = R.string.advice_feedback))
+                MeItem(iconResId = R.mipmap.ic_me_praise, content = stringResource(id = R.string.give_a_good_opinion))
+                MeItem(iconResId = R.mipmap.ic_me_setting, content = stringResource(id = R.string.setting)) {
                     navController.navigate(Constant.NavRoute.SETTINGS)
                 }
             }

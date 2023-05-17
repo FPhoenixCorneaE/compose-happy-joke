@@ -64,6 +64,14 @@ fun JokePostScreen(
                 rightText = stringResource(R.string.post),
                 onRightTextClick = {
                     coroutineScope.launch {
+                        if (jokePostUiState.isContentBlank()) {
+                            "帖子内容不能为空！".toast()
+                            return@launch
+                        }
+                        if (jokePostUiState.isContentExceedLimit()) {
+                            "帖子内容长度超出限制！".toast()
+                            return@launch
+                        }
                         viewModel.dispatchIntent(JokePostAction.PostJoke)
                     }
                 }

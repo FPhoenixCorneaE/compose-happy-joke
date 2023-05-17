@@ -66,7 +66,11 @@ data class JokePostUiState(
     val jokePostParams: JokePostParams = JokePostParams(content = "", type = "1"),
     val postResultMsg: String? = null,
     val postSuccess: Boolean = false,
-)
+) {
+    fun isContentBlank() = jokePostParams.content.isBlank()
+
+    fun isContentExceedLimit() = jokePostParams.content.length > 300
+}
 
 /**
  * @desc：

@@ -18,6 +18,7 @@ object Constant {
         const val TARGET_USER_ID = "target_user_id"
         const val TARGET_JOKE_ID = "target_joke_id"
         const val WEB_URL = "web_url"
+        const val JOKE_AUDIT_STATUS = "joke_audit_status"
     }
 
     /**
@@ -43,6 +44,7 @@ object Constant {
         const val SETTINGS = "settings"
         const val USER_DETAILS = "user_details"
         const val JOKE_DETAILS = "joke_details"
+        const val JOKE_AUDIT = "joke_audit"
         const val WEB = "web"
 
         /**

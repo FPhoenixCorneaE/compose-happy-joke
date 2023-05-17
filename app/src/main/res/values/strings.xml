@@ -64,4 +64,13 @@
     <string name="production">作品</string>
     <string name="post_details">帖子详情</string>
     <string name="thumbs_up">点赞</string>
+    <string name="joke">帖子</string>
+    <string name="praised">赞过</string>
+    <string name="kefu">我的客服</string>
+    <string name="auditing">审核中</string>
+    <string name="audit_failure">审核失败</string>
+    <string name="share_with_friends">分享给朋友</string>
+    <string name="advice_feedback">意见反馈</string>
+    <string name="give_a_good_opinion">赏个好评</string>
+    <string name="setting">设置</string>
 </resources>

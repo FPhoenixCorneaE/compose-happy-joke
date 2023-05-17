@@ -122,4 +122,15 @@ interface JokeService {
         @Field("id") id: String,
         @Field("status") status: Boolean,
     ): BaseReply<Any>?
+
+    /**
+     * 获取审核列表
+     * @param status 状态 0 审核中 1 审核失败
+     */
+    @FormUrlEncoded
+    @POST("/jokes/jokes/audit/list")
+    suspend fun getAuditList(
+        @Field("status") status: String,
+        @Field("page") page: Int,
+    ): JokeListReply?
 }
