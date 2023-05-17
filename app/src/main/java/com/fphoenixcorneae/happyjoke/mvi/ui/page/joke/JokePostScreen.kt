@@ -1,5 +1,6 @@
 package com.fphoenixcorneae.happyjoke.mvi.ui.page.joke
 
+import androidx.activity.compose.rememberLauncherForActivityResult
 import androidx.compose.animation.ExperimentalAnimationApi
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.text.BasicTextField
@@ -20,11 +21,15 @@ import androidx.constraintlayout.compose.ConstraintLayout
 import androidx.navigation.NavHostController
 import coil.compose.AsyncImage
 import com.fphoenixcorneae.happyjoke.R
+import com.fphoenixcorneae.happyjoke.ext.appPackageName
 import com.fphoenixcorneae.happyjoke.ext.clickableNoRipple
 import com.fphoenixcorneae.happyjoke.mvi.ui.theme.Grey60
 import com.fphoenixcorneae.happyjoke.mvi.ui.widget.SystemUiScaffold
 import com.fphoenixcorneae.happyjoke.mvi.ui.widget.Toolbar
 import com.google.accompanist.navigation.animation.rememberAnimatedNavController
+import github.leavesczy.matisse.Matisse
+import github.leavesczy.matisse.MatisseContract
+import github.leavesczy.matisse.SmartCaptureStrategy
 
 /**
  * @desc：发布段子
@@ -42,6 +47,9 @@ fun JokePostScreen(
                 navController = navController,
                 titleText = stringResource(R.string.joke_post),
                 rightText = stringResource(R.string.post),
+                onRightTextClick = {
+
+                }
             )
             var content by rememberSaveable { mutableStateOf("") }
             val contentMaxLengths = 300
@@ -69,6 +77,16 @@ fun JokePostScreen(
                     .fillMaxWidth()
                     .wrapContentHeight()
             ) {
+                // 图片选择
+                val imagePickerLauncher = rememberLauncherForActivityResult(contract = MatisseContract()) { result ->
+                    if (result.isNotEmpty()) {
+                        val mediaResource = result[0]
+                        val imageUri = mediaResource.uri
+                        val imagePath = mediaResource.path
+                        val imageWidth = mediaResource.width
+                        val imageHeight = mediaResource.height
+                    }
+                }
                 val (pic, video, contentLimit) = createRefs()
                 AsyncImage(
                     model = R.mipmap.ic_pic,
@@ -81,7 +99,13 @@ fun JokePostScreen(
                             bottom.linkTo(parent.bottom)
                         }
                         .clickableNoRipple {
-
+                            imagePickerLauncher.launch(
+                                Matisse(
+                                    maxSelectable = 9,
+                                    supportedMimeTypes = Matisse.ofImage(hasGif = true),
+                                    captureStrategy = SmartCaptureStrategy("$appPackageName.image-picker"),
+                                )
+                            )
                         },
                 )
                 AsyncImage(

@@ -101,6 +101,9 @@ dependencies {
     // 折叠工具栏
     implementation("me.onebone:toolbar-compose:2.3.5")
 
+    // 图片选择器
+    implementation "com.github.leavesCZY:Matisse:0.0.13"
+
     testImplementation 'junit:junit:4.13.2'
     androidTestImplementation 'androidx.test.ext:junit:1.1.5'
     androidTestImplementation 'androidx.test.espresso:espresso-core:3.5.1'
