@@ -62,7 +62,7 @@ fun SplashScreen(
                         navController.navigate(Constant.NavRoute.MAIN)
                     }
                 } else {
-                    PrivacyPolicyDialog()
+                    PrivacyPolicyDialog(navController = navController)
                 }
             }
         }

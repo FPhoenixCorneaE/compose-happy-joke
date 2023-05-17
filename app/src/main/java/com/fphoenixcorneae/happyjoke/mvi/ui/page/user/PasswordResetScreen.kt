@@ -211,11 +211,11 @@ fun PasswordResetScreen(
                     when (it) {
                         in 13..18 -> {
                             // 点击了《隐私政策》
-                            context.startActivity(Intent(Intent.ACTION_VIEW, Uri.parse(Constant.WEB_PRIVACY)))
+                            navController.navigate("${Constant.NavRoute.WEB}?${Constant.Key.WEB_URL}=${Constant.WEB_PRIVACY}")
                         }
                         in 20..27 -> {
                             // 点击了《用户服务协议》
-                            context.startActivity(Intent(Intent.ACTION_VIEW, Uri.parse(Constant.WEB_PROTO)))
+                            navController.navigate("${Constant.NavRoute.WEB}?${Constant.Key.WEB_URL}=${Constant.WEB_PROTO}")
                         }
                     }
                 }

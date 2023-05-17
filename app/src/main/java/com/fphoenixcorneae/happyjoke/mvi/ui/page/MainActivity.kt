@@ -19,6 +19,7 @@ import com.fphoenixcorneae.happyjoke.mvi.ui.page.splash.SplashScreen
 import com.fphoenixcorneae.happyjoke.mvi.ui.page.user.LoginScreen
 import com.fphoenixcorneae.happyjoke.mvi.ui.page.user.PasswordResetScreen
 import com.fphoenixcorneae.happyjoke.mvi.ui.page.user.UserDetailsScreen
+import com.fphoenixcorneae.happyjoke.mvi.ui.page.web.WebScreen
 import com.fphoenixcorneae.happyjoke.mvi.ui.theme.ComposeHappyJokeTheme
 import com.google.accompanist.navigation.animation.AnimatedNavHost
 import com.google.accompanist.navigation.animation.composable
@@ -118,6 +119,20 @@ class MainActivity : ComponentActivity() {
                             JokeDetailsScreen(
                                 navController = navController,
                                 targetJokeId = backStackEntry.arguments?.getString(Constant.Key.TARGET_JOKE_ID)
+                                    .orEmpty(),
+                            )
+                        }
+                        composable(
+                            "${Constant.NavRoute.WEB}?${Constant.Key.WEB_URL}={${Constant.Key.WEB_URL}}",
+                            arguments = listOf(navArgument(Constant.Key.WEB_URL) { type = NavType.StringType }),
+                            enterTransition = { slideInHorizontally(initialOffsetX = { it }) + fadeIn() },
+                            exitTransition = { slideOutHorizontally(targetOffsetX = { it }) + fadeOut() },
+                            popEnterTransition = { slideInHorizontally(initialOffsetX = { it }) + fadeIn() },
+                            popExitTransition = { slideOutHorizontally(targetOffsetX = { it }) + fadeOut() },
+                        ) { backStackEntry ->
+                            WebScreen(
+                                navController = navController,
+                                url = backStackEntry.arguments?.getString(Constant.Key.WEB_URL)
                                     .orEmpty(),
                             )
                         }

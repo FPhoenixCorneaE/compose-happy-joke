@@ -2,6 +2,7 @@ package com.fphoenixcorneae.happyjoke.mvi.ui.page.dialog
 
 import android.content.Intent
 import android.net.Uri
+import androidx.compose.animation.ExperimentalAnimationApi
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.shape.RoundedCornerShape
@@ -26,10 +27,12 @@ import androidx.compose.ui.text.withStyle
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.navigation.NavHostController
 import com.fphoenixcorneae.happyjoke.R
 import com.fphoenixcorneae.happyjoke.const.Constant
 import com.fphoenixcorneae.happyjoke.ext.clickableNoRipple
 import com.fphoenixcorneae.happyjoke.ext.saveDS
+import com.google.accompanist.navigation.animation.rememberAnimatedNavController
 import kotlinx.coroutines.launch
 import kotlin.system.exitProcess
 
@@ -37,9 +40,12 @@ import kotlin.system.exitProcess
  * @desc：隐私政策弹窗
  * @date：2023/03/09 15:33
  */
+@OptIn(ExperimentalAnimationApi::class)
 @Preview
 @Composable
-fun PrivacyPolicyDialog() {
+fun PrivacyPolicyDialog(
+    navController: NavHostController = rememberAnimatedNavController(),
+) {
     val context = LocalContext.current
     val coroutineScope = rememberCoroutineScope()
     Box(

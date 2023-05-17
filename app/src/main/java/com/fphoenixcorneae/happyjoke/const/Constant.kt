@@ -17,6 +17,7 @@ object Constant {
     object Key {
         const val TARGET_USER_ID = "target_user_id"
         const val TARGET_JOKE_ID = "target_joke_id"
+        const val WEB_URL = "web_url"
     }
 
     /**
@@ -42,6 +43,7 @@ object Constant {
         const val SETTINGS = "settings"
         const val USER_DETAILS = "user_details"
         const val JOKE_DETAILS = "joke_details"
+        const val WEB = "web"
 
         /**
          * @desc：主页
