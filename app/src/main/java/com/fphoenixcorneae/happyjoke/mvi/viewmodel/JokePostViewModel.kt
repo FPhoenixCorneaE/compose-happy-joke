@@ -38,23 +38,43 @@ class JokePostViewModel : BaseViewModel<JokePostAction>() {
 
     fun imageUrlsChanged(result: List<MediaResource>) {
         launchDefault {
-            val imageUrls = StringBuilder()
-            val imageSize = StringBuilder()
-            result.forEachIndexed { index, mediaResource ->
-                imageUrls.append(mediaResource.uri.toString())
-                imageSize.append("${mediaResource.width}x${mediaResource.height}")
-                if (index != result.lastIndex) {
-                    imageUrls.append(",")
-                    imageSize.append(",")
-                }
-            }
             _jokePostUiState.update {
+                val imageUrls = it.imageUrls()
+                val imageSize = it.imageSize()
+                result.forEach { mediaResource ->
+                    imageUrls.add(mediaResource.uri.toString())
+                    imageSize.add("${mediaResource.width}x${mediaResource.height}")
+                }
                 it.copy(
                     jokePostParams = it.jokePostParams.copy(
-                        imageUrls = imageUrls.toString(),
-                        imageSize = imageSize.toString(),
+                        imageUrls = imageUrls.joinToString(","),
+                        imageSize = imageSize.joinToString(","),
                     )
                 )
+            }
+        }
+    }
+
+    fun removeMediaResource(index: Int) {
+        launchDefault {
+            if (
+                (_jokePostUiState.first().jokePostParams.type == "2" && _jokePostUiState.first().imageUrls().size == 1)
+                || _jokePostUiState.first().jokePostParams.type == "3"
+            ) {
+                textType()
+            } else {
+                _jokePostUiState.update {
+                    val imageUrls = it.imageUrls()
+                    val imageSize = it.imageSize()
+                    imageUrls.removeAt(index)
+                    imageSize.removeAt(index)
+                    it.copy(
+                        jokePostParams = it.jokePostParams.copy(
+                            imageUrls = imageUrls.joinToString(","),
+                            imageSize = imageSize.joinToString(","),
+                        )
+                    )
+                }
             }
         }
     }
@@ -132,6 +152,12 @@ data class JokePostUiState(
     fun isContentBlank() = jokePostParams.content.isBlank()
 
     fun isContentExceedLimit() = jokePostParams.content.length > 300
+
+    fun imageUrls() = jokePostParams.imageUrls.orEmpty().split(",")
+        .filter { it.isNotBlank() }.toMutableList()
+
+    fun imageSize() = jokePostParams.imageSize.orEmpty().split(",")
+        .filter { it.isNotBlank() }.toMutableList()
 
     fun mediaResource() = when (jokePostParams.type) {
         "2" -> {

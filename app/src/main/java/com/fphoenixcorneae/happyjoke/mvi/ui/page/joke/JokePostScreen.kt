@@ -4,19 +4,24 @@ import android.graphics.drawable.GradientDrawable
 import android.os.Build
 import androidx.activity.compose.rememberLauncherForActivityResult
 import androidx.compose.animation.ExperimentalAnimationApi
+import androidx.compose.foundation.Image
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.grid.GridCells
 import androidx.compose.foundation.lazy.grid.LazyVerticalGrid
 import androidx.compose.foundation.lazy.grid.items
+import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.text.BasicTextField
 import androidx.compose.material3.Text
 import androidx.compose.runtime.*
+import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.toArgb
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.LocalDensity
+import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.tooling.preview.Preview
@@ -118,8 +123,6 @@ fun JokePostScreen(
                     if (result.isNotEmpty()) {
                         viewModel.imageType()
                         viewModel.imageUrlsChanged(result)
-                    } else {
-                        viewModel.textType()
                     }
                 }
                 val (pic, video, contentLimit) = createRefs()
@@ -136,7 +139,7 @@ fun JokePostScreen(
                         .clickableNoRipple {
                             imagePickerLauncher.launch(
                                 Matisse(
-                                    maxSelectable = 9,
+                                    maxSelectable = 9 - jokePostUiState.imageUrls().size,
                                     supportedMimeTypes = Matisse.ofImage(hasGif = true),
                                     captureStrategy = SmartCaptureStrategy("$appPackageName.image-picker"),
                                 )
@@ -168,38 +171,59 @@ fun JokePostScreen(
             }
             LazyVerticalGrid(
                 columns = GridCells.Fixed(3),
-                contentPadding = PaddingValues(20.dp),
-                horizontalArrangement = Arrangement.spacedBy(8.dp),
-                verticalArrangement = Arrangement.spacedBy(8.dp),
+                contentPadding = PaddingValues(16.dp),
+                horizontalArrangement = Arrangement.spacedBy(4.dp),
+                verticalArrangement = Arrangement.spacedBy(4.dp),
             ) {
                 items(items = jokePostUiState.mediaResource()) {
-                    AsyncImage(
-                        model = ImageRequest.Builder(LocalContext.current)
-                            .data(it)
-                            .error(GradientDrawable().apply {
-                                shape = GradientDrawable.RECTANGLE
-                                cornerRadius = LocalDensity.current.run { 8.dp.toPx() }
-                                setColor(Color.Gray.toArgb())
-                            })
-                            .crossfade(true)
-                            .build(),
-                        contentDescription = null,
-                        imageLoader = ImageLoader.Builder(LocalContext.current)
-                            .components {
-                                if (Build.VERSION.SDK_INT >= 28) {
-                                    add(ImageDecoderDecoder.Factory())
-                                } else {
-                                    add(GifDecoder.Factory())
-                                }
-                                add(SvgDecoder.Factory())
-                                add(VideoFrameDecoder.Factory())
-                            }
-                            .build(),
-                        contentScale = ContentScale.Crop,
+                    Box(
                         modifier = Modifier
                             .fillMaxWidth()
                             .aspectRatio(ratio = 1f),
-                    )
+                    ) {
+                        AsyncImage(
+                            model = ImageRequest.Builder(LocalContext.current)
+                                .data(it)
+                                .error(GradientDrawable().apply {
+                                    shape = GradientDrawable.RECTANGLE
+                                    cornerRadius = LocalDensity.current.run { 8.dp.toPx() }
+                                    setColor(Color.Gray.toArgb())
+                                })
+                                .crossfade(true)
+                                .build(),
+                            contentDescription = null,
+                            imageLoader = ImageLoader.Builder(LocalContext.current)
+                                .components {
+                                    if (Build.VERSION.SDK_INT >= 28) {
+                                        add(ImageDecoderDecoder.Factory())
+                                    } else {
+                                        add(GifDecoder.Factory())
+                                    }
+                                    add(SvgDecoder.Factory())
+                                    add(VideoFrameDecoder.Factory())
+                                }
+                                .build(),
+                            contentScale = ContentScale.Crop,
+                            modifier = Modifier
+                                .padding(4.dp)
+                                .fillMaxSize()
+                                .clip(RoundedCornerShape(8.dp)),
+                        )
+                        Image(
+                            painter = painterResource(id = R.mipmap.ic_remove),
+                            contentDescription = null,
+                            modifier = Modifier
+                                .size(24.dp)
+                                .align(alignment = Alignment.TopEnd)
+                                .clickableNoRipple {
+                                    viewModel.removeMediaResource(
+                                        jokePostUiState
+                                            .mediaResource()
+                                            .indexOf(it)
+                                    )
+                                },
+                        )
+                    }
                 }
             }
         }

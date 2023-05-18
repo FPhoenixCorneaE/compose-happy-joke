@@ -1,9 +1,6 @@
 package com.fphoenixcorneae.happyjoke.https
 
-import com.fphoenixcorneae.happyjoke.https.service.HomepageService
-import com.fphoenixcorneae.happyjoke.https.service.JokeService
-import com.fphoenixcorneae.happyjoke.https.service.MessageService
-import com.fphoenixcorneae.happyjoke.https.service.UserService
+import com.fphoenixcorneae.happyjoke.https.service.*
 
 /** 双重校验锁式-单例 封装 ApiService 方便直接快速调用简单的接口 */
 val homepageService: HomepageService by lazy {
@@ -20,4 +17,8 @@ val messageService: MessageService by lazy {
 
 val jokeService: JokeService by lazy {
     RetrofitFactory.Builder().build().create(JokeService::class.java)
+}
+
+val helperService: HelperService by lazy {
+    RetrofitFactory.Builder().build().create(HelperService::class.java)
 }
