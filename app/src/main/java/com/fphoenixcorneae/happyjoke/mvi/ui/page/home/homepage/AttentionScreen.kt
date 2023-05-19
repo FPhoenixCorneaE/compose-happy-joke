@@ -2,6 +2,7 @@ package com.fphoenixcorneae.happyjoke.mvi.ui.page.home.homepage
 
 import android.graphics.drawable.GradientDrawable
 import androidx.compose.animation.ExperimentalAnimationApi
+import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
 import androidx.compose.foundation.layout.*
@@ -19,6 +20,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.toArgb
 import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.tooling.preview.Preview
@@ -35,6 +37,7 @@ import coil.transform.CircleCropTransformation
 import com.fphoenixcorneae.happyjoke.R
 import com.fphoenixcorneae.happyjoke.const.Constant
 import com.fphoenixcorneae.happyjoke.ext.LifecycleObserver
+import com.fphoenixcorneae.happyjoke.ext.clickableNoRipple
 import com.fphoenixcorneae.happyjoke.ext.toast
 import com.fphoenixcorneae.happyjoke.mvi.ui.page.joke.JokeItem
 import com.fphoenixcorneae.happyjoke.mvi.ui.theme.GreyBackground
@@ -103,13 +106,31 @@ fun AttentionRecommend(
             .fillMaxWidth()
             .wrapContentHeight()
     ) {
-        Text(
-            text = stringResource(R.string.recommend_users),
-            color = Color.DarkGray,
-            fontSize = 14.sp,
-            fontWeight = FontWeight.Bold,
-            modifier = Modifier.padding(start = 20.dp, top = 20.dp),
-        )
+        Row(
+            modifier = Modifier
+                .fillMaxWidth()
+                .background(Color.White)
+                .padding(vertical = 8.dp),
+            verticalAlignment = Alignment.CenterVertically,
+            horizontalArrangement = Arrangement.Center,
+        ) {
+            Image(
+                painter = painterResource(id = R.mipmap.ic_attention_left),
+                contentDescription = null,
+                modifier = Modifier.height(32.dp),
+            )
+            Text(
+                text = stringResource(R.string.good_people_deserve_attention),
+                color = Color.DarkGray,
+                fontSize = 14.sp,
+                modifier = Modifier.padding(horizontal = 4.dp),
+            )
+            Image(
+                painter = painterResource(id = R.mipmap.ic_attention_right),
+                contentDescription = null,
+                modifier = Modifier.height(32.dp),
+            )
+        }
         LazyRow(modifier = Modifier.padding(top = 16.dp), horizontalArrangement = Arrangement.spacedBy(8.dp)) {
             item {
                 Spacer(modifier = Modifier.width(12.dp))
@@ -250,6 +271,27 @@ fun AttentionRecommend(
             item {
                 Spacer(modifier = Modifier.width(12.dp))
             }
+        }
+        Row(
+            modifier = Modifier
+                .padding(vertical = 8.dp)
+                .wrapContentSize()
+                .align(Alignment.CenterHorizontally)
+                .clickableNoRipple {
+                    viewModel.dispatchIntent(HomepageAction.GetAttentionRecommend)
+                },
+            horizontalArrangement = Arrangement.spacedBy(8.dp),
+        ) {
+            Image(
+                painter = painterResource(id = R.mipmap.ic_change),
+                contentDescription = null,
+                modifier = Modifier.size(16.dp),
+            )
+            Text(
+                text = stringResource(R.string.change_a_batch),
+                color = Color.DarkGray,
+                fontSize = 14.sp,
+            )
         }
     }
     LifecycleObserver(

@@ -19,7 +19,7 @@
     <string name="latest">新鲜</string>
     <string name="polite_letters">纯文</string>
     <string name="funny_pictures">趣图</string>
-    <string name="recommend_users">推荐用户</string>
+    <string name="good_people_deserve_attention">优秀的人值得关注</string>
     <string name="publish">发表</string>
     <string name="fans">粉丝</string>
     <string name="add_attention">+关注</string>
@@ -73,4 +73,5 @@
     <string name="advice_feedback">意见反馈</string>
     <string name="give_a_good_opinion">赏个好评</string>
     <string name="setting">设置</string>
+    <string name="change_a_batch">换一批</string>
 </resources>
