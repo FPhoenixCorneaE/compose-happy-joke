@@ -1,6 +1,5 @@
 package com.fphoenixcorneae.happyjoke.mvi.viewmodel
 
-import androidx.lifecycle.ViewModel
 import com.fphoenixcorneae.happyjoke.ext.isMobilePhone
 import com.fphoenixcorneae.happyjoke.ext.launchDefault
 import com.fphoenixcorneae.happyjoke.ext.launchIo
@@ -10,18 +9,19 @@ import com.fphoenixcorneae.happyjoke.https.doOnSuccess
 import com.fphoenixcorneae.happyjoke.https.httpRequest
 import com.fphoenixcorneae.happyjoke.https.userService
 import com.fphoenixcorneae.happyjoke.mvi.model.BaseReply
-import kotlinx.coroutines.channels.Channel
-import kotlinx.coroutines.flow.*
+import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.asStateFlow
+import kotlinx.coroutines.flow.first
+import kotlinx.coroutines.flow.update
 
 /**
  * @desc：
  * @date：2023/04/26 09:42
  */
-class PasswordViewModel : ViewModel() {
+class PasswordViewModel : BaseViewModel<PasswordAction>() {
 
     private val _passwordUiState = MutableStateFlow(PasswordUiState())
     val passwordUiState = _passwordUiState.asStateFlow()
-    private val passwordAction = Channel<PasswordAction>()
 
     fun accountChanged(value: String) {
         launchDefault {
@@ -47,53 +47,43 @@ class PasswordViewModel : ViewModel() {
         }
     }
 
-    fun dispatchIntent(action: PasswordAction) {
-        launchDefault {
-            passwordAction.send(action)
-        }
-    }
-
-    init {
-        launchDefault {
-            passwordAction.receiveAsFlow().collect {
-                when (it) {
-                    PasswordAction.GetCode -> launchIo {
-                        httpRequest {
-                            userService.passwordResetGetCode(passwordUiState.first().account)
-                        }.doOnSuccess { reply ->
-                            if (reply?.code == 0) {
-                                reply.msg?.toast()
-                            } else if (reply?.code == BaseReply.OK) {
-                                _passwordUiState.update {
-                                    it.copy(sendCodeTime = System.currentTimeMillis().toString())
-                                }
-                            }
-                        }.doOnError {
-                            it.message?.toast()
-                        }
-                    }
-                    PasswordAction.Reset -> launchIo {
-                        httpRequest {
-                            passwordUiState.first().let {
-                                userService.passwordReset(it.account, it.authCode, it.password)
-                            }
-                        }.doOnSuccess { reply ->
-                            if (reply?.code == 0) {
-                                reply.msg?.toast()
-                            } else if (reply?.code == BaseReply.OK) {
-                                _passwordUiState.update {
-                                    it.copy(pswResetSuccess = true)
-                                }
-                            }
-                        }.doOnError {
-                            it.message?.toast()
-                        }
-                    }
-                    PasswordAction.ToggleEncounterProblemDialog -> launchDefault {
+    override fun dealIntent(action: PasswordAction) {
+        when (action) {
+            PasswordAction.GetCode -> launchIo {
+                httpRequest {
+                    userService.passwordResetGetCode(passwordUiState.first().account)
+                }.doOnSuccess { reply ->
+                    if (reply?.code == 0) {
+                        reply.msg?.toast()
+                    } else if (reply?.code == BaseReply.OK) {
                         _passwordUiState.update {
-                            it.copy(showEncounterProblemDialog = !it.showEncounterProblemDialog)
+                            it.copy(sendCodeTime = System.currentTimeMillis().toString())
                         }
                     }
+                }.doOnError {
+                    it.message?.toast()
+                }
+            }
+            PasswordAction.Reset -> launchIo {
+                httpRequest {
+                    passwordUiState.first().let {
+                        userService.passwordReset(it.account, it.authCode, it.password)
+                    }
+                }.doOnSuccess { reply ->
+                    if (reply?.code == 0) {
+                        reply.msg?.toast()
+                    } else if (reply?.code == BaseReply.OK) {
+                        _passwordUiState.update {
+                            it.copy(pswResetSuccess = true)
+                        }
+                    }
+                }.doOnError {
+                    it.message?.toast()
+                }
+            }
+            PasswordAction.ToggleEncounterProblemDialog -> launchDefault {
+                _passwordUiState.update {
+                    it.copy(showEncounterProblemDialog = !it.showEncounterProblemDialog)
                 }
             }
         }

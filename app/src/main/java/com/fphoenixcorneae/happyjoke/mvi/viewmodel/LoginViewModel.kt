@@ -1,6 +1,5 @@
 package com.fphoenixcorneae.happyjoke.mvi.viewmodel
 
-import androidx.lifecycle.ViewModel
 import com.fphoenixcorneae.happyjoke.ext.isMobilePhone
 import com.fphoenixcorneae.happyjoke.ext.launchDefault
 import com.fphoenixcorneae.happyjoke.ext.launchIo
@@ -12,17 +11,19 @@ import com.fphoenixcorneae.happyjoke.https.userService
 import com.fphoenixcorneae.happyjoke.mvi.model.BaseReply
 import com.fphoenixcorneae.happyjoke.tool.UserManager
 import kotlinx.coroutines.channels.Channel
-import kotlinx.coroutines.flow.*
+import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.asStateFlow
+import kotlinx.coroutines.flow.first
+import kotlinx.coroutines.flow.update
 
 /**
  * @desc：
  * @date：2023/04/23 13:48
  */
-class LoginViewModel : ViewModel() {
+class LoginViewModel : BaseViewModel<LoginAction>() {
 
     private val _loginUiState = MutableStateFlow(LoginUiState())
     val loginUiState = _loginUiState.asStateFlow()
-    private val loginAction = Channel<LoginAction>()
 
     fun toggleLoginMode() {
         launchDefault {
@@ -56,59 +57,49 @@ class LoginViewModel : ViewModel() {
         }
     }
 
-    fun dispatchIntent(action: LoginAction) {
-        launchDefault {
-            loginAction.send(action)
-        }
-    }
-
-    init {
-        launchDefault {
-            loginAction.receiveAsFlow().collect {
-                when (it) {
-                    LoginAction.GetCode -> launchIo {
-                        httpRequest {
-                            userService.getCode(loginUiState.first().account)
-                        }.doOnSuccess { reply ->
-                            if (reply?.code == 0) {
-                                reply.msg?.toast()
-                            } else if (reply?.code == BaseReply.OK) {
-                                _loginUiState.update {
-                                    it.copy(sendCodeTime = System.currentTimeMillis().toString())
-                                }
-                            }
-                        }.doOnError {
-                            it.message?.toast()
-                        }
-                    }
-                    LoginAction.Login -> launchIo {
-                        httpRequest {
-                            loginUiState.first().let {
-                                if (it.isAuthCodeLogin) {
-                                    userService.loginByCode(it.account, it.authCode)
-                                } else {
-                                    userService.loginByPsw(it.account, it.password)
-                                }
-                            }
-                        }.doOnSuccess { reply ->
-                            if (reply?.code == 0) {
-                                reply.msg?.toast()
-                            } else if (reply?.code == BaseReply.OK) {
-                                UserManager.saveToken(reply.data?.token)
-                                    .loginState(true)
-                                _loginUiState.update {
-                                    it.copy(loginSuccess = true)
-                                }
-                            }
-                        }.doOnError {
-                            it.message?.toast()
-                        }
-                    }
-                    LoginAction.ToggleEncounterProblemDialog -> launchDefault {
+    override fun dealIntent(action: LoginAction) {
+        when (action) {
+            LoginAction.GetCode -> launchIo {
+                httpRequest {
+                    userService.getCode(loginUiState.first().account)
+                }.doOnSuccess { reply ->
+                    if (reply?.code == 0) {
+                        reply.msg?.toast()
+                    } else if (reply?.code == BaseReply.OK) {
                         _loginUiState.update {
-                            it.copy(showEncounterProblemDialog = !it.showEncounterProblemDialog)
+                            it.copy(sendCodeTime = System.currentTimeMillis().toString())
                         }
                     }
+                }.doOnError {
+                    it.message?.toast()
+                }
+            }
+            LoginAction.Login -> launchIo {
+                httpRequest {
+                    loginUiState.first().let {
+                        if (it.isAuthCodeLogin) {
+                            userService.loginByCode(it.account, it.authCode)
+                        } else {
+                            userService.loginByPsw(it.account, it.password)
+                        }
+                    }
+                }.doOnSuccess { reply ->
+                    if (reply?.code == 0) {
+                        reply.msg?.toast()
+                    } else if (reply?.code == BaseReply.OK) {
+                        UserManager.saveToken(reply.data?.token)
+                            .loginState(true)
+                        _loginUiState.update {
+                            it.copy(loginSuccess = true)
+                        }
+                    }
+                }.doOnError {
+                    it.message?.toast()
+                }
+            }
+            LoginAction.ToggleEncounterProblemDialog -> launchDefault {
+                _loginUiState.update {
+                    it.copy(showEncounterProblemDialog = !it.showEncounterProblemDialog)
                 }
             }
         }
