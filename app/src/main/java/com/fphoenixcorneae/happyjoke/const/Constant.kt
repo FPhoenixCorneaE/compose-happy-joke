@@ -9,6 +9,10 @@ object Constant {
     const val PROJECT_TOKEN = "E4185C527B23474E85C2478E181D7EFE"
     const val WEB_PRIVACY = "http://jokes-avatar.cretinzp.com/static/web/jokes-privacy.html"
     const val WEB_PROTO = "http://jokes-avatar.cretinzp.com/static/web/jokes-protocol.html"
+    const val LEDOU_INTRO = "http://mxnzp-static.mxnzp.com/jokes/html/ledou_intro.html"
+    const val SOCIAL_NOTICE = "http://mxnzp-static.mxnzp.com/jokes/html/social_notice.html"
+    const val USER_RANK = "http://mxnzp-static.mxnzp.com/jokes/html/user_rank.html"
+    const val PAGE_LIMIT = 10
 
     /**
      * @desc：Key

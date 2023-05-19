@@ -13,13 +13,13 @@ interface HelperService {
 
     /**
      * 获取七牛云token
-     * @param filename 文件名称，要带后缀
      * @param type     类型: 0 获取普通token   1 获取头像token
+     * @param filename 文件名称，要带后缀
      */
     @FormUrlEncoded
     @POST("/jokes/helper/qiniu/token")
-    fun getQiNiuToken(
-        @Field("filename") filename: String,
+    suspend fun getQiNiuToken(
         @Field("type") type: Int,
+        @Field("filename") filename: String,
     ): QiNiuTokenReply?
 }

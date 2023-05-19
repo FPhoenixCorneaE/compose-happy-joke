@@ -1,7 +1,9 @@
 package com.fphoenixcorneae.happyjoke.https.request
 
 import androidx.annotation.Keep
+import com.google.gson.annotations.Expose
 import com.google.gson.annotations.SerializedName
+import github.leavesczy.matisse.MediaResource
 
 /**
  * @desc：
@@ -23,4 +25,6 @@ data class JokePostParams(
     val videoThumbnailUrl: String? = "", // 视频封面
     @SerializedName("video_url")
     val videoUrl: String? = "", // 视频url，先上传到七牛云之后拿到key
+    @Expose(serialize = false, deserialize = false)
+    val result: List<MediaResource> = mutableListOf(),
 )
