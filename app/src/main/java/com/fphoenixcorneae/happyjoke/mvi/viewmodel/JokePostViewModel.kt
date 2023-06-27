@@ -1,11 +1,16 @@
 package com.fphoenixcorneae.happyjoke.mvi.viewmodel
 
+import android.graphics.BitmapFactory
 import android.util.Log
 import com.fphoenixcorneae.happyjoke.ext.launchDefault
 import com.fphoenixcorneae.happyjoke.ext.launchIo
 import com.fphoenixcorneae.happyjoke.ext.toJson
 import com.fphoenixcorneae.happyjoke.ext.toObject
-import com.fphoenixcorneae.happyjoke.https.*
+import com.fphoenixcorneae.happyjoke.https.doOnError
+import com.fphoenixcorneae.happyjoke.https.doOnSuccess
+import com.fphoenixcorneae.happyjoke.https.helperService
+import com.fphoenixcorneae.happyjoke.https.httpRequest
+import com.fphoenixcorneae.happyjoke.https.jokeService
 import com.fphoenixcorneae.happyjoke.https.request.JokePostParams
 import com.fphoenixcorneae.happyjoke.mvi.model.BaseReply
 import com.fphoenixcorneae.happyjoke.tool.QiNiuHelper
@@ -19,7 +24,9 @@ import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.withContext
-import java.util.*
+import java.io.File
+import java.net.URI
+import java.util.UUID
 import java.util.concurrent.CountDownLatch
 
 /**
@@ -49,7 +56,10 @@ class JokePostViewModel : BaseViewModel<JokePostAction>() {
                 val imageResult = it.result()
                 result.forEach { mediaResource ->
                     imageUrls.add(mediaResource.uri.toString())
-                    imageSize.add("${mediaResource.width}x${mediaResource.height}")
+                    val options = BitmapFactory.Options()
+                    options.inJustDecodeBounds = true
+                    BitmapFactory.decodeFile(File(mediaResource.uri.toString()).absolutePath, options)
+                    imageSize.add("${options.outWidth}x${options.outHeight}")
                     imageResult.add(mediaResource)
                 }
                 it.copy(
@@ -248,9 +258,11 @@ data class JokePostUiState(
         "2" -> {
             jokePostParams.imageUrls?.split(",") ?: mutableListOf()
         }
+
         "3" -> {
             mutableListOf(jokePostParams.videoThumbnailUrl)
         }
+
         else -> {
             mutableListOf()
         }

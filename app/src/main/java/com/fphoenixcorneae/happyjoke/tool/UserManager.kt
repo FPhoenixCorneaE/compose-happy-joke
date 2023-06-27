@@ -1,9 +1,17 @@
 package com.fphoenixcorneae.happyjoke.tool
 
 import com.fphoenixcorneae.happyjoke.const.Constant
-import com.fphoenixcorneae.happyjoke.ext.*
+import com.fphoenixcorneae.happyjoke.ext.clearDS
+import com.fphoenixcorneae.happyjoke.ext.getDSFlow
+import com.fphoenixcorneae.happyjoke.ext.getSyncDS
+import com.fphoenixcorneae.happyjoke.ext.globalScope
+import com.fphoenixcorneae.happyjoke.ext.saveDS
+import com.fphoenixcorneae.happyjoke.ext.toJson
+import com.fphoenixcorneae.happyjoke.ext.toObject
 import com.fphoenixcorneae.happyjoke.mvi.model.UserInfoReply
 import com.fphoenixcorneae.happyjoke.startup.applicationContext
+import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.launch
 
 /**
@@ -11,6 +19,15 @@ import kotlinx.coroutines.launch
  * @date：2023/04/24 15:37
  */
 object UserManager {
+
+    /**
+     * 登录过期
+     */
+    fun loginExpire() = apply {
+        loginState(false)
+        saveToken(null)
+        saveUserInfo(null)
+    }
 
     fun loginState(success: Boolean) = apply {
         globalScope.launch {
@@ -36,8 +53,11 @@ object UserManager {
         }
     }
 
-    fun getUserInfo() = applicationContext.getSyncDS(Constant.User.USER_INFO, "")
-        .toObject(UserInfoReply.Data::class.java)
+    fun userInfoFlow(): Flow<UserInfoReply.Data?> =
+        applicationContext.getDSFlow(Constant.User.USER_INFO, (null as String?))
+            .map {
+                it.toObject(UserInfoReply.Data::class.java)
+            }
 
     fun logout() {
         globalScope.launch {

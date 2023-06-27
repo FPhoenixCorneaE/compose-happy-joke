@@ -42,6 +42,7 @@ import com.fphoenixcorneae.happyjoke.ext.appPackageName
 import com.fphoenixcorneae.happyjoke.ext.clickableNoRipple
 import com.fphoenixcorneae.happyjoke.ext.toast
 import com.fphoenixcorneae.happyjoke.mvi.ui.theme.Grey60
+import com.fphoenixcorneae.happyjoke.mvi.ui.widget.CoilImageEngine
 import com.fphoenixcorneae.happyjoke.mvi.ui.widget.SystemUiScaffold
 import com.fphoenixcorneae.happyjoke.mvi.ui.widget.Toolbar
 import com.fphoenixcorneae.happyjoke.mvi.viewmodel.JokePostAction
@@ -49,6 +50,7 @@ import com.fphoenixcorneae.happyjoke.mvi.viewmodel.JokePostViewModel
 import com.google.accompanist.navigation.animation.rememberAnimatedNavController
 import github.leavesczy.matisse.Matisse
 import github.leavesczy.matisse.MatisseContract
+import github.leavesczy.matisse.MimeType
 import github.leavesczy.matisse.SmartCaptureStrategy
 import kotlinx.coroutines.launch
 
@@ -140,7 +142,8 @@ fun JokePostScreen(
                             imagePickerLauncher.launch(
                                 Matisse(
                                     maxSelectable = 9 - jokePostUiState.imageUrls().size,
-                                    supportedMimeTypes = Matisse.ofImage(hasGif = true),
+                                    mimeTypes = MimeType.ofImage(hasGif = true),
+                                    imageEngine = CoilImageEngine(),
                                     captureStrategy = SmartCaptureStrategy("$appPackageName.image-picker"),
                                 )
                             )

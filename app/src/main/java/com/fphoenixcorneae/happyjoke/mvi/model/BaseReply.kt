@@ -14,5 +14,6 @@ data class BaseReply<T>(
 ) {
     companion object {
         const val OK = 200
+        const val LOGIN_EXPIRE = 202
     }
 }

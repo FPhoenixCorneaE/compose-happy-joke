@@ -10,7 +10,6 @@ import com.fphoenixcorneae.happyjoke.tool.UserManager
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
-import kotlinx.coroutines.flow.update
 
 /**
  * @desc：
@@ -28,11 +27,10 @@ class MeViewModel : BaseViewModel<MeAction>() {
                 }.doOnSuccess { reply ->
                     if (reply?.code == BaseReply.OK) {
                         reply.data.let { userInfo ->
-                            _meUiState.update {
-                                it.copy(userInfo = userInfo)
-                            }
                             UserManager.saveUserInfo(userInfo)
                         }
+                    } else if (reply?.code == BaseReply.LOGIN_EXPIRE) {
+                        UserManager.loginExpire()
                     }
                 }
             }
@@ -45,8 +43,8 @@ class MeViewModel : BaseViewModel<MeAction>() {
  * @date：2023/04/24 17:28
  */
 data class MeUiState(
-    val loginStateFlow: Flow<Boolean> = UserManager.loginStateFlow(),
-    val userInfo: UserInfoReply.Data? = null,
+    val isLoggedIn: Flow<Boolean> = UserManager.loginStateFlow(),
+    val userInfo: Flow<UserInfoReply.Data?> = UserManager.userInfoFlow(),
 )
 
 /**

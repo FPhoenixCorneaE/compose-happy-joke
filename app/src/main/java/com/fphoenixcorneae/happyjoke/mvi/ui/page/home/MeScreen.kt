@@ -50,7 +50,8 @@ fun MeScreen(
 ) {
     val context = LocalContext.current
     val meUiState by viewModel.meUiState.collectAsState()
-    val isLoggedIn by meUiState.loginStateFlow.collectAsState(initial = false)
+    val isLoggedIn by meUiState.isLoggedIn.collectAsState(initial = false)
+    val userInfo by meUiState.userInfo.collectAsState(initial = null)
     LaunchedEffect(key1 = isLoggedIn) {
         if (isLoggedIn) {
             viewModel.dispatchIntent(MeAction.GetUserInfo)
@@ -70,14 +71,14 @@ fun MeScreen(
                     .wrapContentHeight()
                     .clickableNoRipple {
                         if (UserManager.isLoggedIn()) {
-                            navController.navigate("${Constant.NavRoute.USER_DETAILS}/${meUiState.userInfo?.user?.userId}")
+                            navController.navigate("${Constant.NavRoute.USER_DETAILS}/${userInfo?.user?.userId}")
                         } else {
                             navController.navigate(Constant.NavRoute.LOGIN)
                         }
                     },
             ) {
                 AsyncImage(
-                    model = ImageRequest.Builder(context).data(meUiState.userInfo?.user?.avatar)
+                    model = ImageRequest.Builder(context).data(userInfo?.user?.avatar)
                         .error(R.mipmap.ic_avatar_default).crossfade(true)
                         .transformations(CircleCropTransformation()).build(),
                     contentDescription = null,
@@ -92,7 +93,7 @@ fun MeScreen(
                     verticalArrangement = Arrangement.spacedBy(8.dp)
                 ) {
                     Text(
-                        text = if (isLoggedIn) meUiState.userInfo?.user?.nickname.orEmpty() else stringResource(
+                        text = if (isLoggedIn) userInfo?.user?.nickname.orEmpty() else stringResource(
                             R.string.login_or_register
                         ),
                         color = Black30,
@@ -100,7 +101,7 @@ fun MeScreen(
                         fontWeight = FontWeight.SemiBold,
                     )
                     Text(
-                        text = if (isLoggedIn) meUiState.userInfo?.user?.signature.orEmpty() else stringResource(
+                        text = if (isLoggedIn) userInfo?.user?.signature.orEmpty() else stringResource(
                             R.string.user_signature_hint
                         ),
                         color = Grey85,
@@ -124,7 +125,7 @@ fun MeScreen(
                     horizontalAlignment = Alignment.CenterHorizontally
                 ) {
                     Text(
-                        text = if (isLoggedIn) meUiState.userInfo?.info?.attentionNum.toString() else "-",
+                        text = if (isLoggedIn) (userInfo?.info?.attentionNum ?: 0).toString() else "-",
                         color = Black30,
                         fontSize = 14.sp,
                     )
@@ -139,7 +140,7 @@ fun MeScreen(
                     horizontalAlignment = Alignment.CenterHorizontally
                 ) {
                     Text(
-                        text = if (isLoggedIn) meUiState.userInfo?.info?.fansNum.toString() else "-",
+                        text = if (isLoggedIn) (userInfo?.info?.fansNum ?: 0).toString() else "-",
                         color = Black30,
                         fontSize = 14.sp,
                     )
@@ -152,7 +153,7 @@ fun MeScreen(
                     horizontalAlignment = Alignment.CenterHorizontally
                 ) {
                     Text(
-                        text = if (isLoggedIn) meUiState.userInfo?.info?.experienceNum.toString() else "-",
+                        text = if (isLoggedIn) (userInfo?.info?.experienceNum ?: 0).toString() else "-",
                         color = Black30,
                         fontSize = 14.sp,
                     )
