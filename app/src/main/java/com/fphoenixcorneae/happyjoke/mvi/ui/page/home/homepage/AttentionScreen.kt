@@ -30,7 +30,6 @@ import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavHostController
 import androidx.paging.LoadState
 import androidx.paging.compose.collectAsLazyPagingItems
-import androidx.paging.compose.items
 import coil.compose.AsyncImage
 import coil.request.ImageRequest
 import coil.transform.CircleCropTransformation
@@ -75,8 +74,9 @@ fun AttentionScreen(
         item {
             Spacer(modifier = Modifier.height(10.dp))
         }
-        items(homepageAttentionList) { item ->
+        items(homepageAttentionList.itemCount) {
             val isLoading = homepageAttentionList.loadState.append is LoadState.Loading
+            val item = homepageAttentionList[it]
             JokeItem(navController = navController, joke = item, isLoading = isLoading)
         }
     }
@@ -131,7 +131,10 @@ fun AttentionRecommend(
                 modifier = Modifier.height(32.dp),
             )
         }
-        LazyRow(modifier = Modifier.padding(top = 16.dp), horizontalArrangement = Arrangement.spacedBy(8.dp)) {
+        LazyRow(
+            modifier = Modifier.padding(top = 16.dp),
+            horizontalArrangement = Arrangement.spacedBy(8.dp)
+        ) {
             item {
                 Spacer(modifier = Modifier.width(12.dp))
             }
@@ -159,7 +162,11 @@ fun AttentionRecommend(
                             .padding(top = 20.dp)
                             .size(60.dp)
                             .align(Alignment.CenterHorizontally)
-                            .border(width = 2.dp, color = MaterialTheme.colorScheme.onSecondary, shape = CircleShape)
+                            .border(
+                                width = 2.dp,
+                                color = MaterialTheme.colorScheme.onSecondary,
+                                shape = CircleShape
+                            )
                             .placeholder(
                                 visible = it.avatar == null,
                                 color = GreyPlaceholder,
@@ -246,7 +253,12 @@ fun AttentionRecommend(
                     Button(
                         onClick = {
                             if (UserManager.isLoggedIn()) {
-                                viewModel.dispatchIntent(HomepageAction.UserAttention(1, it.userId.toString()))
+                                viewModel.dispatchIntent(
+                                    HomepageAction.UserAttention(
+                                        1,
+                                        it.userId.toString()
+                                    )
+                                )
                             } else {
                                 navController.navigate(Constant.NavRoute.LOGIN)
                             }

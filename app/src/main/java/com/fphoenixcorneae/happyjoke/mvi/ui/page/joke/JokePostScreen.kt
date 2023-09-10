@@ -48,6 +48,7 @@ import com.fphoenixcorneae.happyjoke.mvi.ui.widget.Toolbar
 import com.fphoenixcorneae.happyjoke.mvi.viewmodel.JokePostAction
 import com.fphoenixcorneae.happyjoke.mvi.viewmodel.JokePostViewModel
 import com.google.accompanist.navigation.animation.rememberAnimatedNavController
+import github.leavesczy.matisse.DefaultMediaFilter
 import github.leavesczy.matisse.Matisse
 import github.leavesczy.matisse.MatisseContract
 import github.leavesczy.matisse.MimeType
@@ -77,8 +78,7 @@ fun JokePostScreen(
     }
     SystemUiScaffold {
         Column(Modifier.fillMaxSize()) {
-            Toolbar(
-                navController = navController,
+            Toolbar(navController = navController,
                 titleText = stringResource(R.string.joke_post),
                 rightText = stringResource(R.string.post),
                 onRightTextClick = {
@@ -93,8 +93,7 @@ fun JokePostScreen(
                         }
                         viewModel.dispatchIntent(JokePostAction.PostJoke)
                     }
-                }
-            )
+                })
             val contentMaxLengths = 300
             BasicTextField(
                 value = jokePostUiState.jokePostParams.content,
@@ -121,12 +120,13 @@ fun JokePostScreen(
                     .wrapContentHeight()
             ) {
                 // 图片选择
-                val imagePickerLauncher = rememberLauncherForActivityResult(contract = MatisseContract()) { result ->
-                    if (result.isNotEmpty()) {
-                        viewModel.imageType()
-                        viewModel.imageUrlsChanged(result)
+                val imagePickerLauncher =
+                    rememberLauncherForActivityResult(contract = MatisseContract()) { result ->
+                        if (result.isNotEmpty()) {
+                            viewModel.imageType()
+                            viewModel.imageUrlsChanged(result)
+                        }
                     }
-                }
                 val (pic, video, contentLimit) = createRefs()
                 AsyncImage(
                     model = R.mipmap.ic_pic,
@@ -142,7 +142,11 @@ fun JokePostScreen(
                             imagePickerLauncher.launch(
                                 Matisse(
                                     maxSelectable = 9 - jokePostUiState.imageUrls().size,
-                                    mimeTypes = MimeType.ofImage(hasGif = true),
+                                    mediaFilter = DefaultMediaFilter(
+                                        supportedMimeTypes = MimeType.ofImage(
+                                            hasGif = true,
+                                        ),
+                                    ),
                                     imageEngine = CoilImageEngine(),
                                     captureStrategy = SmartCaptureStrategy("$appPackageName.image-picker"),
                                 )
@@ -185,27 +189,22 @@ fun JokePostScreen(
                             .aspectRatio(ratio = 1f),
                     ) {
                         AsyncImage(
-                            model = ImageRequest.Builder(LocalContext.current)
-                                .data(it)
+                            model = ImageRequest.Builder(LocalContext.current).data(it)
                                 .error(GradientDrawable().apply {
                                     shape = GradientDrawable.RECTANGLE
                                     cornerRadius = LocalDensity.current.run { 8.dp.toPx() }
                                     setColor(Color.Gray.toArgb())
-                                })
-                                .crossfade(true)
-                                .build(),
+                                }).crossfade(true).build(),
                             contentDescription = null,
-                            imageLoader = ImageLoader.Builder(LocalContext.current)
-                                .components {
-                                    if (Build.VERSION.SDK_INT >= 28) {
-                                        add(ImageDecoderDecoder.Factory())
-                                    } else {
-                                        add(GifDecoder.Factory())
-                                    }
-                                    add(SvgDecoder.Factory())
-                                    add(VideoFrameDecoder.Factory())
+                            imageLoader = ImageLoader.Builder(LocalContext.current).components {
+                                if (Build.VERSION.SDK_INT >= 28) {
+                                    add(ImageDecoderDecoder.Factory())
+                                } else {
+                                    add(GifDecoder.Factory())
                                 }
-                                .build(),
+                                add(SvgDecoder.Factory())
+                                add(VideoFrameDecoder.Factory())
+                            }.build(),
                             contentScale = ContentScale.Crop,
                             modifier = Modifier
                                 .padding(4.dp)

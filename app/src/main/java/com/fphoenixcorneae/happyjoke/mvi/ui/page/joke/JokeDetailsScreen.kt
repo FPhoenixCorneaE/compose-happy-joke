@@ -7,7 +7,20 @@ import androidx.compose.animation.core.tween
 import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
-import androidx.compose.foundation.layout.*
+import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.defaultMinSize
+import androidx.compose.foundation.layout.fillMaxHeight
+import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.offset
+import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.layout.width
+import androidx.compose.foundation.layout.widthIn
+import androidx.compose.foundation.layout.wrapContentHeight
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.pager.HorizontalPager
 import androidx.compose.foundation.pager.rememberPagerState
@@ -15,8 +28,13 @@ import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.Divider
 import androidx.compose.material3.Text
-import androidx.compose.runtime.*
+import androidx.compose.runtime.Composable
+import androidx.compose.runtime.collectAsState
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.saveable.rememberSaveable
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
@@ -36,7 +54,6 @@ import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavHostController
 import androidx.paging.LoadState
 import androidx.paging.compose.collectAsLazyPagingItems
-import androidx.paging.compose.items
 import coil.compose.AsyncImage
 import coil.request.ImageRequest
 import coil.transform.CircleCropTransformation
@@ -44,7 +61,12 @@ import com.fphoenixcorneae.happyjoke.R
 import com.fphoenixcorneae.happyjoke.const.Constant
 import com.fphoenixcorneae.happyjoke.ext.LifecycleObserver
 import com.fphoenixcorneae.happyjoke.ext.clickableNoRipple
-import com.fphoenixcorneae.happyjoke.mvi.ui.theme.*
+import com.fphoenixcorneae.happyjoke.mvi.ui.theme.Black30
+import com.fphoenixcorneae.happyjoke.mvi.ui.theme.Grey60
+import com.fphoenixcorneae.happyjoke.mvi.ui.theme.GreyBackground
+import com.fphoenixcorneae.happyjoke.mvi.ui.theme.GreyLine
+import com.fphoenixcorneae.happyjoke.mvi.ui.theme.GreyPlaceholder
+import com.fphoenixcorneae.happyjoke.mvi.ui.theme.Yellow30
 import com.fphoenixcorneae.happyjoke.mvi.ui.widget.PagingLazyColumn
 import com.fphoenixcorneae.happyjoke.mvi.ui.widget.SystemUiScaffold
 import com.fphoenixcorneae.happyjoke.mvi.ui.widget.Toolbar
@@ -72,12 +94,18 @@ fun JokeDetailsScreen(
         factory = JokeDetailsViewModelFactory(targetJokeId = targetJokeId.orEmpty())
     )
     val jokeDetailsUiState by viewModel.jokeDetailsUiState.collectAsState()
-    val pagerState = rememberPagerState(initialPage = 0)
-    val coroutineScope = rememberCoroutineScope()
     val labels = listOf(
         stringResource(id = R.string.comment) to jokeDetailsUiState.joke?.info?.commentNum,
         stringResource(R.string.thumbs_up) to jokeDetailsUiState.joke?.info?.likeNum,
     )
+    val pagerState = rememberPagerState(
+        initialPage = 0,
+        initialPageOffsetFraction = 0f
+    ) {
+        // provide pageCount
+        labels.size
+    }
+    val coroutineScope = rememberCoroutineScope()
     // 屏幕高度，不包括状态栏、导航栏高度
     val screenHeight = LocalConfiguration.current.screenHeightDp.dp
     LifecycleObserver(onCreate = {
@@ -144,14 +172,18 @@ fun JokeDetailsScreen(
                             }
                         }
                         val currentTabWidth by animateDpAsState(
-                            targetValue = tabWidth, animationSpec = tween(
+                            targetValue = tabWidth,
+                            animationSpec = tween(
                                 durationMillis = 250, easing = FastOutSlowInEasing
-                            )
+                            ),
+                            label = "当前标签宽度",
                         )
                         val indicatorOffset by animateDpAsState(
-                            targetValue = tabWidth * pagerState.currentPage, animationSpec = tween(
+                            targetValue = tabWidth * pagerState.currentPage,
+                            animationSpec = tween(
                                 durationMillis = 250, easing = FastOutSlowInEasing
-                            )
+                            ),
+                            label = "指示器偏移量",
                         )
                         Box(
                             modifier = Modifier
@@ -172,7 +204,6 @@ fun JokeDetailsScreen(
                 }
                 item {
                     HorizontalPager(
-                        pageCount = labels.size,
                         state = pagerState,
                         modifier = Modifier
                             .fillMaxWidth()
@@ -183,6 +214,7 @@ fun JokeDetailsScreen(
                                 navController = navController,
                                 viewModel = viewModel,
                             )
+
                             else -> TargetJokeLikeList(
                                 navController = navController,
                                 viewModel = viewModel,
@@ -208,8 +240,9 @@ fun TargetJokeCommentList(
     val jokeCommentList = viewModel.jokeCommentList.collectAsLazyPagingItems()
     val context = LocalContext.current
     PagingLazyColumn(lazyPagingItems = jokeCommentList) {
-        items(jokeCommentList) { comment ->
+        items(jokeCommentList.itemCount) {
             val isLoading = jokeCommentList.loadState.append is LoadState.Loading
+            val comment = jokeCommentList[it]
             Row(
                 modifier = Modifier
                     .fillMaxWidth()
@@ -323,8 +356,9 @@ fun TargetJokeLikeList(
     val jokeLikeList = viewModel.jokeLikeList.collectAsLazyPagingItems()
     val context = LocalContext.current
     PagingLazyColumn(lazyPagingItems = jokeLikeList) {
-        items(jokeLikeList) { like ->
+        items(jokeLikeList.itemCount) {
             val isLoading = jokeLikeList.loadState.append is LoadState.Loading
+            val like = jokeLikeList[it]
             Row(
                 modifier = Modifier
                     .fillMaxWidth()

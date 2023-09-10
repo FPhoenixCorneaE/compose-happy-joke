@@ -9,7 +9,6 @@ import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavHostController
 import androidx.paging.LoadState
 import androidx.paging.compose.collectAsLazyPagingItems
-import androidx.paging.compose.items
 import com.fphoenixcorneae.happyjoke.mvi.ui.page.joke.JokeItem
 import com.fphoenixcorneae.happyjoke.mvi.ui.widget.SwipeRefresh
 import com.fphoenixcorneae.happyjoke.mvi.viewmodel.HomepageViewModel
@@ -31,8 +30,9 @@ fun FunnyPicturesScreen(
         lazyPagingItems = homepageFunnyPictures,
         contentPadding = PaddingValues(bottom = 60.dp)
     ) {
-        items(homepageFunnyPictures) { item ->
+        items(homepageFunnyPictures.itemCount) {
             val isLoading = homepageFunnyPictures.loadState.append is LoadState.Loading
+            val item = homepageFunnyPictures[it]
             JokeItem(navController = navController, joke = item, isLoading = isLoading)
         }
     }

@@ -39,7 +39,6 @@ import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavHostController
 import androidx.paging.LoadState
 import androidx.paging.compose.collectAsLazyPagingItems
-import androidx.paging.compose.items
 import coil.compose.AsyncImage
 import coil.request.ImageRequest
 import coil.transform.CircleCropTransformation
@@ -83,7 +82,12 @@ fun UserDetailsScreen(
         stringResource(R.string.production) to userDetailsUiState.targetUserInfo?.jokesNum.orEmpty(),
         stringResource(R.string.like) to userDetailsUiState.targetUserInfo?.jokeLikeNum.orEmpty(),
     )
-    val pagerState = rememberPagerState(initialPage = 0)
+    val pagerState = rememberPagerState(
+        initialPage = 0, initialPageOffsetFraction = 0f
+    ) {
+        // provide pageCount
+        labels.size
+    }
     val coroutineScope = rememberCoroutineScope()
     LifecycleObserver(
         onCreate = {
@@ -97,27 +101,29 @@ fun UserDetailsScreen(
         statusBarColor = MaterialTheme.colorScheme.onSecondary.copy(alpha = 1 - state.toolbarState.progress),
         isDarkFont = false,
     ) {
-        CollapsingToolbarScaffold(
-            modifier = Modifier.fillMaxSize(),
+        CollapsingToolbarScaffold(modifier = Modifier.fillMaxSize(),
             state = state,
             scrollStrategy = ScrollStrategy.ExitUntilCollapsed,
             toolbar = {
                 TargetUserInfo(
                     navController = navController,
                     userDetailsUiState = userDetailsUiState,
-                    modifier = Modifier
-                        .graphicsLayer {
-                            alpha = state.toolbarState.progress
-                            translationY = (260 * (1 - state.toolbarState.progress)).dp
-                                .unaryMinus()
-                                .toPx()
-                        },
+                    modifier = Modifier.graphicsLayer {
+                        alpha = state.toolbarState.progress
+                        translationY =
+                            (260 * (1 - state.toolbarState.progress)).dp.unaryMinus().toPx()
+                    },
                 )
-                val statusBarHeight =
-                    LocalDensity.current.run { WindowInsets.statusBars.getTop(LocalDensity.current).toDp() }
+                val statusBarHeight = LocalDensity.current.run {
+                    WindowInsets.statusBars.getTop(LocalDensity.current).toDp()
+                }
                 Column(
                     modifier = Modifier
-                        .background(color = MaterialTheme.colorScheme.onSecondary.copy(alpha = 1 - state.toolbarState.progress))
+                        .background(
+                            color = MaterialTheme.colorScheme.onSecondary.copy(
+                                alpha = 1 - state.toolbarState.progress
+                            )
+                        )
                         .alpha(alpha = 1 - state.toolbarState.progress)
                         .pin()
                 ) {
@@ -142,7 +148,8 @@ fun UserDetailsScreen(
                             Color.White.toArgb(),
                             1 - state.toolbarState.progress,
                         )
-                    )
+                    ),
+                    label = "用户昵称颜色",
                 )
                 Text(
                     text = userDetailsUiState.targetUserInfo?.nickname.orEmpty(),
@@ -158,25 +165,23 @@ fun UserDetailsScreen(
                             translationY = (192 * state.toolbarState.progress).dp.toPx()
                         },
                 )
-            }
-        ) {
+            }) {
             Column {
-                ScrollableTabRow(
-                    selectedTabIndex = pagerState.currentPage,
-                    modifier = Modifier
-                        .background(color = Color.White),
+                ScrollableTabRow(selectedTabIndex = pagerState.currentPage,
+                    modifier = Modifier.background(color = Color.White),
                     edgePadding = 4.dp,
                     divider = {
                         Divider(color = GreyLine, thickness = 0.5.dp)
                     },
                     indicator = { tabPositions ->
                         TabRowDefaults.Indicator(
-                            modifier = Modifier.indicatorOffset(tabPositions[pagerState.currentPage], 28.dp),
+                            modifier = Modifier.indicatorOffset(
+                                tabPositions[pagerState.currentPage], 28.dp
+                            ),
                             color = Yellow30,
                             height = 2.dp,
                         )
-                    }
-                ) {
+                    }) {
                     labels.forEachIndexed { index, label ->
                         Tab(
                             selected = pagerState.currentPage == index,
@@ -199,7 +204,6 @@ fun UserDetailsScreen(
                     }
                 }
                 HorizontalPager(
-                    pageCount = labels.size,
                     state = pagerState,
                 ) { page ->
                     when (page) {
@@ -207,6 +211,7 @@ fun UserDetailsScreen(
                             navController = navController,
                             viewModel = viewModel,
                         )
+
                         else -> TargetUserLikeJokeList(
                             navController = navController,
                             viewModel = viewModel,
@@ -229,13 +234,17 @@ private fun TargetUserJokeList(
     viewModel: UserDetailsViewModel,
 ) {
     val labels = listOf(stringResource(R.string.text_and_pic), stringResource(R.string.video))
-    val pagerState = rememberPagerState(initialPage = 0)
+    val pagerState = rememberPagerState(
+        initialPage = 0, initialPageOffsetFraction = 0f
+    ) {
+        // provide pageCount
+        labels.size
+    }
     val coroutineScope = rememberCoroutineScope()
     Column {
         TabRow(labels, pagerState, coroutineScope)
         Divider(color = GreyLine, thickness = 0.5.dp)
         HorizontalPager(
-            pageCount = labels.size,
             state = pagerState,
         ) { page ->
             when (page) {
@@ -243,6 +252,7 @@ private fun TargetUserJokeList(
                     navController = navController,
                     viewModel = viewModel,
                 )
+
                 else -> TargetUserVideoJokeList(
                     navController = navController,
                     viewModel = viewModel,
@@ -263,13 +273,17 @@ private fun TargetUserLikeJokeList(
     viewModel: UserDetailsViewModel,
 ) {
     val labels = listOf(stringResource(R.string.text_and_pic), stringResource(R.string.video))
-    val pagerState = rememberPagerState(initialPage = 0)
+    val pagerState = rememberPagerState(
+        initialPage = 0, initialPageOffsetFraction = 0f
+    ) {
+        // provide pageCount
+        labels.size
+    }
     val coroutineScope = rememberCoroutineScope()
     Column {
         TabRow(labels, pagerState, coroutineScope)
         Divider(color = GreyLine, thickness = 0.5.dp)
         HorizontalPager(
-            pageCount = labels.size,
             state = pagerState,
         ) { page ->
             when (page) {
@@ -277,6 +291,7 @@ private fun TargetUserLikeJokeList(
                     navController = navController,
                     viewModel = viewModel,
                 )
+
                 else -> TargetUserLikeVideoJokeList(
                     navController = navController,
                     viewModel = viewModel,
@@ -300,7 +315,6 @@ private fun TabRow(
     FlowRow(
         modifier = Modifier.padding(horizontal = 20.dp, vertical = 8.dp),
         horizontalArrangement = Arrangement.spacedBy(24.dp),
-        verticalAlignment = Alignment.CenterVertically
     ) {
         labels.forEachIndexed { index, s ->
             Box(
@@ -315,8 +329,7 @@ private fun TabRow(
                         coroutineScope.launch {
                             pagerState.animateScrollToPage(index)
                         }
-                    },
-                contentAlignment = Alignment.Center
+                    }, contentAlignment = Alignment.Center
             ) {
                 Text(
                     text = s,
@@ -339,9 +352,15 @@ private fun TargetUserTextPicJokeList(
 ) {
     val userTextPicJokeList = viewModel.userTextPicJokeList.collectAsLazyPagingItems()
     LazyColumn {
-        items(userTextPicJokeList) { item ->
+        items(userTextPicJokeList.itemCount) {
             val isLoading = userTextPicJokeList.loadState.append is LoadState.Loading
-            JokeItem(navController = navController, joke = item, isLoading = isLoading, showUserInfo = false)
+            val item = userTextPicJokeList[it]
+            JokeItem(
+                navController = navController,
+                joke = item,
+                isLoading = isLoading,
+                showUserInfo = false
+            )
         }
     }
 }
@@ -379,9 +398,15 @@ private fun TargetUserLikeTextPicJokeList(
 ) {
     val userLikeTextPicJokeList = viewModel.userLikeTextPicJokeList.collectAsLazyPagingItems()
     LazyColumn {
-        items(userLikeTextPicJokeList) { item ->
+        items(userLikeTextPicJokeList.itemCount) {
             val isLoading = userLikeTextPicJokeList.loadState.append is LoadState.Loading
-            JokeItem(navController = navController, joke = item, isLoading = isLoading, showUserInfo = false)
+            val item = userLikeTextPicJokeList[it]
+            JokeItem(
+                navController = navController,
+                joke = item,
+                isLoading = isLoading,
+                showUserInfo = false
+            )
         }
     }
 }
@@ -419,17 +444,12 @@ private fun VideoJokeItem(
 ) {
     val context = LocalContext.current
     Box(
-        modifier = Modifier
-            .aspectRatio(0.75f)
+        modifier = Modifier.aspectRatio(0.75f)
     ) {
-        AsyncImage(
-            model = ImageRequest.Builder(context)
-                .data(item?.cover.urlAESDecrypt())
-                .error(GradientDrawable().apply {
-                    setColor(Color.Black.toArgb())
-                })
-                .crossfade(true)
-                .build(),
+        AsyncImage(model = ImageRequest.Builder(context).data(item?.cover.urlAESDecrypt())
+            .error(GradientDrawable().apply {
+                setColor(Color.Black.toArgb())
+            }).crossfade(true).build(),
             contentDescription = null,
             contentScale = ContentScale.Crop,
             modifier = Modifier
@@ -441,8 +461,7 @@ private fun VideoJokeItem(
                 )
                 .clickableNoRipple {
 
-                }
-        )
+                })
         Row(
             modifier = Modifier
                 .padding(8.dp)
@@ -453,8 +472,7 @@ private fun VideoJokeItem(
             Image(
                 painter = painterResource(id = R.mipmap.ic_like_border),
                 contentDescription = null,
-                modifier = Modifier
-                    .size(16.dp),
+                modifier = Modifier.size(16.dp),
             )
             Text(
                 text = item?.likeNum.orEmpty(),
@@ -492,10 +510,8 @@ private fun TargetUserInfo(
         ) {
             // 封面
             AsyncImage(
-                model = ImageRequest.Builder(context)
-                    .data(userDetailsUiState.targetUserInfo?.cover)
-                    .crossfade(true)
-                    .build(),
+                model = ImageRequest.Builder(context).data(userDetailsUiState.targetUserInfo?.cover)
+                    .crossfade(true).build(),
                 contentDescription = null,
                 modifier = Modifier.fillMaxSize(),
                 contentScale = ContentScale.Crop,
@@ -535,10 +551,8 @@ private fun TargetUserInfo(
             AsyncImage(
                 model = ImageRequest.Builder(context)
                     .data(userDetailsUiState.targetUserInfo?.avatar)
-                    .error(R.mipmap.ic_avatar_default)
-                    .crossfade(true)
-                    .transformations(CircleCropTransformation())
-                    .build(),
+                    .error(R.mipmap.ic_avatar_default).crossfade(true)
+                    .transformations(CircleCropTransformation()).build(),
                 contentDescription = null,
                 modifier = Modifier
                     .padding(start = 20.dp)
@@ -567,8 +581,7 @@ private fun TargetUserInfo(
             }
         }
         Column(
-            modifier = Modifier
-                .padding(top = 80.dp),
+            modifier = Modifier.padding(top = 80.dp),
         ) {
             // 入驻段子乐时长
             Text(

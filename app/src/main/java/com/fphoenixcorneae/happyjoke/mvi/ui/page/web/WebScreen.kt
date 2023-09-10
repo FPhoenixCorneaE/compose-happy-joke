@@ -134,12 +134,12 @@ fun WebScreen(
                 },
                 chromeClient = object : AccompanistWebChromeClient() {
 
-                    override fun onReceivedTitle(view: WebView?, title: String?) {
+                    override fun onReceivedTitle(view: WebView, title: String?) {
                         super.onReceivedTitle(view, title)
                         titleText = title.orEmpty()
                     }
 
-                    override fun onProgressChanged(view: WebView?, newProgress: Int) {
+                    override fun onProgressChanged(view: WebView, newProgress: Int) {
                         super.onProgressChanged(view, newProgress)
                         progress = (newProgress / 100f).coerceIn(0f, 1f)
                     }

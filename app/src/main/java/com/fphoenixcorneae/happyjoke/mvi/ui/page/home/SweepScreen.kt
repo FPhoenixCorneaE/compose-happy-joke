@@ -55,7 +55,13 @@ fun SweepScreen(
     SystemUiScaffold(statusBarsPadding = false, isDarkFont = false) {
         val context = LocalContext.current
         val sweepTikTokVideos = viewModel.sweepTikTokVideos.collectAsLazyPagingItems()
-        val pagerState = rememberPagerState()
+        val pagerState = rememberPagerState(
+            initialPage = 0,
+            initialPageOffsetFraction = 0f
+        ) {
+            // provide pageCount
+            sweepTikTokVideos.itemCount
+        }
         val currentPage by remember { derivedStateOf { pagerState.currentPage } }
         val pullRefreshState = rememberPullRefreshState(
             refreshing = sweepTikTokVideos.loadState.refresh is LoadState.Loading,
@@ -68,7 +74,7 @@ fun SweepScreen(
                 .padding(bottom = 50.dp)
                 .pullRefresh(state = pullRefreshState)
         ) {
-            VerticalPager(pageCount = sweepTikTokVideos.itemCount, state = pagerState) { page ->
+            VerticalPager(state = pagerState) { page ->
                 val item = sweepTikTokVideos[page]
                 BoxWithConstraints(modifier = Modifier.fillMaxSize()) {
                     if (page == currentPage) {
@@ -157,13 +163,14 @@ fun SweepScreen(
                             ),
                         )
                         // 旋转头像
-                        val infiniteTransition = rememberInfiniteTransition()
+                        val infiniteTransition = rememberInfiniteTransition(label = "旋转头像")
                         val rotation by infiniteTransition.animateFloat(
                             initialValue = 0f,
                             targetValue = 360f,
                             animationSpec = infiniteRepeatable(
                                 animation = tween(10000, easing = LinearEasing),
-                            )
+                            ),
+                            label = "头像旋转角度",
                         )
                         AsyncImage(
                             model = item?.user?.avatar,

@@ -51,7 +51,13 @@ fun HomepageScreen(
             stringResource(R.string.polite_letters),
             stringResource(R.string.funny_pictures)
         )
-        val pagerState = rememberPagerState(initialPage = 1)
+        val pagerState = rememberPagerState(
+            initialPage = 1,
+            initialPageOffsetFraction = 0f
+        ) {
+            // provide pageCount
+            labels.size
+        }
         val coroutineScope = rememberCoroutineScope()
         Column(modifier = Modifier.fillMaxSize()) {
             Box(
@@ -69,8 +75,14 @@ fun HomepageScreen(
                 ) {
                     labels.forEachIndexed { index, label ->
                         val selectedPosition = pagerState.currentPage
-                        val labelSize by animateFloatAsState(targetValue = if (selectedPosition == index) 18f else 16f)
-                        val color by animateColorAsState(targetValue = if (selectedPosition == index) MaterialTheme.colorScheme.onSecondary else Color.Black)
+                        val labelSize by animateFloatAsState(
+                            targetValue = if (selectedPosition == index) 18f else 16f,
+                            label = "标签大小",
+                        )
+                        val color by animateColorAsState(
+                            targetValue = if (selectedPosition == index) MaterialTheme.colorScheme.onSecondary else Color.Black,
+                            label = "标签颜色",
+                        )
                         // 标签
                         Text(
                             text = label,
@@ -104,7 +116,7 @@ fun HomepageScreen(
                 )
             }
             Divider(color = GreyLine, thickness = 0.5.dp)
-            HorizontalPager(pageCount = labels.size, state = pagerState) { page ->
+            HorizontalPager(state = pagerState) { page ->
                 when (page) {
                     0 -> AttentionScreen(navController = navController)
                     1 -> RecommendScreen(navController = navController, viewModel = viewModel)

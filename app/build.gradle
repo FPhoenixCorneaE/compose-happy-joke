@@ -6,12 +6,11 @@ plugins {
 
 android {
     namespace 'com.fphoenixcorneae.happyjoke'
-    compileSdk 33
+    compileSdk 34
 
     defaultConfig {
         applicationId "com.fphoenixcorneae.happyjoke"
         minSdk 24
-        targetSdk 33
         versionCode 1
         versionName "1.0"
 
@@ -54,23 +53,25 @@ android {
 }
 
 dependencies {
+    def composeBom = platform('androidx.compose:compose-bom:2023.01.00')
+    implementation composeBom
+    androidTestImplementation composeBom
     implementation "androidx.constraintlayout:constraintlayout-compose:1.0.1"
-    implementation 'androidx.core:core-ktx:1.9.0'
-    implementation 'androidx.lifecycle:lifecycle-runtime-ktx:2.5.1'
-    implementation 'androidx.activity:activity-compose:1.6.1'
-    implementation "androidx.compose.ui:ui:$compose_version"
-    implementation "androidx.compose.ui:ui-tooling-preview:$compose_version"
-    implementation 'androidx.compose.material3:material3:1.0.1'
+    implementation 'androidx.core:core-ktx:1.10.1'
+    implementation 'androidx.lifecycle:lifecycle-runtime-ktx:2.6.1'
+    implementation 'androidx.activity:activity-compose:1.7.2'
+    implementation "androidx.compose.ui:ui"
+    implementation "androidx.compose.ui:ui-tooling-preview"
+    implementation 'androidx.compose.material3:material3:1.1.1'
     // datastore
     implementation "androidx.datastore:datastore-preferences:1.0.0"
     // paging
-    implementation "androidx.paging:paging-runtime-ktx:3.1.1"
-    implementation "androidx.paging:paging-compose:1.0.0-alpha18"
+    implementation "androidx.paging:paging-runtime-ktx:3.2.0"
+    implementation "androidx.paging:paging-compose:3.2.0"
     // startup
     implementation "androidx.startup:startup-runtime:1.1.1"
     // accompanist: https://google.github.io/accompanist/
-    def accompanist = "0.28.0"
-    implementation "com.google.accompanist:accompanist-insets:$accompanist"
+    def accompanist = "0.32.0"
     implementation "com.google.accompanist:accompanist-insets-ui:$accompanist"
     implementation "com.google.accompanist:accompanist-systemuicontroller:$accompanist"
     implementation "com.google.accompanist:accompanist-permissions:$accompanist"
@@ -81,16 +82,18 @@ dependencies {
     implementation "com.google.accompanist:accompanist-navigation-material:$accompanist"
 
     // coil: https://coil-kt.github.io/coil/compose/
-    implementation("io.coil-kt:coil-compose:2.3.0")
-    implementation("io.coil-kt:coil-gif:2.3.0")
-    implementation("io.coil-kt:coil-svg:2.3.0")
-    implementation("io.coil-kt:coil-video:2.3.0")
+    def coil = "2.4.0"
+    implementation("io.coil-kt:coil-compose:$coil")
+    implementation("io.coil-kt:coil-gif:$coil")
+    implementation("io.coil-kt:coil-svg:$coil")
+    implementation("io.coil-kt:coil-video:$coil")
 
     // 视频播放器
-    implementation("com.google.android.exoplayer:exoplayer:2.18.5")
-    implementation("com.google.android.exoplayer:exoplayer-core:2.18.5")
-    implementation("com.google.android.exoplayer:exoplayer-dash:2.18.5")
-    implementation("com.google.android.exoplayer:exoplayer-ui:2.18.5")
+    def exoplayer = "2.18.5"
+    implementation("com.google.android.exoplayer:exoplayer:$exoplayer")
+    implementation("com.google.android.exoplayer:exoplayer-core:$exoplayer")
+    implementation("com.google.android.exoplayer:exoplayer-dash:$exoplayer")
+    implementation("com.google.android.exoplayer:exoplayer-ui:$exoplayer")
     // 视频缓存
     implementation("com.github.FPhoenixCorneaE:AndroidVideoCache:2.7.2")
 
@@ -103,7 +106,7 @@ dependencies {
     implementation("me.onebone:toolbar-compose:2.3.5")
 
     // 图片选择器
-    implementation("com.github.leavesCZY:Matisse:1.0.0-beta03")
+    implementation("com.github.leavesCZY:Matisse:1.0.4")
 
     // 七牛云Sdk: https://github.com/qiniu/android-sdk
     implementation("com.qiniu:qiniu-android-sdk:8.5.2")
@@ -111,7 +114,7 @@ dependencies {
     testImplementation 'junit:junit:4.13.2'
     androidTestImplementation 'androidx.test.ext:junit:1.1.5'
     androidTestImplementation 'androidx.test.espresso:espresso-core:3.5.1'
-    androidTestImplementation "androidx.compose.ui:ui-test-junit4:$compose_version"
-    debugImplementation "androidx.compose.ui:ui-tooling:$compose_version"
-    debugImplementation "androidx.compose.ui:ui-test-manifest:$compose_version"
+    androidTestImplementation "androidx.compose.ui:ui-test-junit4"
+    debugImplementation "androidx.compose.ui:ui-tooling"
+    debugImplementation "androidx.compose.ui:ui-test-manifest"
 }

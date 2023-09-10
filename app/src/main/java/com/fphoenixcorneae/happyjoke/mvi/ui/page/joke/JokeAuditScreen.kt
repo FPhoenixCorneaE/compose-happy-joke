@@ -11,7 +11,6 @@ import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavHostController
 import androidx.paging.LoadState
 import androidx.paging.compose.collectAsLazyPagingItems
-import androidx.paging.compose.items
 import com.fphoenixcorneae.happyjoke.R
 import com.fphoenixcorneae.happyjoke.mvi.ui.widget.SwipeRefresh
 import com.fphoenixcorneae.happyjoke.mvi.ui.widget.SystemUiScaffold
@@ -47,8 +46,9 @@ fun JokeAuditScreen(
                 viewModel.jokeAuditFailureList.collectAsLazyPagingItems()
             }
             SwipeRefresh(lazyPagingItems = jokeAuditList) {
-                items(jokeAuditList) { item ->
+                items(jokeAuditList.itemCount) {
                     val isLoading = jokeAuditList.loadState.append is LoadState.Loading
+                    val item = jokeAuditList[it]
                     JokeItem(
                         navController = navController,
                         joke = item,
