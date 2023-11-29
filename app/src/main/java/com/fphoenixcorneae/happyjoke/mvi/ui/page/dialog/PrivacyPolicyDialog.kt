@@ -3,8 +3,10 @@ package com.fphoenixcorneae.happyjoke.mvi.ui.page.dialog
 import androidx.compose.animation.ExperimentalAnimationApi
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.*
+import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.text.ClickableText
+import androidx.compose.foundation.verticalScroll
 import androidx.compose.material3.Divider
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
@@ -70,59 +72,66 @@ fun PrivacyPolicyDialog(
                     .align(Alignment.CenterHorizontally)
                     .padding(top = 20.dp),
             )
-            Text(
-                text = stringResource(R.string.privacy_policy_prompt),
-                style = TextStyle(
-                    color = Color.Gray,
-                    fontSize = 18.sp,
-                    lineHeight = 30.sp,
-                    // 段落内容缩进
-                    textIndent = TextIndent(36.sp),
-                ),
+            Column(
                 modifier = Modifier
-                    .align(Alignment.CenterHorizontally)
-                    .padding(start = 20.dp, top = 20.dp, end = 20.dp),
-            )
-            ClickableText(
-                text = buildAnnotatedString {
-                    append(stringResource(R.string.privacy_policy_tips_str_1))
-                    withStyle(
-                        SpanStyle(color = MaterialTheme.colorScheme.primary)
-                    ) {
-                        append(stringResource(R.string.privacy_policy_protocol))
-                    }
-                    append(stringResource(R.string.privacy_policy_tips_str_2))
-                    withStyle(
-                        SpanStyle(color = MaterialTheme.colorScheme.primary)
-                    ) {
-                        append(stringResource(R.string.user_protocol))
-                    }
-                    append(stringResource(R.string.privacy_policy_tips_str_3))
-                },
-                style = TextStyle(
-                    color = Color.Gray,
-                    fontSize = 18.sp,
-                    lineHeight = 30.sp,
-                    // 段落内容缩进
-                    textIndent = TextIndent(36.sp),
-                ),
-                modifier = Modifier
-                    .align(Alignment.CenterHorizontally)
-                    .padding(start = 20.dp, top = 20.dp, end = 20.dp),
+                    .fillMaxWidth()
+                    .fillMaxHeight(0.5f)
+                    .verticalScroll(state = rememberScrollState())
             ) {
-                when (it) {
-                    in 5..10 -> {
-                        // 点击了《隐私政策》
-                        navController.navigate("${Constant.NavRoute.WEB}?${Constant.Key.WEB_URL}=${Constant.WEB_PRIVACY}")
-                    }
-                    in 12..17 -> {
-                        // 点击了《用户协议》
-                        navController.navigate("${Constant.NavRoute.WEB}?${Constant.Key.WEB_URL}=${Constant.WEB_PROTO}")
+                Text(
+                    text = stringResource(R.string.privacy_policy_prompt),
+                    style = TextStyle(
+                        color = Color.Gray,
+                        fontSize = 18.sp,
+                        lineHeight = 30.sp,
+                        // 段落内容缩进
+                        textIndent = TextIndent(36.sp),
+                    ),
+                    modifier = Modifier
+                        .align(Alignment.CenterHorizontally)
+                        .padding(start = 20.dp, top = 20.dp, end = 20.dp),
+                )
+                ClickableText(
+                    text = buildAnnotatedString {
+                        append(stringResource(R.string.privacy_policy_tips_str_1))
+                        withStyle(
+                            SpanStyle(color = MaterialTheme.colorScheme.primary)
+                        ) {
+                            append(stringResource(R.string.privacy_policy_protocol))
+                        }
+                        append(stringResource(R.string.privacy_policy_tips_str_2))
+                        withStyle(
+                            SpanStyle(color = MaterialTheme.colorScheme.primary)
+                        ) {
+                            append(stringResource(R.string.user_protocol))
+                        }
+                        append(stringResource(R.string.privacy_policy_tips_str_3))
+                    },
+                    style = TextStyle(
+                        color = Color.Gray,
+                        fontSize = 18.sp,
+                        lineHeight = 30.sp,
+                        // 段落内容缩进
+                        textIndent = TextIndent(36.sp),
+                    ),
+                    modifier = Modifier
+                        .align(Alignment.CenterHorizontally)
+                        .padding(start = 20.dp, top = 20.dp, end = 20.dp, bottom = 16.dp),
+                ) {
+                    when (it) {
+                        in 5..10 -> {
+                            // 点击了《隐私政策》
+                            navController.navigate("${Constant.NavRoute.WEB}?${Constant.Key.WEB_URL}=${Constant.WEB_PRIVACY}")
+                        }
+
+                        in 12..17 -> {
+                            // 点击了《用户协议》
+                            navController.navigate("${Constant.NavRoute.WEB}?${Constant.Key.WEB_URL}=${Constant.WEB_PROTO}")
+                        }
                     }
                 }
             }
             Divider(
-                modifier = Modifier.padding(top = 16.dp),
                 color = Color.LightGray,
                 thickness = 0.5.dp,
             )
