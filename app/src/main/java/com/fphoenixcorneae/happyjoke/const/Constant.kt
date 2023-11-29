@@ -6,6 +6,7 @@ package com.fphoenixcorneae.happyjoke.const
  */
 object Constant {
     const val HOST_URL = "http://tools.cretinzp.com/"
+    // 搜索微信小程序【电点科技】，点击我的页面，选择【做个段子应用】，可获取到一个专属的 project_token
     const val PROJECT_TOKEN = "05B9B1336ED349268B3F4B6FFFC7E2B7"
     const val WEB_PRIVACY = "http://jokes-avatar.cretinzp.com/static/web/jokes-privacy.html"
     const val WEB_PROTO = "http://jokes-avatar.cretinzp.com/static/web/jokes-protocol.html"

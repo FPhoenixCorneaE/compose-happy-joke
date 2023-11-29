@@ -206,6 +206,7 @@ fun BottomNavigationBar(
                             contentDescription = null,
                             colorFilter = if (isDarkMode) ColorFilter.tint(color = Color.White) else null,
                             modifier = Modifier
+                                .size(it.iconSize)
                                 .constrainAs(icon) {
                                     top.linkTo(parent.top)
                                     start.linkTo(parent.start)
@@ -277,6 +278,7 @@ data class NaviItem(
     val name: String,
     val icon: Any?,
     val selectedIcon: Any?,
+    val iconSize: Dp = 24.dp,
     val color: Color = Color.Gray,
     val selectedColor: Color = Color.Black,
     val textSize: TextUnit = 12.sp,
