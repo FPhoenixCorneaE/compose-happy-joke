@@ -1,5 +1,6 @@
 package com.fphoenixcorneae.happyjoke.mvi.ui.widget
 
+import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.FilterQuality
@@ -16,12 +17,23 @@ import kotlinx.parcelize.Parcelize
 @Parcelize
 class CoilImageEngine : ImageEngine {
     @Composable
-    override fun Image(modifier: Modifier, mediaResource: MediaResource, contentScale: ContentScale) {
+    override fun Image(mediaResource: MediaResource) {
         AsyncImage(
-            modifier = modifier,
+            modifier = Modifier.fillMaxSize(),
             model = mediaResource.uri,
             contentDescription = mediaResource.name,
-            contentScale = contentScale,
+            contentScale = ContentScale.Crop,
+            filterQuality = FilterQuality.None
+        )
+    }
+
+    @Composable
+    override fun Thumbnail(mediaResource: MediaResource) {
+        AsyncImage(
+            modifier = Modifier.fillMaxSize(),
+            model = mediaResource.uri,
+            contentDescription = mediaResource.name,
+            contentScale = ContentScale.Crop,
             filterQuality = FilterQuality.None
         )
     }

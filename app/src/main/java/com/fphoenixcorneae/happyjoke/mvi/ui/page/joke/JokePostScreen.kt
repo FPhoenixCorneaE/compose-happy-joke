@@ -122,7 +122,7 @@ fun JokePostScreen(
                 // 图片选择
                 val imagePickerLauncher =
                     rememberLauncherForActivityResult(contract = MatisseContract()) { result ->
-                        if (result.isNotEmpty()) {
+                        if (!result.isNullOrEmpty()) {
                             viewModel.imageType()
                             viewModel.imageUrlsChanged(result)
                         }

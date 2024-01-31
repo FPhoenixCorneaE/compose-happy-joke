@@ -106,7 +106,7 @@ dependencies {
     implementation("me.onebone:toolbar-compose:2.3.5")
 
     // 图片选择器
-    implementation("com.github.leavesCZY:Matisse:1.0.4")
+    implementation("io.github.leavesczy:matisse:1.1.4")
 
     // 七牛云Sdk: https://github.com/qiniu/android-sdk
     implementation("com.qiniu:qiniu-android-sdk:8.5.2")
